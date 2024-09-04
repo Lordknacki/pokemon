@@ -29,7 +29,9 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    const pokemonImage = pokemon.sprites.front_default;
+    // Utiliser l'URL GitHub pour afficher les sprites de Pokémon
+    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
@@ -59,7 +61,7 @@ function updateTeamDisplay() {
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
-        img.src = pokemon.sprites.front_default;
+        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
         img.alt = pokemon.name;
         teamContainer.appendChild(img);
     });
