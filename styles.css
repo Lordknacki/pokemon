@@ -2,9 +2,15 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
+    margin: 20px;
+}
+
+#team-container {
     margin: 20px;
 }
 
@@ -19,8 +25,8 @@ h1 {
     border: 2px solid #333;
     padding: 10px;
     background-color: #fff;
-    transition: 0.3s;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .pokemon-card img {
@@ -32,33 +38,30 @@ h1 {
     background-color: #f8f8f8;
 }
 
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+.team {
+    display: flex;
     justify-content: center;
-    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
+.team img {
+    width: 50px;
+    height: 50px;
 }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
+.start-game {
+    padding: 10px 20px;
+    font-size: 18px;
     cursor: pointer;
-    font-size: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    margin: 20px;
+    border-radius: 5px;
+    opacity: 0.5;
+}
+
+.start-game:enabled {
+    opacity: 1;
 }
