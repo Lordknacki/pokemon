@@ -12,7 +12,7 @@ async function fetchPokemonData() {
         const pokemonList = data.results;
 
         pokemonList.forEach((pokemon, index) => {
-            fetchPokemonDetails(index + 1);  // Récupérer les détails de chaque Pokémon
+            fetchPokemonDetails(index + 1);
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
@@ -37,8 +37,8 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'URL GitHub pour afficher les sprites de Pokémon
-    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+    // Utiliser l'URL de Pokémon Showdown ou des artwork officiels
+    const pokemonImage = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
 
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
@@ -65,11 +65,11 @@ function selectPokemon(pokemon) {
 // Mettre à jour l'affichage de l'équipe
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = '';  // Effacer l'équipe précédente
+    teamContainer.innerHTML = ''; 
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
-        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+        img.src = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
         img.alt = pokemon.name;
         teamContainer.appendChild(img);
     });
