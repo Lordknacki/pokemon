@@ -8,24 +8,16 @@
 </head>
 <body>
     <h1>Pokémon Combat Arena</h1>
-    
-    <!-- Écran de sélection des Pokémon -->
-    <div id="team-selection">
-        <h2>Choisis tes 6 Pokémon</h2>
-        <div id="pokemon-list"></div>
-        <button id="confirm-team" disabled>Confirmer l'équipe</button>
-    </div>
 
-    <!-- Écran de combat -->
-    <div id="battle-screen" style="display:none;">
-        <h2>Combat en cours</h2>
-        <div id="player-team"></div>
-        <div id="enemy-team"></div>
-        <div id="battle-actions">
-            <h3>Choisis une attaque</h3>
-            <div id="attack-options"></div>
+    <!-- Container for Pokémon list -->
+    <div id="pokemon-list" class="pokemon-list"></div>
+
+    <!-- Modal for Pokémon details -->
+    <div id="pokemon-details" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="details-content"></div>
         </div>
-        <div id="battle-log"></div>
     </div>
 
     <script src="script.js"></script>
