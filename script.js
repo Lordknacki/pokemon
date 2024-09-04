@@ -32,12 +32,12 @@ async function fetchPokemonDetails(id) {
     }
 }
 
-// Créer une carte pour chaque Pokémon
+// Créer une carte pour chaque Pokémon avec les images officielles
 function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'URL pour les artworks officiels lors de la sélection
+    // Utiliser l'URL pour les artworks officiels pour la sélection
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
     card.innerHTML = `
@@ -76,7 +76,7 @@ function updateTeamDisplay() {
     teamContainer.innerHTML = ''; 
 
     selectedPokemon.forEach(pokemon => {
-        // Utiliser les sprites animés lors du combat
+        // Utiliser les sprites animés uniquement lors du combat
         const img = document.createElement('img');
         img.src = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
         img.alt = pokemon.name;
