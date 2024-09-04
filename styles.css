@@ -4,24 +4,23 @@ body {
     background-color: #f0f0f0;
 }
 
-#team-selection, #battle-screen {
-    margin-top: 20px;
+h1 {
+    margin: 20px;
 }
 
-#pokemon-list, #player-team, #enemy-team {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+.pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
 
 .pokemon-card {
     border: 2px solid #333;
     padding: 10px;
-    margin: 10px;
-    width: 150px;
     background-color: #fff;
-    cursor: pointer;
     transition: 0.3s;
+    cursor: pointer;
 }
 
 .pokemon-card img {
@@ -33,9 +32,33 @@ body {
     background-color: #f8f8f8;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
     cursor: pointer;
-    margin-top: 20px;
+    font-size: 30px;
 }
