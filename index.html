@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex Sélection</title>
+    <title>Pokémon Battle Interface</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Choisis tes Pokémon</h1>
-    
-    <!-- Conteneur pour l'équipe sélectionnée -->
+    <header>
+        <h1>Pokédex - Sélectionne ton Équipe Pokémon</h1>
+    </header>
+
+    <!-- Section pour afficher l'équipe -->
     <div id="team-container">
-        <h2>Ton équipe (Max 6 Pokémon) :</h2>
+        <h2>Ton équipe Pokémon (Max 6) :</h2>
         <div id="team" class="team"></div>
     </div>
     
-    <!-- Liste des Pokémon -->
+    <!-- Grille de sélection des Pokémon -->
     <div id="pokemon-list" class="pokemon-list"></div>
 
-    <!-- Bouton pour commencer le jeu -->
+    <!-- Bouton pour commencer le combat -->
     <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
 
     <script src="script.js"></script>
