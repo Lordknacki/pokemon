@@ -37,7 +37,7 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'URL de Pokémon Showdown ou des artwork officiels
+    // Utiliser l'URL de Pokémon Showdown pour les sprites animés
     const pokemonImage = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
 
     card.innerHTML = `
