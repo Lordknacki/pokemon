@@ -37,8 +37,8 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'URL de Pokémon Showdown pour les sprites animés
-    const pokemonImage = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
+    // Utiliser l'URL pour les artworks officiels lors de la sélection
+    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
@@ -51,11 +51,11 @@ function createPokemonCard(pokemon) {
 
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
 function togglePokemonSelection(pokemon, card) {
-    const isSelected = selectedPokemon.includes(pokemon);
+    const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
 
     if (isSelected) {
         // Si le Pokémon est déjà sélectionné, le retirer de l'équipe
-        selectedPokemon = selectedPokemon.filter(p => p !== pokemon);
+        selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
         card.classList.remove('selected'); // Retirer le style de sélection
     } else if (selectedPokemon.length < 6) {
         // Ajouter le Pokémon s'il n'est pas déjà sélectionné et que l'équipe a moins de 6 Pokémon
@@ -70,12 +70,13 @@ function togglePokemonSelection(pokemon, card) {
     document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
 }
 
-// Mettre à jour l'affichage de l'équipe
+// Mettre à jour l'affichage de l'équipe avec des sprites animés uniquement pour le combat
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
     teamContainer.innerHTML = ''; 
 
     selectedPokemon.forEach(pokemon => {
+        // Utiliser les sprites animés lors du combat
         const img = document.createElement('img');
         img.src = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
         img.alt = pokemon.name;
