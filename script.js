@@ -45,21 +45,29 @@ function createPokemonCard(pokemon) {
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    card.addEventListener('click', () => selectPokemon(pokemon));
+    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
     return card;
 }
 
-// Sélectionner un Pokémon et l'ajouter à l'équipe
-function selectPokemon(pokemon) {
-    if (selectedPokemon.length < 6 && !selectedPokemon.includes(pokemon)) {
+// Fonction pour gérer la sélection ou la désélection d'un Pokémon
+function togglePokemonSelection(pokemon, card) {
+    const isSelected = selectedPokemon.includes(pokemon);
+
+    if (isSelected) {
+        // Si le Pokémon est déjà sélectionné, le retirer de l'équipe
+        selectedPokemon = selectedPokemon.filter(p => p !== pokemon);
+        card.classList.remove('selected'); // Retirer le style de sélection
+    } else if (selectedPokemon.length < 6) {
+        // Ajouter le Pokémon s'il n'est pas déjà sélectionné et que l'équipe a moins de 6 Pokémon
         selectedPokemon.push(pokemon);
-        updateTeamDisplay();
+        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
     }
 
-    // Activer le bouton de début si 6 Pokémon sont sélectionnés
-    if (selectedPokemon.length === 6) {
-        document.getElementById('start-game').disabled = false;
-    }
+    // Mettre à jour l'affichage de l'équipe
+    updateTeamDisplay();
+
+    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
+    document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
 }
 
 // Mettre à jour l'affichage de l'équipe
