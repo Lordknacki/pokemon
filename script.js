@@ -2,18 +2,20 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchPokemonData();
 });
 
-// Fetch Pokémon data for the first 150 Pokémon
+let selectedPokemon = [];
+
+// Récupérer les 150 premiers Pokémon
 async function fetchPokemonData() {
     const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
     const data = await response.json();
     const pokemonList = data.results;
 
     pokemonList.forEach((pokemon, index) => {
-        fetchPokemonDetails(index + 1);  // Fetch details by ID (index + 1 corresponds to Pokédex ID)
+        fetchPokemonDetails(index + 1);  // Récupérer les détails de chaque Pokémon
     });
 }
 
-// Fetch details for a single Pokémon
+// Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const pokemon = await response.json();
@@ -22,53 +24,43 @@ async function fetchPokemonDetails(id) {
     document.getElementById("pokemon-list").appendChild(pokemonCard);
 }
 
-// Create a Pokémon card element
+// Créer une carte pour chaque Pokémon
 function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
-
+    const pokemonImage = pokemon.sprites.front_default;
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    card.addEventListener('click', () => displayPokemonDetails(pokemon));
-
+    card.addEventListener('click', () => selectPokemon(pokemon));
     return card;
 }
 
-// Display Pokémon details in a modal
-function displayPokemonDetails(pokemon) {
-    const modal = document.getElementById("pokemon-details");
-    const detailsContent = document.getElementById("details-content");
+// Sélectionner un Pokémon et l'ajouter à l'équipe
+function selectPokemon(pokemon) {
+    if (selectedPokemon.length < 6) {
+        selectedPokemon.push(pokemon);
+        updateTeamDisplay();
+    }
 
-    const pokemonTypes = pokemon.types.map(type => type.type.name).join(", ");
-    const moves = pokemon.moves.slice(0, 4).map(move => move.move.name).join(", ");
+    // Activer le bouton de début si 6 Pokémon sont sélectionnés
+    if (selectedPokemon.length === 6) {
+        document.getElementById('start-game').disabled = false;
+    }
+}
 
-    detailsContent.innerHTML = `
-        <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
-        <h2>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h2>
-        <p><strong>Type:</strong> ${pokemonTypes}</p>
-        <p><strong>HP:</strong> ${pokemon.stats[0].base_stat}</p>
-        <p><strong>Attack:</strong> ${pokemon.stats[1].base_stat}</p>
-        <p><strong>Defense:</strong> ${pokemon.stats[2].base_stat}</p>
-        <p><strong>Speed:</strong> ${pokemon.stats[5].base_stat}</p>
-        <p><strong>Moves:</strong> ${moves}</p>
-    `;
+// Mettre à jour l'affichage de l'équipe
+function updateTeamDisplay() {
+    const teamContainer = document.getElementById('team');
+    teamContainer.innerHTML = '';  // Effacer l'équipe précédente
 
-    modal.style.display = "flex";
-
-    // Close the modal
-    document.querySelector(".close").addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-
-    // Close the modal if clicking outside of content
-    window.addEventListener("click", (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+    selectedPokemon.forEach(pokemon => {
+        const img = document.createElement('img');
+        img.src = pokemon.sprites.front_default;
+        img.alt = pokemon.name;
+        teamContainer.appendChild(img);
     });
 }
