@@ -6,22 +6,30 @@ let selectedPokemon = [];
 
 // Récupérer les 150 premiers Pokémon
 async function fetchPokemonData() {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
-    const data = await response.json();
-    const pokemonList = data.results;
+    try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
+        const data = await response.json();
+        const pokemonList = data.results;
 
-    pokemonList.forEach((pokemon, index) => {
-        fetchPokemonDetails(index + 1);  // Récupérer les détails de chaque Pokémon
-    });
+        pokemonList.forEach((pokemon, index) => {
+            fetchPokemonDetails(index + 1);  // Récupérer les détails de chaque Pokémon
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données Pokémon:", error);
+    }
 }
 
 // Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    const pokemon = await response.json();
+    try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const pokemon = await response.json();
 
-    const pokemonCard = createPokemonCard(pokemon);
-    document.getElementById("pokemon-list").appendChild(pokemonCard);
+        const pokemonCard = createPokemonCard(pokemon);
+        document.getElementById("pokemon-list").appendChild(pokemonCard);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des détails Pokémon:", error);
+    }
 }
 
 // Créer une carte pour chaque Pokémon
@@ -43,7 +51,7 @@ function createPokemonCard(pokemon) {
 
 // Sélectionner un Pokémon et l'ajouter à l'équipe
 function selectPokemon(pokemon) {
-    if (selectedPokemon.length < 6) {
+    if (selectedPokemon.length < 6 && !selectedPokemon.includes(pokemon)) {
         selectedPokemon.push(pokemon);
         updateTeamDisplay();
     }
