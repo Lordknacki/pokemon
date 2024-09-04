@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+#team-selection, #battle-screen {
+    margin-top: 20px;
+}
+
+#pokemon-list, #player-team, #enemy-team {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pokemon-card {
+    border: 2px solid #333;
+    padding: 10px;
+    margin: 10px;
+    width: 150px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pokemon-card img {
+    width: 100px;
+    height: 100px;
+}
+
+.pokemon-card:hover {
+    background-color: #f8f8f8;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
