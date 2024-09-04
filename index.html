@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokémon Combat Arena</title>
+    <title>Pokédex Sélection</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pokémon Combat Arena</h1>
-
-    <!-- Container for Pokémon list -->
+    <h1>Choisis tes Pokémon</h1>
+    <div id="team-container">
+        <h2>Ton équipe (Max 6 Pokémon) :</h2>
+        <div id="team" class="team"></div>
+    </div>
+    
     <div id="pokemon-list" class="pokemon-list"></div>
 
-    <!-- Modal for Pokémon details -->
-    <div id="pokemon-details" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="details-content"></div>
-        </div>
-    </div>
+    <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
 
     <script src="script.js"></script>
 </body>
