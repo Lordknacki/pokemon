@@ -42,8 +42,8 @@ h1 {
 }
 
 .pokemon-card.selected {
-    border: 3px solid #4CAF50;
-    background-color: rgba(76, 175, 80, 0.3);
+    border: 3px solid #FFD700; /* Couleur dorée pour les Pokémon sélectionnés */
+    background-color: rgba(255, 223, 0, 0.3); /* Un fond plus lumineux pour la sélection */
 }
 
 .team {
