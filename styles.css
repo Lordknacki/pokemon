@@ -71,12 +71,13 @@ h1 {
     background-color: #f00;
 }
 
+/* Terrain de combat */
 #battlefield {
     display: flex;
     justify-content: space-around;
     margin: 50px 0;
     padding: 20px;
-    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png');
+    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Fond de terrain */
     background-size: cover;
     height: 300px;
 }
@@ -87,6 +88,7 @@ h1 {
     position: relative;
 }
 
+/* Masquer certains éléments */
 .hidden {
     display: none;
 }
