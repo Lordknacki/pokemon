@@ -1,72 +1,78 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #e0f7fa;
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
-h1 {
-    font-size: 3rem;
-    margin-top: 20px;
-    color: #333;
-}
-
-#team-container, #pokemon-list {
-    margin: 20px;
-}
-
-.pokemon-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+header {
+    background-color: #f44336;
+    color: white;
     padding: 20px;
 }
 
-.pokemon-card {
-    border: 2px solid #333;
-    background-color: #fff;
-    border-radius: 10px;
-    transition: 0.3s;
-    cursor: pointer;
+#battlefield {
+    display: flex;
+    justify-content: space-around;
+    margin: 50px 0;
+    padding: 20px;
+    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Image de fond en ligne */
+    background-size: cover;
+    height: 300px;
 }
 
-.pokemon-card img {
-    width: 120px;
-    height: 120px;
+.pokemon-side {
+    width: 40%;
+    height: 100%;
+    position: relative;
 }
 
-.pokemon-card:hover {
-    background-color: #f0f0f0;
+#combat-menu {
+    margin: 20px;
 }
 
-.pokemon-card.selected {
-    border: 3px solid #FFD700; /* Couleur dorée pour les Pokémon sélectionnés */
-    background-color: rgba(255, 223, 0, 0.2); /* Un fond lumineux pour les sélectionnés */
-}
-
-.team {
+#actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 20px;
 }
 
-.team img {
-    width: 80px;
-    height: 80px;
-}
-
-.start-game {
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    background-color: #ffcb05;
+button {
+    padding: 10px 20px;
+    background-color: #ffeb3b;
     border: none;
     border-radius: 10px;
+    font-size: 1.2rem;
     cursor: pointer;
-    opacity: 0.5;
 }
 
-.start-game:enabled {
-    opacity: 1;
-    background-color: #f00;
+button:hover {
+    background-color: #ffca28;
+}
+
+.hidden {
+    display: none;
+}
+
+#attack-menu {
+    margin-top: 20px;
+}
+
+#attack-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#attack-list li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#attack-list li:hover {
+    background-color: #d32f2f;
 }
