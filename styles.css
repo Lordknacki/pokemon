@@ -41,8 +41,8 @@ h1 {
 }
 
 .pokemon-card.selected {
-    border: 3px solid #FFD700; /* Couleur dorée pour les Pokémon sélectionnés */
-    background-color: rgba(255, 223, 0, 0.2); /* Un fond lumineux pour les sélectionnés */
+    border: 3px solid #FFD700;
+    background-color: rgba(255, 223, 0, 0.2);
 }
 
 .team {
@@ -76,7 +76,7 @@ h1 {
     justify-content: space-around;
     margin: 50px 0;
     padding: 20px;
-    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Image de fond en ligne */
+    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png');
     background-size: cover;
     height: 300px;
 }
