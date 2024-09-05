@@ -86,6 +86,7 @@ h1 {
 
 #stats-modal.show {
     display: block;
+    opacity: 1;
 }
 
 #stats-modal .pokemon-name {
@@ -115,19 +116,7 @@ h1 {
 .type-water { background-color: #6890F0; }
 .type-grass { background-color: #78C850; }
 .type-electric { background-color: #F8D030; }
-.type-ice { background-color: #98D8D8; }
-.type-fighting { background-color: #C03028; }
-.type-poison { background-color: #A040A0; }
-.type-ground { background-color: #E0C068; }
-.type-flying { background-color: #A890F0; }
-.type-psychic { background-color: #F85888; }
-.type-bug { background-color: #A8B820; }
-.type-rock { background-color: #B8A038; }
-.type-ghost { background-color: #705898; }
-.type-dragon { background-color: #7038F8; }
-.type-dark { background-color: #705848; }
-.type-steel { background-color: #B8B8D0; }
-.type-fairy { background-color: #EE99AC; }
+/* Ajoutez les autres types ici */
 
 /* Terrain de combat */
 #battlefield {
