@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     fetchPokemonData();
     document.getElementById("start-game").addEventListener("click", () => {
-        // Lorsque la sélection est terminée, on passe à la phase de combat.
+        // Cacher la phase de sélection et passer à la phase de combat
         document.getElementById("selection-phase").classList.add("hidden");
         document.getElementById("combat-phase").classList.remove("hidden");
-        initCombat();
+        initCombat(); // Appeler la fonction de la phase de combat
     });
 });
 
@@ -25,7 +25,7 @@ async function fetchPokemonData() {
     }
 }
 
-// Récupérer les détails d'un Pokémon
+// Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
