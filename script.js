@@ -98,8 +98,13 @@ function startBattle(playerTeam, trainerNumber) {
         opponentTeam = getRandomPokemonTeam();
     }
 
-    document.getElementById("player-pokemon").textContent = `Ton Pokémon : ${playerTeam[0].name}`;
-    document.getElementById("opponent-pokemon").textContent = `Dresseur ${trainerNumber} : ${opponentTeam[0]}`;
+    document.getElementById("player-pokemon").innerHTML = `
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${playerTeam[0].id}.gif" alt="${playerTeam[0].name}">
+    `;
+    
+    document.getElementById("opponent-pokemon").innerHTML = `
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${getPokemonIdByName(opponentTeam[0])}.gif" alt="${opponentTeam[0]}">
+    `;
 
     setupBattle(playerTeam, opponentTeam);
 }
@@ -116,6 +121,27 @@ function getRandomPokemonTeam() {
         }
     }
     return randomTeam;
+}
+
+// Récupérer l'ID du Pokémon par son nom pour afficher le sprite animé
+function getPokemonIdByName(name) {
+    const pokemonMap = {
+        "Bulbasaur": 1,
+        "Charmander": 4,
+        "Squirtle": 7,
+        "Pidgeotto": 17,
+        "Butterfree": 12,
+        "Beedrill": 15,
+        "Raticate": 20,
+        "Fearow": 22,
+        "Venusaur": 3,
+        "Charizard": 6,
+        "Blastoise": 9,
+        "Dragonite": 149,
+        "Aerodactyl": 142,
+        "Mewtwo": 150
+    };
+    return pokemonMap[name];
 }
 
 // Préparer le combat avec les statistiques et attaques des Pokémon
