@@ -84,6 +84,97 @@ function togglePokemonSelection(pokemon, card) {
 
 // Mettre à jour l'affichage de l'équipe sélectionnée
 function updateTeamDisplay() {
+   Voici le **code complet JavaScript** pour assurer que la sélection des Pokémon fonctionne correctement, que les images sont bien visibles, et que le combat fonctionne avec des **sprites animés** pour la phase de combat. J'ai restructuré le code pour corriger les problèmes rencontrés.
+
+### **JavaScript complet (script.js)**
+
+```javascript
+document.addEventListener("DOMContentLoaded", () => {
+    let selectedPokemon = []; // Stocker l'équipe du joueur
+    let currentTrainer = 1; // Compteur pour les dresseurs
+    const maxTrainers = 8; // Nombre total de dresseurs à affronter
+
+    // Récupération des Pokémon disponibles pour la sélection
+    fetchPokemonData();
+
+    // Événement pour démarrer le jeu une fois la sélection terminée
+    document.getElementById("start-game").addEventListener("click", () => {
+        // Masquer la phase de sélection et afficher la phase de combat
+        document.getElementById("selection-phase").classList.add("hidden");
+        document.getElementById("combat-phase").classList.remove("hidden");
+        startBattle(selectedPokemon, currentTrainer);
+    });
+});
+
+// Récupérer les 150 premiers Pokémon pour la sélection via PokéAPI
+async function fetchPokemonData() {
+    try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
+        const data = await response.json();
+        const pokemonList = data.results;
+
+        pokemonList.forEach((pokemon, index) => {
+            fetchPokemonDetails(index + 1);
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données Pokémon :", error);
+    }
+}
+
+// Récupérer les détails d'un Pokémon pour la sélection
+async function fetchPokemonDetails(id) {
+    try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const pokemon = await response.json();
+
+        const pokemonCard = createPokemonCard(pokemon);
+        document.getElementById("pokemon-list").appendChild(pokemonCard); // Afficher les Pokémon dans la sélection
+    } catch (error) {
+        console.error("Erreur lors de la récupération des détails Pokémon :", error);
+    }
+}
+
+// Créer une carte pour chaque Pokémon lors de la sélection
+function createPokemonCard(pokemon) {
+    const card = document.createElement("div");
+    card.classList.add("pokemon-card");
+
+    // URL des images officielles des Pokémon (artworks)
+    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+
+    card.innerHTML = `
+        <img src="${pokemonImage}" alt="${pokemon.name}">
+        <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
+    `;
+
+    // Ajouter un événement au clic pour sélectionner ou désélectionner un Pokémon
+    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
+    return card;
+}
+
+// Sélectionner ou désélectionner un Pokémon
+function togglePokemonSelection(pokemon, card) {
+    const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
+
+    if (isSelected) {
+        // Si le Pokémon est déjà sélectionné, le retirer de l'équipe
+        selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
+        card.classList.remove('selected');
+    } else if (selectedPokemon.length < 6) {
+        // Ajouter le Pokémon à l'équipe s'il n'est pas encore sélectionné et que l'équipe a moins de 6 Pokémon
+        selectedPokemon.push(pokemon);
+        card.classList.add('selected');
+    }
+
+    // Mettre à jour l'affichage de l'équipe
+    updateTeamDisplay();
+
+    // Activer le bouton "Commencer le Combat" si 6 Pokémon sont sélectionnés
+    document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
+}
+
+// Mettre à jour l'affichage de l'équipe sélectionnée
+function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
     teamContainer.innerHTML = ''; // Réinitialiser l'affichage de l'équipe
 
