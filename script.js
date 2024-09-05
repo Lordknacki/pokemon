@@ -37,7 +37,7 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'URL pour les artworks officiels pour la sélection
+    // Utiliser l'URL pour les artworks officiels pour la sélection et combat
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
     card.innerHTML = `
@@ -70,15 +70,14 @@ function togglePokemonSelection(pokemon, card) {
     document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
 }
 
-// Mettre à jour l'affichage de l'équipe avec des sprites animés uniquement pour le combat
+// Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
     teamContainer.innerHTML = ''; 
 
     selectedPokemon.forEach(pokemon => {
-        // Utiliser les sprites animés uniquement lors du combat
         const img = document.createElement('img');
-        img.src = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.toLowerCase()}.gif`;
+        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
         img.alt = pokemon.name;
         teamContainer.appendChild(img);
     });
