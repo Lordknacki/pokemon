@@ -73,20 +73,15 @@ h1 {
 
 /* Fenêtre modale pour les statistiques */
 #stats-modal {
-    position: fixed;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
     background-color: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
     display: none;
     z-index: 1000;
-}
-
-#stats-modal.hidden {
-    display: none;
+    transition: opacity 0.3s ease-in-out;
+    width: 250px;
 }
 
 #stats-modal .pokemon-name {
@@ -95,9 +90,40 @@ h1 {
     margin-bottom: 10px;
 }
 
+#stats-modal .pokemon-types {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
 #stats-modal .pokemon-stats p {
     margin: 5px 0;
 }
+
+.pokemon-type {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+/* Types de Pokémon avec couleurs */
+.type-fire { background-color: #F08030; }
+.type-water { background-color: #6890F0; }
+.type-grass { background-color: #78C850; }
+.type-electric { background-color: #F8D030; }
+.type-ice { background-color: #98D8D8; }
+.type-fighting { background-color: #C03028; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #E0C068; }
+.type-flying { background-color: #A890F0; }
+.type-psychic { background-color: #F85888; }
+.type-bug { background-color: #A8B820; }
+.type-rock { background-color: #B8A038; }
+.type-ghost { background-color: #705898; }
+.type-dragon { background-color: #7038F8; }
+.type-dark { background-color: #705848; }
+.type-steel { background-color: #B8B8D0; }
+.type-fairy { background-color: #EE99AC; }
 
 /* Terrain de combat */
 #battlefield {
@@ -105,7 +131,7 @@ h1 {
     justify-content: space-around;
     margin: 50px 0;
     padding: 20px;
-    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png');
+    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Fond de terrain */
     background-size: cover;
     height: 300px;
 }
@@ -160,16 +186,6 @@ button:hover {
 
 #attack-list li:hover {
     background-color: #d32f2f;
-}
-
-/* Cacher la phase de combat par défaut */
-.hidden {
-    display: none;
-}
-
-/* Fenêtre modale pour les statistiques */
-#stats-modal .pokemon-types {
-    margin-bottom: 10px;
 }
 
 /* Responsiveness */
