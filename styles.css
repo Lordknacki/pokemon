@@ -82,6 +82,7 @@ h1 {
     z-index: 1000;
     width: 200px;
     transition: opacity 0.3s ease-in-out;
+    pointer-events: none; /* Empêcher les interactions de la souris avec la fenêtre */
 }
 
 #stats-modal.show {
@@ -116,7 +117,19 @@ h1 {
 .type-water { background-color: #6890F0; }
 .type-grass { background-color: #78C850; }
 .type-electric { background-color: #F8D030; }
-/* Ajoutez les autres types ici */
+.type-ice { background-color: #98D8D8; }
+.type-fighting { background-color: #C03028; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #E0C068; }
+.type-flying { background-color: #A890F0; }
+.type-psychic { background-color: #F85888; }
+.type-bug { background-color: #A8B820; }
+.type-rock { background-color: #B8A038; }
+.type-ghost { background-color: #705898; }
+.type-dragon { background-color: #7038F8; }
+.type-dark { background-color: #705848; }
+.type-steel { background-color: #B8B8D0; }
+.type-fairy { background-color: #EE99AC; }
 
 /* Terrain de combat */
 #battlefield {
