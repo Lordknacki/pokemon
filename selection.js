@@ -1,23 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
     fetchPokemonData();
     document.getElementById("start-game").addEventListener("click", () => {
-        // Cacher la phase de sélection et passer à la phase de combat
         document.getElementById("selection-phase").classList.add("hidden");
         document.getElementById("combat-phase").classList.remove("hidden");
-        initCombat(); // Appeler la fonction de la phase de combat
+        initCombat();
     });
 });
 
 let selectedPokemon = [];
 
-// Récupérer les 150 premiers Pokémon dans l'ordre du Pokédex
+// Récupérer les 150 premiers Pokémon
 async function fetchPokemonData() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
         const data = await response.json();
-        const pokemonList = data.results;
 
-        // Garde l'ordre du Pokédex en récupérant les Pokémon par ID
         for (let i = 1; i <= 150; i++) {
             await fetchPokemonDetails(i);
         }
@@ -26,7 +23,7 @@ async function fetchPokemonData() {
     }
 }
 
-// Récupérer les détails d'un Pokémon par son ID, y compris ses statistiques et types
+// Récupérer les détails d'un Pokémon
 async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -43,40 +40,47 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
-    // Utiliser l'image officielle du Pokémon et afficher les types
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
-    // Obtenir les types du Pokémon et générer les icônes correspondantes
     const typesHTML = pokemon.types
-        .map(type => `<img src="https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/${type.type.name}.svg" alt="${type.type.name}" class="type-icon">`)
+        .map(type => `<span class="type ${type.type.name}">${type.type.name.toUpperCase()}</span>`)
         .join("");
 
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
-        <div class="types">${typesHTML}</div>
-        <div class="stats hidden" id="stats-${pokemon.id}">
-            <p>HP: ${pokemon.stats[0].base_stat}</p>
-            <p>Attaque: ${pokemon.stats[1].base_stat}</p>
-            <p>Défense: ${pokemon.stats[2].base_stat}</p>
-            <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
-        </div>
     `;
 
-    // Ajouter l'événement pour afficher les stats au survol
     card.addEventListener('mouseover', () => {
-        document.getElementById(`stats-${pokemon.id}`).classList.remove('hidden');
+        showStatsModal(pokemon, typesHTML);
     });
 
-    // Cacher les stats quand la souris quitte la carte
     card.addEventListener('mouseout', () => {
-        document.getElementById(`stats-${pokemon.id}`).classList.add('hidden');
+        hideStatsModal();
     });
 
-    // Sélectionner ou désélectionner un Pokémon
     card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
 
     return card;
+}
+
+// Fonction pour montrer la fenêtre modale des stats
+function showStatsModal(pokemon, typesHTML) {
+    const modal = document.getElementById("stats-modal");
+    modal.querySelector(".pokemon-name").textContent = pokemon.name;
+    modal.querySelector(".pokemon-types").innerHTML = typesHTML;
+    modal.querySelector(".pokemon-stats").innerHTML = `
+        <p>HP: ${pokemon.stats[0].base_stat}</p>
+        <p>Attaque: ${pokemon.stats[1].base_stat}</p>
+        <p>Défense: ${pokemon.stats[2].base_stat}</p>
+        <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
+    `;
+    modal.classList.remove("hidden");
+}
+
+// Fonction pour cacher la fenêtre modale des stats
+function hideStatsModal() {
+    document.getElementById("stats-modal").classList.add("hidden");
 }
 
 // Sélectionner ou désélectionner un Pokémon
@@ -98,7 +102,7 @@ function togglePokemonSelection(pokemon, card) {
 // Mettre à jour l'affichage de l'équipe
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; 
+    teamContainer.innerHTML = '';
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
