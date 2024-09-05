@@ -3,26 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex - Sélection des Pokémon</title>
+    <title>Combat Pokémon</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
     <header>
-        <h1>Choisis ton Équipe Pokémon</h1>
+        <h1>Combat Pokémon</h1>
     </header>
 
-    <!-- Section pour afficher l'équipe -->
-    <div id="team-container">
-        <h2>Ton équipe Pokémon (Max 6) :</h2>
-        <div id="team" class="team"></div>
+    <!-- Terrain de combat -->
+    <div id="battlefield">
+        <div id="player-pokemon" class="pokemon-side"></div>
+        <div id="opponent-pokemon" class="pokemon-side"></div>
     </div>
-    
-    <!-- Grille de sélection des Pokémon -->
-    <div id="pokemon-list" class="pokemon-list"></div>
 
-    <!-- Bouton pour commencer le combat -->
-    <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+    <!-- Menu de combat -->
+    <div id="combat-menu">
+        <h3>Que doit faire ton Pokémon ?</h3>
+        <div id="actions">
+            <button id="attack-button">Attaquer</button>
+            <button id="change-button">Changer de Pokémon</button>
+        </div>
 
-    <script src="script.js"></script>
+        <!-- Sous-menu pour les attaques -->
+        <div id="attack-menu" class="hidden">
+            <h4>Choisis une attaque</h4>
+            <ul id="attack-list">
+                <!-- Les attaques seront injectées ici par JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="combat.js"></script>
+
 </body>
 </html>
