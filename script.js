@@ -1,84 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetchPokemonData();
+    let currentTrainer = 1; // Compteur des dresseurs
+    let maxTrainers = 8; // Il y aura 8 dresseurs à affronter
+
+    const playerPokemon = {
+        name: "Pikachu", // Exemple, tu peux ajouter un choix dynamique
+        hp: 100,
+        moves: [],
+    };
+
+    const opponentPokemon = {}; // L'équipe sera définie aléatoirement sauf pour le dernier dresseur
+
+    setupBattle(playerPokemon, opponentPokemon, currentTrainer);
 });
 
-let selectedPokemon = [];
+function setupBattle(playerPokemon, opponentPokemon, trainerNumber) {
+    // Si c'est le dernier dresseur
+    if (trainerNumber === 8) {
+        opponentPokemon.name = ["Venusaur", "Charizard", "Blastoise", "Dragonite", "Aerodactyl", "Mewtwo"];
+    } else {
+        // Dresseurs aléatoires pour les autres rounds
+        opponentPokemon.name = getRandomPokemonTeam();
+    }
 
-// Récupérer les 150 premiers Pokémon
-async function fetchPokemonData() {
-    try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
-        const data = await response.json();
-        const pokemonList = data.results;
+    document.getElementById("player-pokemon").textContent = `${playerPokemon.name} - ${playerPokemon.hp} HP`;
+    document.getElementById("opponent-pokemon").textContent = `Dresseur ${trainerNumber} - ${opponentPokemon.name[0]} et son équipe`;
 
-        pokemonList.forEach((pokemon, index) => {
-            fetchPokemonDetails(index + 1);
+    fetchPokemonMoves(playerPokemon, "player");
+    fetchPokemonMoves(opponentPokemon, "opponent");
+
+    document.getElementById("attack-button").addEventListener("click", () => {
+        document.getElementById("attack-menu").classList.remove("hidden");
+    });
+}
+
+// Fonction pour obtenir une équipe aléatoire sauf pour le dernier dresseur
+function getRandomPokemonTeam() {
+    const allPokemon = ["Bulbasaur", "Charmander", "Squirtle", "Pidgeotto", "Butterfree", "Beedrill", "Raticate", "Fearow"];
+    let randomTeam = [];
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * allPokemon.length);
+        randomTeam.push(allPokemon[randomIndex]);
+    }
+    return randomTeam;
+}
+
+async function fetchPokemonMoves(pokemon, type) {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name[0].toLowerCase()}`);
+    const data = await response.json();
+    
+    pokemon.moves = data.moves.slice(0, 4).map(move => move.move.name); // Sélectionner 4 attaques
+    if (type === "player") {
+        displayPlayerMoves(pokemon.moves);
+    }
+}
+
+function displayPlayerMoves(moves) {
+    const attackList = document.getElementById("attack-list");
+    attackList.innerHTML = "";
+    
+    moves.forEach((move) => {
+        const moveItem = document.createElement("li");
+        moveItem.textContent = move;
+        moveItem.addEventListener("click", () => {
+            console.log(`${move} a été utilisé!`);
+            document.getElementById("attack-menu").classList.add("hidden");
+            // Ajouter la logique de dégâts ici
         });
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données Pokémon:", error);
-    }
-}
-
-// Récupérer les détails d'un Pokémon par son ID
-async function fetchPokemonDetails(id) {
-    try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        const pokemon = await response.json();
-
-        const pokemonCard = createPokemonCard(pokemon);
-        document.getElementById("pokemon-list").appendChild(pokemonCard);
-    } catch (error) {
-        console.error("Erreur lors de la récupération des détails Pokémon:", error);
-    }
-}
-
-// Créer une carte pour chaque Pokémon avec les images officielles
-function createPokemonCard(pokemon) {
-    const card = document.createElement("div");
-    card.classList.add("pokemon-card");
-
-    // Utiliser l'URL pour les artworks officiels pour la sélection et combat
-    const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
-
-    card.innerHTML = `
-        <img src="${pokemonImage}" alt="${pokemon.name}">
-        <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
-    `;
-
-    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
-    return card;
-}
-
-// Fonction pour gérer la sélection ou la désélection d'un Pokémon
-function togglePokemonSelection(pokemon, card) {
-    const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
-
-    if (isSelected) {
-        // Si le Pokémon est déjà sélectionné, le retirer de l'équipe
-        selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-        card.classList.remove('selected'); // Retirer le style de sélection
-    } else if (selectedPokemon.length < 6) {
-        // Ajouter le Pokémon s'il n'est pas déjà sélectionné et que l'équipe a moins de 6 Pokémon
-        selectedPokemon.push(pokemon);
-        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
-    }
-
-    // Mettre à jour l'affichage de l'équipe
-    updateTeamDisplay();
-
-    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
-    document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
-}
-
-// Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
-function updateTeamDisplay() {
-    const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; 
-
-    selectedPokemon.forEach(pokemon => {
-        const img = document.createElement('img');
-        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
-        img.alt = pokemon.name;
-        teamContainer.appendChild(img);
+        attackList.appendChild(moveItem);
     });
 }
