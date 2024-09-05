@@ -73,7 +73,7 @@ function showStatsModal(pokemon, event) {
     const cardRect = event.target.getBoundingClientRect();
     const modalHeight = modal.offsetHeight;
     
-    // Positionner la modale juste au-dessus de la carte
+    // Positionner la modale juste au-dessus de la carte, avec 10px d'espace
     modal.style.left = `${cardRect.left + window.scrollX}px`;
     modal.style.top = `${cardRect.top + window.scrollY - modalHeight - 10}px`; // 10px d'espace au-dessus du Pokémon
 
