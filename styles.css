@@ -95,89 +95,8 @@ h1 {
     margin-bottom: 10px;
 }
 
-#stats-modal .pokemon-types {
-    margin-bottom: 10px;
-}
-
 #stats-modal .pokemon-stats p {
     margin: 5px 0;
-}
-
-/* Types avec couleurs */
-.type {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-    margin-right: 5px;
-}
-
-.type.fire {
-    background-color: #F08030;
-}
-
-.type.water {
-    background-color: #6890F0;
-}
-
-.type.grass {
-    background-color: #78C850;
-}
-
-.type.electric {
-    background-color: #F8D030;
-}
-
-.type.ice {
-    background-color: #98D8D8;
-}
-
-.type.fighting {
-    background-color: #C03028;
-}
-
-.type.poison {
-    background-color: #A040A0;
-}
-
-.type.ground {
-    background-color: #E0C068;
-}
-
-.type.flying {
-    background-color: #A890F0;
-}
-
-.type.psychic {
-    background-color: #F85888;
-}
-
-.type.bug {
-    background-color: #A8B820;
-}
-
-.type.rock {
-    background-color: #B8A038;
-}
-
-.type.ghost {
-    background-color: #705898;
-}
-
-.type.dragon {
-    background-color: #7038F8;
-}
-
-.type.dark {
-    background-color: #705848;
-}
-
-.type.steel {
-    background-color: #B8B8D0;
-}
-
-.type.fairy {
-    background-color: #EE99AC;
 }
 
 /* Terrain de combat */
@@ -186,7 +105,7 @@ h1 {
     justify-content: space-around;
     margin: 50px 0;
     padding: 20px;
-    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Fond de terrain */
+    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png');
     background-size: cover;
     height: 300px;
 }
@@ -243,24 +162,17 @@ button:hover {
     background-color: #d32f2f;
 }
 
-/* Styles spécifiques pour le changement de Pokémon */
-#change-button {
-    background-color: #4CAF50;
+/* Cacher la phase de combat par défaut */
+.hidden {
+    display: none;
 }
 
-#change-button:hover {
-    background-color: #45a049;
+/* Fenêtre modale pour les statistiques */
+#stats-modal .pokemon-types {
+    margin-bottom: 10px;
 }
 
-#attack-button {
-    background-color: #FF5722;
-}
-
-#attack-button:hover {
-    background-color: #E64A19;
-}
-
-/* Responsiveness: ajuster la grille sur les écrans plus petits */
+/* Responsiveness */
 @media screen and (max-width: 1200px) {
     .pokemon-list {
         grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
