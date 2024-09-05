@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     fetchPokemonData();
     document.getElementById("start-game").addEventListener("click", () => {
+        // Cacher la phase de sélection et afficher la phase de combat
         document.getElementById("selection-phase").classList.add("hidden");
         document.getElementById("combat-phase").classList.remove("hidden");
         initCombat();
@@ -42,22 +43,14 @@ function createPokemonCard(pokemon) {
 
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
-    const typesHTML = pokemon.types
-        .map(type => `<span class="type ${type.type.name}">${type.type.name.toUpperCase()}</span>`)
-        .join("");
-
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    card.addEventListener('mouseover', () => {
-        showStatsModal(pokemon, typesHTML);
-    });
-
-    card.addEventListener('mouseout', () => {
-        hideStatsModal();
-    });
+    // Affichage des statistiques au survol
+    card.addEventListener('mouseover', (e) => showStatsModal(pokemon, e));
+    card.addEventListener('mouseout', () => hideStatsModal());
 
     card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
 
@@ -65,22 +58,26 @@ function createPokemonCard(pokemon) {
 }
 
 // Fonction pour montrer la fenêtre modale des stats
-function showStatsModal(pokemon, typesHTML) {
+function showStatsModal(pokemon, event) {
     const modal = document.getElementById("stats-modal");
+    const statsHTML = pokemon.stats.map(stat => `<p>${stat.stat.name.toUpperCase()}: ${stat.base_stat}</p>`).join('');
+    
     modal.querySelector(".pokemon-name").textContent = pokemon.name;
+    modal.querySelector(".pokemon-stats").innerHTML = statsHTML;
+
+    // Affichage des types
+    const typesHTML = pokemon.types.map(type => `<span class="pokemon-type type-${type.type.name}">${type.type.name.toUpperCase()}</span>`).join('');
     modal.querySelector(".pokemon-types").innerHTML = typesHTML;
-    modal.querySelector(".pokemon-stats").innerHTML = `
-        <p>HP: ${pokemon.stats[0].base_stat}</p>
-        <p>Attaque: ${pokemon.stats[1].base_stat}</p>
-        <p>Défense: ${pokemon.stats[2].base_stat}</p>
-        <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
-    `;
-    modal.classList.remove("hidden");
+
+    // Positionner la modale à côté de la carte
+    modal.style.left = `${event.pageX + 20}px`;
+    modal.style.top = `${event.pageY - 20}px`;
+    modal.classList.add("show");
 }
 
 // Fonction pour cacher la fenêtre modale des stats
 function hideStatsModal() {
-    document.getElementById("stats-modal").classList.add("hidden");
+    document.getElementById("stats-modal").classList.remove("show");
 }
 
 // Sélectionner ou désélectionner un Pokémon
@@ -102,7 +99,7 @@ function togglePokemonSelection(pokemon, card) {
 // Mettre à jour l'affichage de l'équipe
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = '';
+    teamContainer.innerHTML = ''; // Réinitialiser
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
