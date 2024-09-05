@@ -3,39 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combat Pokémon</title>
+    <title>Pokémon Selection et Combat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <header>
-        <h1>Combat Pokémon</h1>
-    </header>
+    <!-- Section de sélection de Pokémon -->
+    <section id="selection-phase">
+        <header>
+            <h1>Choisis ton Équipe Pokémon</h1>
+        </header>
+        <div id="team-container">
+            <h2>Ton équipe Pokémon (Max 6) :</h2>
+            <div id="team" class="team"></div>
+        </div>
+        <div id="pokemon-list" class="pokemon-list"></div>
+        <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+    </section>
 
-    <!-- Terrain de combat -->
-    <div id="battlefield">
-        <div id="player-pokemon" class="pokemon-side"></div>
-        <div id="opponent-pokemon" class="pokemon-side"></div>
-    </div>
-
-    <!-- Menu de combat -->
-    <div id="combat-menu">
-        <h3>Que doit faire ton Pokémon ?</h3>
-        <div id="actions">
-            <button id="attack-button">Attaquer</button>
-            <button id="change-button">Changer de Pokémon</button>
+    <!-- Phase de combat (masquée par défaut) -->
+    <section id="combat-phase" class="hidden">
+        <header>
+            <h1>Combat Pokémon</h1>
+        </header>
+        <div id="battlefield">
+            <div id="player-pokemon" class="pokemon-side"></div>
+            <div id="opponent-pokemon" class="pokemon-side"></div>
         </div>
 
-        <!-- Sous-menu pour les attaques -->
-        <div id="attack-menu" class="hidden">
-            <h4>Choisis une attaque</h4>
-            <ul id="attack-list">
-                <!-- Les attaques seront injectées ici par JavaScript -->
-            </ul>
-        </div>
-    </div>
+        <!-- Menu de combat -->
+        <div id="combat-menu">
+            <h3>Que doit faire ton Pokémon ?</h3>
+            <div id="actions">
+                <button id="attack-button">Attaquer</button>
+                <button id="change-button">Changer de Pokémon</button>
+            </div>
 
-    <script src="combat.js"></script>
+            <!-- Sous-menu pour les attaques -->
+            <div id="attack-menu" class="hidden">
+                <h4>Choisis une attaque</h4>
+                <ul id="attack-list"></ul>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
