@@ -1,15 +1,74 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #e0f7fa;
+    background-color: #f5f5f5;
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
-header {
-    background-color: #f44336;
-    color: white;
+h1 {
+    font-size: 3rem;
+    margin-top: 20px;
+    color: #333;
+}
+
+#team-container, #pokemon-list {
+    margin: 20px;
+}
+
+.pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
     padding: 20px;
+}
+
+.pokemon-card {
+    border: 2px solid #333;
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.pokemon-card img {
+    width: 120px;
+    height: 120px;
+}
+
+.pokemon-card:hover {
+    background-color: #f0f0f0;
+}
+
+.pokemon-card.selected {
+    border: 3px solid #FFD700; /* Couleur dorée pour les Pokémon sélectionnés */
+    background-color: rgba(255, 223, 0, 0.2); /* Un fond lumineux pour les sélectionnés */
+}
+
+.team {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.team img {
+    width: 80px;
+    height: 80px;
+}
+
+.start-game {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    background-color: #ffcb05;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.start-game:enabled {
+    opacity: 1;
+    background-color: #f00;
 }
 
 #battlefield {
@@ -26,6 +85,10 @@ header {
     width: 40%;
     height: 100%;
     position: relative;
+}
+
+.hidden {
+    display: none;
 }
 
 #combat-menu {
@@ -49,14 +112,6 @@ button {
 
 button:hover {
     background-color: #ffca28;
-}
-
-.hidden {
-    display: none;
-}
-
-#attack-menu {
-    margin-top: 20px;
 }
 
 #attack-list {
