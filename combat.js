@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialisation des variables de santé
-    let playerHp = 100; // Santé du joueur
-    let opponentHp = 100; // Santé de l'adversaire
+    let playerHp = 100; // Santé du Pokémon du joueur
+    let opponentHp = 100; // Santé du Pokémon adverse
+
+    // Initialisation du combat (appelée depuis la phase de sélection)
+    function initCombat() {
+        console.log("Le combat commence !");
+        // Démarrage du combat avec les sprites et noms de l'équipe
+        updateHpBar('player', playerHp);
+        updateHpBar('opponent', opponentHp);
+    }
 
     // Fonction d'attaque
     function attack(damage) {
