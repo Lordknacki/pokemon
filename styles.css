@@ -1,3 +1,4 @@
+/* STYLES GLOBAUX */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
@@ -12,10 +13,20 @@ h1 {
     color: #333;
 }
 
-#team-container, #pokemon-list {
-    margin: 20px;
+button {
+    padding: 10px 20px;
+    background-color: #ffeb3b;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
 }
 
+button:hover {
+    background-color: #ffca28;
+}
+
+/* PHASE DE SELECTION */
 .pokemon-list {
     display: grid;
     grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
@@ -43,32 +54,6 @@ h1 {
 .pokemon-card.selected {
     border: 3px solid #FFD700;
     background-color: rgba(255, 223, 0, 0.2);
-}
-
-.team {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.team img {
-    width: 80px;
-    height: 80px;
-}
-
-.start-game {
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    background-color: #ffcb05;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    opacity: 0.5;
-}
-
-.start-game:enabled {
-    opacity: 1;
-    background-color: #f00;
 }
 
 /* Fenêtre modale pour les statistiques */
@@ -131,67 +116,137 @@ h1 {
 .type-steel { background-color: #B8B8D0; }
 .type-fairy { background-color: #EE99AC; }
 
-/* Terrain de combat */
-#battlefield {
+/* Interface de sélection de l'équipe */
+.team {
     display: flex;
-    justify-content: space-around;
-    margin: 50px 0;
-    padding: 20px;
-    background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'); /* Fond de terrain */
-    background-size: cover;
-    height: 300px;
+    justify-content: center;
+    gap: 10px;
 }
 
-.pokemon-side {
-    width: 40%;
-    height: 100%;
+.team img {
+    width: 80px;
+    height: 80px;
+}
+
+.start-game {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    background-color: #ffcb05;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.start-game:enabled {
+    opacity: 1;
+    background-color: #f00;
+}
+
+/* PHASE DE COMBAT */
+#battlefield {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px auto;
+    padding: 20px;
+    width: 80%;
+    height: 400px;
+    background-color: lightgreen; /* Peut être changé en fonction du terrain */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     position: relative;
 }
 
-.hidden {
-    display: none;
+.pokemon-side {
+    position: absolute;
+    width: 40%;
+}
+
+#player-pokemon {
+    bottom: 10px;
+    left: 10px;
+}
+
+#opponent-pokemon {
+    top: 10px;
+    right: 10px;
+}
+
+.pokemon-sprite {
+    width: 150px;
+    height: auto;
+}
+
+.pokemon-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.pokemon-name-level {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hp-bar-container {
+    background-color: #ddd;
+    border-radius: 10px;
+    width: 100px;
+    height: 15px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+
+.hp-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.hp-green {
+    background-color: #4CAF50;
+}
+
+.hp-orange {
+    background-color: #FFA500;
+}
+
+.hp-red {
+    background-color: #FF4500;
 }
 
 /* Menu de combat */
 #combat-menu {
-    margin: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-#actions {
+#combat-options {
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    justify-content: space-between;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #ffeb3b;
+#combat-options button {
+    width: 23%;
+    padding: 15px;
+    font-size: 1.2rem;
+    background-color: #FFCB05;
     border: none;
     border-radius: 10px;
-    font-size: 1.2rem;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #ffca28;
-}
-
-#attack-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-#attack-list li {
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #f44336;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-#attack-list li:hover {
-    background-color: #d32f2f;
+#combat-options button:hover {
+    background-color: #F5A623;
 }
 
 /* Responsiveness */
