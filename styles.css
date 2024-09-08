@@ -249,6 +249,11 @@ button:hover {
     background-color: #F5A623;
 }
 
+/* Masquer la phase de combat par défaut */
+.hidden {
+    display: none;
+}
+
 /* Responsiveness */
 @media screen and (max-width: 1200px) {
     .pokemon-list {
