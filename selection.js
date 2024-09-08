@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cacher la phase de sélection et afficher la phase de combat
         document.getElementById("selection-phase").classList.add("hidden");
         document.getElementById("combat-phase").classList.remove("hidden");
-        initCombat();
+        initCombat(); // Appeler la fonction pour démarrer le combat
     });
 });
 
