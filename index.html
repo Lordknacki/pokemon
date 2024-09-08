@@ -27,20 +27,34 @@
             <h1>Combat Pokémon</h1>
         </header>
         <div id="battlefield">
-            <div id="player-pokemon" class="pokemon-side"></div>
-            <div id="opponent-pokemon" class="pokemon-side"></div>
+            <div id="player-pokemon" class="pokemon-side">
+                <img src="player-pokemon-sprite.png" alt="Player's Pokémon" class="pokemon-sprite">
+                <div class="pokemon-info">
+                    <span class="pokemon-name-level">Pikachu Lv. 50</span>
+                    <div class="hp-bar-container">
+                        <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="opponent-pokemon" class="pokemon-side">
+                <img src="opponent-pokemon-sprite.png" alt="Opponent's Pokémon" class="pokemon-sprite">
+                <div class="pokemon-info">
+                    <span class="pokemon-name-level">Dracaufeu Lv. 55</span>
+                    <div class="hp-bar-container">
+                        <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Menu de combat -->
         <div id="combat-menu">
-            <h3>Que doit faire ton Pokémon ?</h3>
-            <div id="actions">
-                <button id="attack-button">Attaquer</button>
-                <button id="change-button">Changer de Pokémon</button>
-            </div>
-            <div id="attack-menu" class="hidden">
-                <h4>Choisis une attaque</h4>
-                <ul id="attack-list"></ul>
+            <div id="combat-options">
+                <button id="attack-button">Combattre</button>
+                <button id="pokemon-button">Pokémon</button>
+                <button id="bag-button">Sac</button>
+                <button id="run-button">Fuir</button>
             </div>
         </div>
     </section>
