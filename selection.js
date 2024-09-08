@@ -24,7 +24,7 @@ async function fetchPokemonData() {
     }
 }
 
-// Récupérer les détails d'un Pokémon par son ID
+// Récupérer les détails d'un Pokémon
 async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -48,44 +48,12 @@ function createPokemonCard(pokemon) {
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    // Affichage des statistiques au survol
-    card.addEventListener('mouseover', (e) => showStatsModal(pokemon, e));
-    card.addEventListener('mouseout', () => hideStatsModal());
-
     card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
 
     return card;
 }
 
-// Fonction pour afficher la fenêtre modale des statistiques
-function showStatsModal(pokemon, event) {
-    const modal = document.getElementById("stats-modal");
-    const statsHTML = pokemon.stats.map(stat => `<p>${stat.stat.name.toUpperCase()}: ${stat.base_stat}</p>`).join('');
-    
-    modal.querySelector(".pokemon-name").textContent = pokemon.name;
-    modal.querySelector(".pokemon-stats").innerHTML = statsHTML;
-
-    // Affichage des types
-    const typesHTML = pokemon.types.map(type => `<span class="pokemon-type type-${type.type.name}">${type.type.name.toUpperCase()}</span>`).join('');
-    modal.querySelector(".pokemon-types").innerHTML = typesHTML;
-
-    // Obtenir les dimensions de la carte Pokémon et ajuster la position de la modale
-    const cardRect = event.target.getBoundingClientRect();
-    const modalHeight = modal.offsetHeight;
-    
-    // Positionner la modale juste au-dessus de la carte, avec 10px d'espace
-    modal.style.left = `${cardRect.left + window.scrollX}px`;
-    modal.style.top = `${cardRect.top + window.scrollY - modalHeight - 10}px`; // 10px d'espace au-dessus du Pokémon
-
-    modal.classList.add("show");
-}
-
-// Fonction pour masquer la fenêtre modale des statistiques
-function hideStatsModal() {
-    document.getElementById("stats-modal").classList.remove("show");
-}
-
-// Fonction pour sélectionner ou désélectionner un Pokémon
+// Gérer la sélection/désélection d'un Pokémon
 function togglePokemonSelection(pokemon, card) {
     const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
 
@@ -98,7 +66,7 @@ function togglePokemonSelection(pokemon, card) {
     }
 
     updateTeamDisplay();
-    document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
+    toggleStartButton();
 }
 
 // Mettre à jour l'affichage de l'équipe
@@ -112,4 +80,10 @@ function updateTeamDisplay() {
         img.alt = pokemon.name;
         teamContainer.appendChild(img);
     });
+}
+
+// Activer ou désactiver le bouton "Commencer le Combat"
+function toggleStartButton() {
+    const startButton = document.getElementById("start-game");
+    startButton.disabled = selectedPokemon.length !== 6;
 }
