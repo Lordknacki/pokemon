@@ -276,33 +276,10 @@ button:hover {
     display: none;
 }
 
-/* ANIMATIONS D'ATTAQUE */
-.attack-animation {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    animation: attack-move 1s linear;
-}
-
-@keyframes attack-move {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(300px);
-    }
-}
-
-/* RESPONSIVE */
+/* RESPONSIVE DESIGN */
 @media screen and (max-width: 1200px) {
     .pokemon-list {
         grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
-    }
-
-    #battlefield {
-        flex-direction: column;
-        align-items: center;
-        height: auto;
     }
 }
 
