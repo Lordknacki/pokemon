@@ -7,7 +7,7 @@ document.getElementById('start-game').addEventListener('click', () => {
 
 // Initialisation du combat
 function initializeBattle() {
-    // Ajoute ici les configurations initiales du combat
+    // Configure les Pokémons et l'interface de combat
     setPlayerPokemon();
     setOpponentPokemon();
     setupCombatUI();
@@ -21,7 +21,7 @@ function setPlayerPokemon() {
     document.getElementById('player-hp').style.width = '100%'; // HP complet au départ
 }
 
-// Définit le Pokémon adverse (aléatoire)
+// Définit le Pokémon adverse (aléatoire) et dresseur
 function setOpponentPokemon() {
     const opponentPokemonId = Math.floor(Math.random() * 150) + 1; // Pokémon aléatoire entre 1 et 150
     fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
@@ -30,6 +30,10 @@ function setOpponentPokemon() {
             document.getElementById('opponent-pokemon-name').innerText = `${capitalize(opponentPokemon.name)} Lv. 55`;
             document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
             document.getElementById('opponent-hp').style.width = '100%'; // HP complet au départ
+
+            // Ajouter un dresseur au hasard
+            document.getElementById('trainer-image').src = 'https://play.pokemonshowdown.com/sprites/trainers/red.png'; // Sprite du dresseur Red
+            document.getElementById('terrain-image').src = 'https://www.spriters-resource.com/resources/sheets/18502.png'; // Terrain de combat Pokémon Platinum
         });
 }
 
