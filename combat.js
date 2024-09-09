@@ -1,216 +1,100 @@
-// Variables globales
-let currentBattle = 0;
-const totalBattles = 8;
-let playerTeam = [];
-let opponentTeam = [];
-let playerCurrentPokemonIndex = 0;
-let opponentCurrentPokemonIndex = 0;
-let playerCurrentPokemon;
-let opponentCurrentPokemon;
-const terrains = [
-    "https://example.com/terrain-grass.png",
-    "https://example.com/terrain-water.png",
-    "https://example.com/terrain-cave.png",
-];
-const trainers = [
-    { name: "Dresseur Pierre", image: "https://example.com/trainer1.png" },
-    { name: "Dresseur Ondine", image: "https://example.com/trainer2.png" },
-    // Ajoutez plus de dresseurs ici
-];
+// Fonction pour démarrer le combat
+document.getElementById('start-game').addEventListener('click', () => {
+    document.getElementById('selection-phase').classList.add('hidden');
+    document.getElementById('combat-phase').classList.remove('hidden');
+    initializeBattle();
+});
 
-// Fonction d'initialisation du combat
-async function initCombat() {
-    // Récupérer l'équipe du joueur depuis la sélection
-    playerTeam = selectedPokemon;
-
-    // Démarrer le premier combat
-    currentBattle = 0;
-    await startBattle();
+// Initialisation du combat
+function initializeBattle() {
+    // Ajoute ici les configurations initiales du combat
+    setPlayerPokemon();
+    setOpponentPokemon();
+    setupCombatUI();
 }
 
-// Fonction pour démarrer un combat
-async function startBattle() {
-    if (currentBattle >= totalBattles) {
-        alert("Félicitations, vous avez vaincu tous les dresseurs !");
-        return;
-    }
-
-    // Initialiser les variables
-    playerCurrentPokemonIndex = 0;
-    opponentCurrentPokemonIndex = 0;
-    playerCurrentPokemon = playerTeam[playerCurrentPokemonIndex];
-
-    // Charger le dresseur et son équipe
-    const trainer = trainers[currentBattle];
-    opponentTeam = await generateTrainerTeam(currentBattle);
-
-    // Afficher le terrain, le dresseur, et les Pokémon
-    displayBattlefield(trainer);
-
-    // Initialiser les PV des Pokémon
-    playerCurrentPokemon.currentHp = playerCurrentPokemon.stats[0].base_stat;
-    opponentCurrentPokemon = opponentTeam[opponentCurrentPokemonIndex];
-    opponentCurrentPokemon.currentHp = opponentCurrentPokemon.stats[0].base_stat;
-
-    updatePokemonDisplay();
+// Définit le Pokémon du joueur
+function setPlayerPokemon() {
+    const playerPokemon = selectedPokemon[0]; // Le premier Pokémon sélectionné
+    document.getElementById('player-pokemon-name').innerText = `${capitalize(playerPokemon.name)} Lv. 50`;
+    document.getElementById('player-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${playerPokemon.id}.png`;
+    document.getElementById('player-hp').style.width = '100%'; // HP complet au départ
 }
 
-// Afficher les informations du champ de bataille
-function displayBattlefield(trainer) {
-    const terrainImage = terrains[currentBattle % terrains.length];
-    document.getElementById("terrain-image").src = terrainImage;
-    document.getElementById("trainer-name").textContent = trainer.name;
-    document.getElementById("trainer-image").src = trainer.image;
+// Définit le Pokémon adverse (aléatoire)
+function setOpponentPokemon() {
+    const opponentPokemonId = Math.floor(Math.random() * 150) + 1; // Pokémon aléatoire entre 1 et 150
+    fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
+        .then(response => response.json())
+        .then(opponentPokemon => {
+            document.getElementById('opponent-pokemon-name').innerText = `${capitalize(opponentPokemon.name)} Lv. 55`;
+            document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
+            document.getElementById('opponent-hp').style.width = '100%'; // HP complet au départ
+        });
 }
 
-// Générer une équipe de dresseurs
-async function generateTrainerTeam(difficulty) {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
-    const data = await response.json();
-    const pokemonList = data.results;
+// Configure l'interface de combat
+function setupCombatUI() {
+    document.getElementById('attack-button').addEventListener('click', () => {
+        showAttackOptions();
+    });
 
-    // Générer une équipe de 6 Pokémon
-    const team = [];
-    for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * pokemonList.length);
-        const pokemonData = await fetchPokemonDetails(pokemonList[randomIndex].name);
-        team.push(pokemonData);
-    }
+    document.getElementById('pokemon-button').addEventListener('click', () => {
+        alert("Changer de Pokémon");
+    });
 
-    // Trier l'équipe en fonction des statistiques
-    team.sort((a, b) => getPokemonTotalStats(a) - getPokemonTotalStats(b));
-    return team.slice(difficulty, difficulty + 6);
+    document.getElementById('bag-button').addEventListener('click', () => {
+        alert("Ouvrir le sac");
+    });
+
+    document.getElementById('run-button').addEventListener('click', () => {
+        alert("Fuite impossible !");
+    });
 }
 
-// Récupérer les détails des Pokémon
-async function fetchPokemonDetails(name) {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-    return await response.json();
-}
+// Affiche les options d'attaque
+function showAttackOptions() {
+    document.getElementById('combat-options').classList.add('hidden');
+    document.getElementById('attack-menu').classList.remove('hidden');
 
-// Calculer le total des statistiques d'un Pokémon
-function getPokemonTotalStats(pokemon) {
-    return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0);
-}
-
-// Mettre à jour l'affichage des Pokémon sur le champ de bataille
-function updatePokemonDisplay() {
-    // Afficher le Pokémon du joueur
-    document.getElementById("player-pokemon-sprite").src = playerCurrentPokemon.sprites.front_default;
-    document.getElementById("player-pokemon-name").textContent = `${playerCurrentPokemon.name} Nv.${playerCurrentPokemon.level || 50}`;
-
-    // Afficher le Pokémon adverse
-    document.getElementById("opponent-pokemon-sprite").src = opponentCurrentPokemon.sprites.front_default;
-    document.getElementById("opponent-pokemon-name").textContent = `${opponentCurrentPokemon.name} Nv.${opponentCurrentPokemon.level || 50}`;
-
-    // Mettre à jour les barres de santé
-    updateHpBar('player', playerCurrentPokemon.currentHp, playerCurrentPokemon.stats[0].base_stat);
-    updateHpBar('opponent', opponentCurrentPokemon.currentHp, opponentCurrentPokemon.stats[0].base_stat);
-
-    // Afficher les attaques du Pokémon du joueur
-    displayPlayerAttacks();
-}
-
-// Mettre à jour les barres de santé
-function updateHpBar(side, currentHp, maxHp) {
-    const hpBar = document.querySelector(`#${side}-hp`);
-    const hpPercentage = (currentHp / maxHp) * 100;
-    hpBar.style.width = `${hpPercentage}%`;
-
-    if (hpPercentage > 50) {
-        hpBar.className = 'hp-bar hp-green';
-    } else if (hpPercentage > 20) {
-        hpBar.className = 'hp-bar hp-orange';
-    } else {
-        hpBar.className = 'hp-bar hp-red';
-    }
-}
-
-// Afficher les attaques du Pokémon du joueur
-function displayPlayerAttacks() {
-    const attackMenu = document.getElementById('attack-menu');
     const attackOptions = document.getElementById('attack-options');
-    attackOptions.innerHTML = '';
+    attackOptions.innerHTML = ''; // Réinitialiser les options d'attaque
 
-    playerCurrentPokemon.moves.slice(0, 4).forEach(move => {
+    const attacks = ['Éclair', 'Queue de Fer', 'Vive-Attaque', 'Tonnerre']; // Exemples d'attaques
+    attacks.forEach(attack => {
         const button = document.createElement('button');
-        button.textContent = move.move.name;
-        button.addEventListener('click', () => performAttack(move.move));
+        button.innerText = attack;
+        button.addEventListener('click', () => handleAttack(attack));
         attackOptions.appendChild(button);
     });
 }
 
-// Gérer une attaque
-function performAttack(move) {
-    // Cacher le menu des attaques
+// Gestion des attaques
+function handleAttack(attack) {
+    alert(`Tu as utilisé ${attack} !`);
+
+    // Exemple de calcul des dégâts
+    const damage = Math.floor(Math.random() * 20) + 10;
+    reduceOpponentHP(damage);
+
+    // Après l'attaque, revenir au menu principal de combat
+    document.getElementById('combat-options').classList.remove('hidden');
     document.getElementById('attack-menu').classList.add('hidden');
+}
 
-    // Calculer les dégâts (simplifié)
-    const damage = Math.floor(Math.random() * 20) + 10;
+// Réduire les HP du Pokémon adverse
+function reduceOpponentHP(damage) {
+    const opponentHPBar = document.getElementById('opponent-hp');
+    let currentHPWidth = parseInt(opponentHPBar.style.width);
+    let newHPWidth = Math.max(currentHPWidth - damage, 0); // Ne pas aller en dessous de 0
+    opponentHPBar.style.width = `${newHPWidth}%`;
 
-    // Réduire les PV du Pokémon adverse
-    opponentCurrentPokemon.currentHp = Math.max(0, opponentCurrentPokemon.currentHp - damage);
-    updateHpBar('opponent', opponentCurrentPokemon.currentHp, opponentCurrentPokemon.stats[0].base_stat);
-
-    // Vérifier si le Pokémon adverse est K.O.
-    if (opponentCurrentPokemon.currentHp === 0) {
-        opponentCurrentPokemonIndex++;
-        if (opponentCurrentPokemonIndex >= opponentTeam.length) {
-            currentBattle++;
-            alert("Vous avez vaincu le dresseur !");
-            startBattle();
-        } else {
-            opponentCurrentPokemon = opponentTeam[opponentCurrentPokemonIndex];
-            opponentCurrentPokemon.currentHp = opponentCurrentPokemon.stats[0].base_stat;
-            updatePokemonDisplay();
-        }
-    } else {
-        // Le Pokémon adverse attaque
-        opponentAttack();
+    if (newHPWidth === 0) {
+        alert("L'adversaire est KO !");
     }
 }
 
-// Gérer l'attaque du Pokémon adverse
-function opponentAttack() {
-    const damage = Math.floor(Math.random() * 20) + 10;
-
-    // Réduire les PV du Pokémon du joueur
-    playerCurrentPokemon.currentHp = Math.max(0, playerCurrentPokemon.currentHp - damage);
-    updateHpBar('player', playerCurrentPokemon.currentHp, playerCurrentPokemon.stats[0].base_stat);
-
-    if (playerCurrentPokemon.currentHp === 0) {
-        playerCurrentPokemonIndex++;
-        if (playerCurrentPokemonIndex >= playerTeam.length) {
-            alert("Tous vos Pokémon sont K.O. ! Vous avez perdu le combat.");
-            document.getElementById('combat-phase').classList.add('hidden');
-            document.getElementById('selection-phase').classList.remove('hidden');
-        } else {
-            playerCurrentPokemon = playerTeam[playerCurrentPokemonIndex];
-            playerCurrentPokemon.currentHp = playerCurrentPokemon.stats[0].base_stat;
-            updatePokemonDisplay();
-        }
-    }
+// Fonction utilitaire pour capitaliser les noms de Pokémon
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
-
-// Jouer l'animation d'une attaque
-function playAttackAnimation(attackName) {
-    const attackElement = document.createElement('div');
-    attackElement.classList.add('attack-animation');
-    attackElement.style.backgroundImage = `url('https://example.com/attacks/${attackName}.png')`;
-    document.getElementById('battlefield').appendChild(attackElement);
-
-    setTimeout(() => {
-        attackElement.remove();
-    }, 1000);
-}
-
-// Gérer les boutons du menu de combat
-document.getElementById('attack-button').addEventListener('click', () => {
-    document.getElementById('attack-menu').classList.remove('hidden');
-});
-
-document.getElementById('run-button').addEventListener('click', () => {
-    alert("Vous ne pouvez pas fuir un combat de dresseur !");
-});
-
-// Initialiser le combat lorsque le joueur clique sur "Commencer le Combat" dans `selection.js`
