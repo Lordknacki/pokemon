@@ -29,7 +29,7 @@ button:hover {
 /* Phase de sélection */
 .pokemon-list {
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 Pokémon par ligne */
+    grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
     gap: 20px;
     padding: 20px;
 }
@@ -214,6 +214,7 @@ button:hover {
     color: #333;
 }
 
+/* Conteneur de la barre de HP */
 .hp-bar-container {
     background-color: #ddd;
     border-radius: 10px;
@@ -223,6 +224,7 @@ button:hover {
     overflow: hidden;
 }
 
+/* Barre de HP */
 .hp-bar {
     height: 100%;
     border-radius: 10px;
@@ -279,23 +281,23 @@ button:hover {
 /* RESPONSIVE DESIGN */
 @media screen and (max-width: 1200px) {
     .pokemon-list {
-        grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
+        grid-template-columns: repeat(8, 1fr); /* 8 Pokémon par ligne sur des écrans plus petits */
     }
 }
 
 @media screen and (max-width: 768px) {
     .pokemon-list {
-        grid-template-columns: repeat(3, 1fr); /* 3 Pokémon par ligne */
+        grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
     }
 }
 
 @media screen and (max-width: 480px) {
     .pokemon-list {
-        grid-template-columns: repeat(2, 1fr); /* 2 Pokémon par ligne */
+        grid-template-columns: repeat(3, 1fr); /* 3 Pokémon par ligne */
     }
 
     .pokemon-card img {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
     }
 }
