@@ -7,7 +7,7 @@ let selectedPokemon = [];
 // Récupérer les 150 premiers Pokémon dans l'ordre du Pokédex
 async function fetchPokemonData() {
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=300&offset=0');
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386&offset=0');
         const data = await response.json();
         const pokemonList = data.results;
 
