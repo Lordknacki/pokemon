@@ -33,7 +33,7 @@ function setOpponentPokemon() {
 
             // Ajouter un dresseur au hasard
             document.getElementById('trainer-image').src = 'https://play.pokemonshowdown.com/sprites/trainers/red.png'; // Sprite du dresseur Red
-            document.getElementById('terrain-image').src = 'https://www.spriters-resource.com/resources/sheets/18502.png'; // Terrain de combat Pokémon Platinum
+            document.getElementById('terrain-image').src = 'https://www.spriters-resource.com/ds_dsi/pokemonplatinum/sheet/18502/'; // Terrain de combat Pokémon Platinum
         });
 }
 
