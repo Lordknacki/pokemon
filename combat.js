@@ -1,4 +1,9 @@
 let playerTurn = true;
+let opponentTeam = [];
+let currentOpponentIndex = 0;
+let playerTeam = [...selectedPokemon]; // Cloner l'équipe du joueur
+let currentBattle = 1; // Suivi des combats (8 en total)
+const totalBattles = 8; // Nombre total de combats
 
 // Fonction pour démarrer le combat
 document.getElementById('start-game').addEventListener('click', () => {
@@ -9,10 +14,40 @@ document.getElementById('start-game').addEventListener('click', () => {
 
 // Initialisation du combat
 function initializeBattle() {
-    // Configure les Pokémons et l'interface de combat
     setPlayerPokemon();
-    setOpponentPokemon();
+    setOpponentTeam();
     setupCombatUI();
+}
+
+// Configure l'équipe adverse
+function setOpponentTeam() {
+    opponentTeam = [];
+    for (let i = 0; i < 6; i++) {
+        const opponentPokemonId = Math.floor(Math.random() * 386) + 1;
+        fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
+            .then(response => response.json())
+            .then(pokemon => {
+                pokemon.stats = { attack: 55, defense: 50, speed: 50 }; // Exemple de stats
+                pokemon.attacks = [
+                    { name: 'Lance-Flammes', power: 90, type: 'fire' },
+                    { name: 'Morsure', power: 60, type: 'dark' },
+                    { name: 'Cru-Aile', power: 60, type: 'flying' },
+                    { name: 'Draco-Rage', power: 40, type: 'dragon' }
+                ];
+                opponentTeam.push(pokemon);
+                if (opponentTeam.length === 6) {
+                    setOpponentPokemon();
+                }
+            });
+    }
+}
+
+// Définit le Pokémon adverse actuel
+function setOpponentPokemon() {
+    const opponentPokemon = opponentTeam[currentOpponentIndex];
+    document.getElementById('opponent-pokemon-name').innerText = `${capitalize(opponentPokemon.name)} Lv. 55`;
+    document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
+    document.getElementById('opponent-hp').style.width = '100%'; // HP complet
 }
 
 // Définit le Pokémon du joueur
@@ -32,31 +67,7 @@ function setPlayerPokemon() {
     ];
 }
 
-// Définit le Pokémon adverse
-function setOpponentPokemon() {
-    const opponentPokemonId = Math.floor(Math.random() * 386) + 1;
-    fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
-        .then(response => response.json())
-        .then(opponentPokemon => {
-            document.getElementById('opponent-pokemon-name').innerText = `${capitalize(opponentPokemon.name)} Lv. 55`;
-            document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
-            document.getElementById('opponent-hp').style.width = '100%'; // HP complet au départ
-
-            // Stocker les stats et attaques
-            opponentPokemon.stats = { attack: 55, defense: 50, speed: 50 }; // Exemple de stats
-            opponentPokemon.attacks = [
-                { name: 'Lance-Flammes', power: 90, type: 'fire' },
-                { name: 'Morsure', power: 60, type: 'dark' },
-                { name: 'Cru-Aile', power: 60, type: 'flying' },
-                { name: 'Draco-Rage', power: 40, type: 'dragon' }
-            ];
-
-            // Lance le combat
-            opponentTurn(opponentPokemon);
-        });
-}
-
-// Fonction pour gérer les attaques du joueur
+// Gestion des attaques du joueur
 function showAttackOptions() {
     const attackOptions = document.getElementById('attack-options');
     attackOptions.innerHTML = ''; // Réinitialiser les options d'attaque
@@ -72,17 +83,17 @@ function showAttackOptions() {
     document.getElementById('attack-menu').classList.remove('hidden');
 }
 
-// Fonction de gestion des attaques
+// Gestion des attaques
 function handleAttack(attack) {
     if (!playerTurn) return; // Attendre son tour
 
-    const damage = calculateDamage(attack, playerPokemon, opponentPokemon);
+    const damage = calculateDamage(attack, playerPokemon, opponentTeam[currentOpponentIndex]);
     reduceOpponentHP(damage);
 
     playerTurn = false;
 
     // Après l'attaque du joueur, laisser l'adversaire attaquer
-    setTimeout(() => opponentAttack(opponentPokemon), 2000); 
+    setTimeout(() => opponentAttack(opponentTeam[currentOpponentIndex]), 2000); 
 }
 
 // Attaque de l'adversaire
@@ -100,36 +111,10 @@ function opponentAttack(opponentPokemon) {
 
 // Calcul des dégâts
 function calculateDamage(attack, attacker, defender) {
-    // Formule des dégâts Pokémon officiels
     const baseDamage = (((2 * 50 / 5 + 2) * attack.power * attacker.stats.attack / defender.stats.defense) / 50) + 2;
-
-    // STAB (Same Type Attack Bonus)
     let stab = attack.type === attacker.types[0] ? 1.5 : 1;
-
-    // Faiblesses/résistances (simplifié)
     let typeEffectiveness = getTypeEffectiveness(attack.type, defender.types);
-
-    // Calcul des dégâts finaux
     return Math.floor(baseDamage * stab * typeEffectiveness);
-}
-
-// Calcul de l'efficacité de l'attaque (types)
-function getTypeEffectiveness(attackType, defenderTypes) {
-    // Un tableau avec les correspondances de types (simplifié)
-    const typeChart = {
-        fire: { water: 0.5, grass: 2, fire: 0.5 },
-        water: { fire: 2, electric: 0.5, grass: 0.5 },
-        // Ajoute les autres types ici
-    };
-
-    let effectiveness = 1;
-    defenderTypes.forEach(type => {
-        if (typeChart[attackType] && typeChart[attackType][type]) {
-            effectiveness *= typeChart[attackType][type];
-        }
-    });
-
-    return effectiveness;
 }
 
 // Réduire les HP de l'adversaire
@@ -141,6 +126,21 @@ function reduceOpponentHP(damage) {
 
     if (newHPWidth === 0) {
         alert("L'adversaire est KO !");
+        currentOpponentIndex++;
+
+        if (currentOpponentIndex < opponentTeam.length) {
+            setOpponentPokemon(); // Changer de Pokémon
+        } else {
+            alert("Vous avez vaincu l'équipe adverse !");
+            currentBattle++;
+
+            if (currentBattle > totalBattles) {
+                showVictoryAnimation(); // Victoire de la Ligue Pokémon
+            } else {
+                healPlayerTeam();
+                startNextBattle(); // Passer au combat suivant
+            }
+        }
     }
 }
 
@@ -153,7 +153,59 @@ function reducePlayerHP(damage) {
 
     if (newHPWidth === 0) {
         alert("Ton Pokémon est KO !");
+        checkGameOver();
     }
+}
+
+// Vérifie si tous les Pokémon du joueur sont KO
+function checkGameOver() {
+    const playerHPBar = document.getElementById('player-hp').style.width;
+    if (playerHPBar === '0%') {
+        showGameOverScreen();
+    }
+}
+
+// Afficher l'écran de Game Over
+function showGameOverScreen() {
+    document.getElementById('combat-phase').classList.add('hidden');
+    document.getElementById('game-over-screen').classList.remove('hidden');
+}
+
+// Soigner l'équipe du joueur
+function healPlayerTeam() {
+    playerTeam.forEach(pokemon => {
+        document.getElementById('player-hp').style.width = '100%';
+    });
+}
+
+// Passer au combat suivant
+function startNextBattle() {
+    currentOpponentIndex = 0;
+    setOpponentTeam(); // Générer une nouvelle équipe adverse
+}
+
+// Afficher l'animation de victoire
+function showVictoryAnimation() {
+    document.getElementById('combat-phase').classList.add('hidden');
+    document.getElementById('victory-animation').classList.remove('hidden');
+    const animationURL = 'https://c.tenor.com/ze30msnkRfMAAAAC/pokemon-victory.gif'; // Lien vers une animation de victoire
+    document.getElementById('victory-animation-image').src = animationURL;
+}
+
+// Fonction utilitaire pour calculer l'efficacité de type
+function getTypeEffectiveness(attackType, defenderTypes) {
+    const typeChart = {
+        fire: { water: 0.5, grass: 2, fire: 0.5 },
+        water: { fire: 2, electric: 0.5, grass: 0.5 },
+        // Ajoute les autres types ici
+    };
+    let effectiveness = 1;
+    defenderTypes.forEach(type => {
+        if (typeChart[attackType] && typeChart[attackType][type]) {
+            effectiveness *= typeChart[attackType][type];
+        }
+    });
+    return effectiveness;
 }
 
 // Fonction utilitaire pour capitaliser les noms de Pokémon
