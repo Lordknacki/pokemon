@@ -2,42 +2,51 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Pokémon Battle Stadium</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Sélection et Combat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <!-- Phase de sélection -->
     <section id="selection-phase">
-        <!-- ... (contenu de la phase de sélection existante) ... -->
+        <header>
+            <h1>Choisis ton Équipe Pokémon</h1>
+        </header>
+        <div id="team-container">
+            <h2>Ton équipe Pokémon (Max 6) :</h2>
+            <div id="team" class="team"></div>
+        </div>
+        <div id="pokemon-list" class="pokemon-list"></div>
+        <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
     </section>
 
     <!-- Phase de combat -->
     <section id="combat-phase" class="hidden">
         <header>
-            <h1 id="battle-header">Combat Pokémon</h1>
+            <h1>Combat Pokémon</h1>
         </header>
         <div id="battlefield">
-            <img id="terrain-image" src="" alt="Terrain de combat">
+            <img id="terrain-image" src="images/terrain-grass.png" alt="Terrain de combat">
             <div id="opponent-trainer">
-                <img id="trainer-image" src="" alt="Dresseur">
-                <h2 id="trainer-name"></h2>
+                <img id="trainer-image" src="images/trainer1.png" alt="Dresseur">
+                <h2 id="trainer-name">Dresseur</h2>
             </div>
             <div id="player-pokemon" class="pokemon-side">
-                <img id="player-pokemon-sprite" src="" alt="Votre Pokémon" class="pokemon-sprite">
+                <img id="player-pokemon-sprite" src="images/player-pokemon.png" alt="Pokémon du Joueur" class="pokemon-sprite">
                 <div class="pokemon-info">
-                    <span id="player-pokemon-name" class="pokemon-name-level"></span>
+                    <span id="player-pokemon-name" class="pokemon-name-level">Pikachu Lv. 50</span>
                     <div class="hp-bar-container">
-                        <div id="player-hp" class="hp-bar hp-green"></div>
+                        <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
                     </div>
                 </div>
             </div>
             <div id="opponent-pokemon" class="pokemon-side">
-                <img id="opponent-pokemon-sprite" src="" alt="Pokémon Adverse" class="pokemon-sprite">
+                <img id="opponent-pokemon-sprite" src="images/opponent-pokemon.png" alt="Pokémon Adverse" class="pokemon-sprite">
                 <div class="pokemon-info">
-                    <span id="opponent-pokemon-name" class="pokemon-name-level"></span>
+                    <span id="opponent-pokemon-name" class="pokemon-name-level">Dracaufeu Lv. 55</span>
                     <div class="hp-bar-container">
-                        <div id="opponent-hp" class="hp-bar hp-green"></div>
+                        <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
                     </div>
                 </div>
             </div>
@@ -63,7 +72,9 @@
 
     <!-- Fenêtre modale pour les statistiques -->
     <div id="stats-modal" class="hidden">
-        <!-- ... (contenu de la fenêtre modale existante) ... -->
+        <div class="pokemon-name"></div>
+        <div class="pokemon-types"></div>
+        <div class="pokemon-stats"></div>
     </div>
 
     <!-- Inclusion des scripts -->
