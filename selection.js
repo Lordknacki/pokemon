@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let selectedPokemon = [];
 
-// Récupérer les 150 premiers Pokémon dans l'ordre du Pokédex
+// Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex National
 async function fetchPokemonData() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386&offset=0');
