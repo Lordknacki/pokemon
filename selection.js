@@ -4,16 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let selectedPokemon = [];
 
-// Récupérer les 150 premiers Pokémon
+// Récupérer les 150 premiers Pokémon dans l'ordre du Pokédex
 async function fetchPokemonData() {
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=300&offset=0');
         const data = await response.json();
         const pokemonList = data.results;
 
-        pokemonList.forEach((pokemon, index) => {
-            fetchPokemonDetails(index + 1);
-        });
+        // S'assurer que les Pokémon sont traités dans l'ordre
+        for (let i = 1; i <= pokemonList.length; i++) {
+            await fetchPokemonDetails(i);
+        }
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
@@ -56,26 +57,21 @@ function togglePokemonSelection(pokemon, card) {
     const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
 
     if (isSelected) {
-        // Si le Pokémon est déjà sélectionné, le retirer de l'équipe
         selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-        card.classList.remove('selected'); // Retirer le style de sélection
+        card.classList.remove('selected');
     } else if (selectedPokemon.length < 6) {
-        // Ajouter le Pokémon s'il n'est pas déjà sélectionné et que l'équipe a moins de 6 Pokémon
         selectedPokemon.push(pokemon);
-        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
+        card.classList.add('selected');
     }
 
-    // Mettre à jour l'affichage de l'équipe
     updateTeamDisplay();
-
-    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
     document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
 }
 
-// Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
+// Mettre à jour l'affichage de l'équipe
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; 
+    teamContainer.innerHTML = '';
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
@@ -90,9 +86,8 @@ function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById('stats-modal');
     statsModal.querySelector('.pokemon-name').innerText = capitalize(pokemon.name);
 
-    // Exemple d'affichage des types et statistiques
     const typesContainer = statsModal.querySelector('.pokemon-types');
-    typesContainer.innerHTML = ''; // Réinitialiser l'affichage des types
+    typesContainer.innerHTML = '';
     pokemon.types.forEach(type => {
         const typeElement = document.createElement('div');
         typeElement.classList.add('pokemon-type', `type-${type.type.name}`);
@@ -108,9 +103,8 @@ function showPokemonStats(pokemon, card) {
         <p>Speed: ${pokemon.stats[5].base_stat}</p>
     `;
 
-    // Positionner la fenêtre modale juste au-dessus du Pokémon
     const rect = card.getBoundingClientRect();
-    statsModal.style.top = `${rect.top - 80}px`; // Positionner juste au-dessus
+    statsModal.style.top = `${rect.top - 80}px`;
     statsModal.style.left = `${rect.left}px`;
     statsModal.classList.add('show');
 }
