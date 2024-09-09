@@ -21,19 +21,23 @@
         <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
     </section>
 
-    <!-- Phase de combat (initialement masquée) -->
+    <!-- Phase de combat -->
     <section id="combat-phase" class="hidden">
         <header>
             <h1>Combat Pokémon</h1>
         </header>
         <div id="battlefield">
-            <img id="terrain-image" src="images/terrain-grass.png" alt="Terrain de combat">
+            <!-- Terrains des dresseurs -->
+            <img id="terrain-image" src="https://img.pokemondb.net/artwork/large/route-1.png" alt="Terrain de combat">
             <div id="opponent-trainer">
-                <img id="trainer-image" src="images/trainer1.png" alt="Dresseur">
+                <!-- Dresseurs -->
+                <img id="trainer-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/red.png" alt="Dresseur">
                 <h2 id="trainer-name">Dresseur</h2>
             </div>
+
+            <!-- Pokémon du joueur -->
             <div id="player-pokemon" class="pokemon-side">
-                <img id="player-pokemon-sprite" src="images/player-pokemon.png" alt="Pokémon du Joueur" class="pokemon-sprite">
+                <img id="player-pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pokémon du Joueur" class="pokemon-sprite">
                 <div class="pokemon-info">
                     <span id="player-pokemon-name" class="pokemon-name-level">Pikachu Lv. 50</span>
                     <div class="hp-bar-container">
@@ -41,8 +45,10 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pokémon adversaire -->
             <div id="opponent-pokemon" class="pokemon-side">
-                <img id="opponent-pokemon-sprite" src="images/opponent-pokemon.png" alt="Pokémon Adverse" class="pokemon-sprite">
+                <img id="opponent-pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Pokémon Adverse" class="pokemon-sprite">
                 <div class="pokemon-info">
                     <span id="opponent-pokemon-name" class="pokemon-name-level">Dracaufeu Lv. 55</span>
                     <div class="hp-bar-container">
