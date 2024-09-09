@@ -2,47 +2,42 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Sélection et Combat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Phase de sélection (visible au départ) -->
+    <!-- Phase de sélection -->
     <section id="selection-phase">
-        <header>
-            <h1>Choisis ton Équipe Pokémon</h1>
-        </header>
-        <div id="team-container">
-            <h2>Ton équipe Pokémon (Max 6) :</h2>
-            <div id="team" class="team"></div>
-        </div>
-        <div id="pokemon-list" class="pokemon-list"></div>
-        <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+        <!-- ... (contenu de la phase de sélection existante) ... -->
     </section>
 
-    <!-- Phase de combat (complètement masquée au départ) -->
+    <!-- Phase de combat -->
     <section id="combat-phase" class="hidden">
         <header>
-            <h1>Combat Pokémon</h1>
+            <h1 id="battle-header">Combat Pokémon</h1>
         </header>
         <div id="battlefield">
+            <img id="terrain-image" src="" alt="Terrain de combat">
+            <div id="opponent-trainer">
+                <img id="trainer-image" src="" alt="Dresseur">
+                <h2 id="trainer-name"></h2>
+            </div>
             <div id="player-pokemon" class="pokemon-side">
-                <img src="player-pokemon-sprite.png" alt="Player's Pokémon" class="pokemon-sprite">
+                <img id="player-pokemon-sprite" src="" alt="Votre Pokémon" class="pokemon-sprite">
                 <div class="pokemon-info">
-                    <span class="pokemon-name-level">Pikachu Lv. 50</span>
+                    <span id="player-pokemon-name" class="pokemon-name-level"></span>
                     <div class="hp-bar-container">
-                        <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                        <div id="player-hp" class="hp-bar hp-green"></div>
                     </div>
                 </div>
             </div>
-
             <div id="opponent-pokemon" class="pokemon-side">
-                <img src="opponent-pokemon-sprite.png" alt="Opponent's Pokémon" class="pokemon-sprite">
+                <img id="opponent-pokemon-sprite" src="" alt="Pokémon Adverse" class="pokemon-sprite">
                 <div class="pokemon-info">
-                    <span class="pokemon-name-level">Dracaufeu Lv. 55</span>
+                    <span id="opponent-pokemon-name" class="pokemon-name-level"></span>
                     <div class="hp-bar-container">
-                        <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                        <div id="opponent-hp" class="hp-bar hp-green"></div>
                     </div>
                 </div>
             </div>
@@ -56,14 +51,19 @@
                 <button id="bag-button">Sac</button>
                 <button id="run-button">Fuir</button>
             </div>
+            <!-- Menu des attaques -->
+            <div id="attack-menu" class="hidden">
+                <h3>Choisissez une attaque :</h3>
+                <div id="attack-options">
+                    <!-- Les boutons des attaques seront générés dynamiquement -->
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Fenêtre modale pour les statistiques -->
     <div id="stats-modal" class="hidden">
-        <div class="pokemon-name"></div>
-        <div class="pokemon-types"></div>
-        <div class="pokemon-stats"></div>
+        <!-- ... (contenu de la fenêtre modale existante) ... -->
     </div>
 
     <!-- Inclusion des scripts -->
