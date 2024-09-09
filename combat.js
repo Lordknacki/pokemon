@@ -1,3 +1,5 @@
+let playerTurn = true;
+
 // Fonction pour démarrer le combat
 document.getElementById('start-game').addEventListener('click', () => {
     document.getElementById('selection-phase').classList.add('hidden');
@@ -19,11 +21,20 @@ function setPlayerPokemon() {
     document.getElementById('player-pokemon-name').innerText = `${capitalize(playerPokemon.name)} Lv. 50`;
     document.getElementById('player-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${playerPokemon.id}.png`;
     document.getElementById('player-hp').style.width = '100%'; // HP complet au départ
+
+    // Stocker les statistiques et attaques
+    playerPokemon.stats = { attack: 50, defense: 50, speed: 60 }; // Exemple de stats
+    playerPokemon.attacks = [
+        { name: 'Éclair', power: 40, type: 'electric' },
+        { name: 'Queue de Fer', power: 100, type: 'steel' },
+        { name: 'Vive-Attaque', power: 40, type: 'normal' },
+        { name: 'Tonnerre', power: 90, type: 'electric' }
+    ];
 }
 
-// Définit le Pokémon adverse (aléatoire) et dresseur
+// Définit le Pokémon adverse
 function setOpponentPokemon() {
-    const opponentPokemonId = Math.floor(Math.random() * 150) + 1; // Pokémon aléatoire entre 1 et 150
+    const opponentPokemonId = Math.floor(Math.random() * 386) + 1;
     fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
         .then(response => response.json())
         .then(opponentPokemon => {
@@ -31,70 +42,117 @@ function setOpponentPokemon() {
             document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
             document.getElementById('opponent-hp').style.width = '100%'; // HP complet au départ
 
-            // Ajouter un dresseur au hasard
-            document.getElementById('trainer-image').src = 'https://play.pokemonshowdown.com/sprites/trainers/red.png'; // Sprite du dresseur Red
-            document.getElementById('terrain-image').src = 'https://www.deviantart.com/kwharever/art/Battle-Backgrounds-v-2-FREE-TO-USE-768031287'; // Terrain de combat
+            // Stocker les stats et attaques
+            opponentPokemon.stats = { attack: 55, defense: 50, speed: 50 }; // Exemple de stats
+            opponentPokemon.attacks = [
+                { name: 'Lance-Flammes', power: 90, type: 'fire' },
+                { name: 'Morsure', power: 60, type: 'dark' },
+                { name: 'Cru-Aile', power: 60, type: 'flying' },
+                { name: 'Draco-Rage', power: 40, type: 'dragon' }
+            ];
+
+            // Lance le combat
+            opponentTurn(opponentPokemon);
         });
 }
 
-// Configure l'interface de combat
-function setupCombatUI() {
-    document.getElementById('attack-button').addEventListener('click', () => {
-        showAttackOptions();
-    });
-
-    document.getElementById('pokemon-button').addEventListener('click', () => {
-        alert("Changer de Pokémon");
-    });
-
-    document.getElementById('bag-button').addEventListener('click', () => {
-        alert("Ouvrir le sac");
-    });
-
-    document.getElementById('run-button').addEventListener('click', () => {
-        alert("Fuite impossible !");
-    });
-}
-
-// Affiche les options d'attaque
+// Fonction pour gérer les attaques du joueur
 function showAttackOptions() {
-    document.getElementById('combat-options').classList.add('hidden');
-    document.getElementById('attack-menu').classList.remove('hidden');
-
     const attackOptions = document.getElementById('attack-options');
     attackOptions.innerHTML = ''; // Réinitialiser les options d'attaque
 
-    const attacks = ['Éclair', 'Queue de Fer', 'Vive-Attaque', 'Tonnerre']; // Exemples d'attaques
-    attacks.forEach(attack => {
+    playerPokemon.attacks.forEach(attack => {
         const button = document.createElement('button');
-        button.innerText = attack;
+        button.innerText = attack.name;
         button.addEventListener('click', () => handleAttack(attack));
         attackOptions.appendChild(button);
     });
+
+    document.getElementById('combat-options').classList.add('hidden');
+    document.getElementById('attack-menu').classList.remove('hidden');
 }
 
-// Gestion des attaques
+// Fonction de gestion des attaques
 function handleAttack(attack) {
-    alert(`Tu as utilisé ${attack} !`);
+    if (!playerTurn) return; // Attendre son tour
 
-    // Exemple de calcul des dégâts
-    const damage = Math.floor(Math.random() * 20) + 10;
+    const damage = calculateDamage(attack, playerPokemon, opponentPokemon);
     reduceOpponentHP(damage);
 
-    // Après l'attaque, revenir au menu principal de combat
+    playerTurn = false;
+
+    // Après l'attaque du joueur, laisser l'adversaire attaquer
+    setTimeout(() => opponentAttack(opponentPokemon), 2000); 
+}
+
+// Attaque de l'adversaire
+function opponentAttack(opponentPokemon) {
+    const attack = opponentPokemon.attacks[Math.floor(Math.random() * opponentPokemon.attacks.length)];
+    alert(`L'adversaire utilise ${attack.name} !`);
+
+    const damage = calculateDamage(attack, opponentPokemon, playerPokemon);
+    reducePlayerHP(damage);
+
+    playerTurn = true;
     document.getElementById('combat-options').classList.remove('hidden');
     document.getElementById('attack-menu').classList.add('hidden');
 }
 
-// Réduire les HP du Pokémon adverse
+// Calcul des dégâts
+function calculateDamage(attack, attacker, defender) {
+    // Formule des dégâts Pokémon officiels
+    const baseDamage = (((2 * 50 / 5 + 2) * attack.power * attacker.stats.attack / defender.stats.defense) / 50) + 2;
+
+    // STAB (Same Type Attack Bonus)
+    let stab = attack.type === attacker.types[0] ? 1.5 : 1;
+
+    // Faiblesses/résistances (simplifié)
+    let typeEffectiveness = getTypeEffectiveness(attack.type, defender.types);
+
+    // Calcul des dégâts finaux
+    return Math.floor(baseDamage * stab * typeEffectiveness);
+}
+
+// Calcul de l'efficacité de l'attaque (types)
+function getTypeEffectiveness(attackType, defenderTypes) {
+    // Un tableau avec les correspondances de types (simplifié)
+    const typeChart = {
+        fire: { water: 0.5, grass: 2, fire: 0.5 },
+        water: { fire: 2, electric: 0.5, grass: 0.5 },
+        // Ajoute les autres types ici
+    };
+
+    let effectiveness = 1;
+    defenderTypes.forEach(type => {
+        if (typeChart[attackType] && typeChart[attackType][type]) {
+            effectiveness *= typeChart[attackType][type];
+        }
+    });
+
+    return effectiveness;
+}
+
+// Réduire les HP de l'adversaire
 function reduceOpponentHP(damage) {
     const opponentHPBar = document.getElementById('opponent-hp');
     let currentHPWidth = parseInt(opponentHPBar.style.width);
-    let newHPWidth = Math.max(currentHPWidth - damage, 0); // Ne pas aller en dessous de 0
+    let newHPWidth = Math.max(currentHPWidth - damage, 0);
     opponentHPBar.style.width = `${newHPWidth}%`;
 
     if (newHPWidth === 0) {
         alert("L'adversaire est KO !");
+    }
+}
+
+// Réduire les HP du joueur
+function reducePlayerHP(damage) {
+    const playerHPBar = document.getElementById('player-hp');
+    let currentHPWidth = parseInt(playerHPBar.style.width);
+    let newHPWidth = Math.max(currentHPWidth - damage, 0);
+    playerHPBar.style.width = `${newHPWidth}%`;
+
+    if (newHPWidth === 0) {
+        alert("Ton Pokémon est KO !");
     }
 }
 
