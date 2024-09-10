@@ -81,72 +81,13 @@ button:hover {
     background-color: #f00;
 }
 
-/* Fenêtre modale pour les statistiques */
-#stats-modal {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    display: none;
-    z-index: 1000;
-    width: 200px;
-    transition: opacity 0.3s ease-in-out;
-    pointer-events: none;
-}
-
-#stats-modal.show {
-    display: block;
-    opacity: 1;
-}
-
-#stats-modal .pokemon-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-#stats-modal .pokemon-types {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
-}
-
-#stats-modal .pokemon-stats p {
-    margin: 5px 0;
-}
-
-.pokemon-type {
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-}
-
-/* Types de Pokémon avec couleurs */
-.type-fire { background-color: #F08030; }
-.type-water { background-color: #6890F0; }
-.type-grass { background-color: #78C850; }
-.type-electric { background-color: #F8D030; }
-.type-ice { background-color: #98D8D8; }
-.type-fighting { background-color: #C03028; }
-.type-poison { background-color: #A040A0; }
-.type-ground { background-color: #E0C068; }
-.type-flying { background-color: #A890F0; }
-.type-psychic { background-color: #F85888; }
-.type-bug { background-color: #A8B820; }
-.type-rock { background-color: #B8A038; }
-.type-ghost { background-color: #705898; }
-.type-dragon { background-color: #7038F8; }
-.type-dark { background-color: #705848; }
-.type-steel { background-color: #B8B8D0; }
-.type-fairy { background-color: #EE99AC; }
-
-/* PHASE DE COMBAT */
+/* Phase de combat */
 #combat-phase {
+    display: none;
     position: relative;
     width: 100%;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: lightblue;
 }
 
 #battlefield {
@@ -157,74 +98,85 @@ button:hover {
     overflow: hidden;
 }
 
-#terrain-image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-#opponent-trainer {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    text-align: center;
+#player-pokemon-sprite, #opponent-pokemon-sprite {
+    width: 150px;
+    height: auto;
 }
 
 #trainer-image {
-    width: 100px;
+    width: 150px;
 }
 
-#trainer-name {
-    font-size: 1.5rem;
-    color: #333;
-}
-
-.pokemon-side {
-    position: absolute;
-    display: flex;
+/* Ecran de Game Over */
+#game-over-screen {
+    display: none;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
 }
 
-#player-pokemon {
-    bottom: 10px;
-    left: 10px;
+#game-over-screen img {
+    width: 300px;
+    height: auto;
 }
 
-#opponent-pokemon {
-    top: 100px;
-    right: 20px;
+#game-over-screen button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: #ff6f61;
+    border: none;
+    cursor: pointer;
 }
 
-.pokemon-sprite {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
+#game-over-screen button:hover {
+    background-color: #ff4b3f;
 }
 
-.pokemon-info {
-    margin-top: 10px;
-    width: 150px;
+/* Animation de victoire de la Ligue Pokémon */
+#victory-animation {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
 }
 
-.pokemon-name-level {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
+#victory-animation img {
+    width: 50%;
+    height: auto;
 }
 
-/* Conteneur de la barre de HP */
+#victory-animation button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: #4CAF50;
+    border: none;
+    cursor: pointer;
+}
+
+#victory-animation button:hover {
+    background-color: #45a049;
+}
+
+/* Barre de HP pour les Pokémon */
 .hp-bar-container {
     background-color: #ddd;
     border-radius: 10px;
-    width: 100%;
+    width: 150px;
     height: 15px;
     margin-top: 5px;
     overflow: hidden;
 }
 
-/* Barre de HP */
 .hp-bar {
     height: 100%;
     border-radius: 10px;
@@ -278,26 +230,13 @@ button:hover {
     display: none;
 }
 
-/* RESPONSIVE DESIGN */
-@media screen and (max-width: 1200px) {
-    .pokemon-list {
-        grid-template-columns: repeat(8, 1fr); /* 8 Pokémon par ligne sur des écrans plus petits */
-    }
-}
-
+/* Responsive Design */
 @media screen and (max-width: 768px) {
-    .pokemon-list {
-        grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .pokemon-list {
-        grid-template-columns: repeat(3, 1fr); /* 3 Pokémon par ligne */
+    h1 {
+        font-size: 2rem;
     }
 
-    .pokemon-card img {
-        width: 80px;
-        height: 80px;
+    #combat-options button, #attack-options button {
+        font-size: 1rem;
     }
 }
