@@ -4,17 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let selectedPokemon = [];
 
-// Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex National
+// Récupérer les 386 premiers Pokémon
 async function fetchPokemonData() {
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386&offset=0');
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386');
         const data = await response.json();
         const pokemonList = data.results;
 
-        // S'assurer que les Pokémon sont traités dans l'ordre
-        for (let i = 1; i <= pokemonList.length; i++) {
-            await fetchPokemonDetails(i);
-        }
+        pokemonList.forEach((pokemon, index) => {
+            fetchPokemonDetails(index + 1);
+        });
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
@@ -38,18 +37,48 @@ function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
 
+    // Utiliser l'URL pour les artworks officiels pour la sélection
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
 
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
-        <h3>${capitalize(pokemon.name)}</h3>
+        <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
-    card.addEventListener('mouseover', () => showPokemonStats(pokemon, card));
-    card.addEventListener('mouseout', hidePokemonStats);
+    // Ajout des événements pour afficher les statistiques lors du survol
+    card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
+    card.addEventListener('mouseleave', () => hidePokemonStats());
 
+    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
     return card;
+}
+
+// Afficher les statistiques d'un Pokémon lors du survol
+function showPokemonStats(pokemon, card) {
+    const statsModal = document.getElementById("stats-modal");
+    statsModal.innerHTML = `
+        <div class="pokemon-name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
+        <div class="pokemon-types">
+            ${pokemon.types.map(type => `<span class="pokemon-type type-${type.type.name}">${type.type.name.charAt(0).toUpperCase() + type.type.name.slice(1)}</span>`).join('')}
+        </div>
+        <div class="pokemon-stats">
+            <p>HP: ${pokemon.stats[0].base_stat}</p>
+            <p>Attack: ${pokemon.stats[1].base_stat}</p>
+            <p>Defense: ${pokemon.stats[2].base_stat}</p>
+            <p>Speed: ${pokemon.stats[5].base_stat}</p>
+        </div>
+    `;
+
+    statsModal.style.display = "block";
+    const rect = card.getBoundingClientRect();
+    statsModal.style.top = `${rect.top - statsModal.offsetHeight - 10}px`;
+    statsModal.style.left = `${rect.left}px`;
+}
+
+// Masquer les statistiques du Pokémon lors du retrait de la souris
+function hidePokemonStats() {
+    const statsModal = document.getElementById("stats-modal");
+    statsModal.style.display = "none";
 }
 
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
@@ -58,20 +87,23 @@ function togglePokemonSelection(pokemon, card) {
 
     if (isSelected) {
         selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-        card.classList.remove('selected');
+        card.classList.remove('selected'); // Retirer le style de sélection
     } else if (selectedPokemon.length < 6) {
         selectedPokemon.push(pokemon);
-        card.classList.add('selected');
+        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
     }
 
+    // Mettre à jour l'affichage de l'équipe
     updateTeamDisplay();
-    document.getElementById('start-game').disabled = selectedPokemon.length !== 6;
+
+    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
+    toggleStartButton();
 }
 
-// Mettre à jour l'affichage de l'équipe
+// Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = '';
+    teamContainer.innerHTML = ''; 
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
@@ -81,41 +113,19 @@ function updateTeamDisplay() {
     });
 }
 
-// Affiche les statistiques du Pokémon au survol
-function showPokemonStats(pokemon, card) {
-    const statsModal = document.getElementById('stats-modal');
-    statsModal.querySelector('.pokemon-name').innerText = capitalize(pokemon.name);
-
-    const typesContainer = statsModal.querySelector('.pokemon-types');
-    typesContainer.innerHTML = '';
-    pokemon.types.forEach(type => {
-        const typeElement = document.createElement('div');
-        typeElement.classList.add('pokemon-type', `type-${type.type.name}`);
-        typeElement.innerText = capitalize(type.type.name);
-        typesContainer.appendChild(typeElement);
-    });
-
-    const statsContainer = statsModal.querySelector('.pokemon-stats');
-    statsContainer.innerHTML = `
-        <p>HP: ${pokemon.stats[0].base_stat}</p>
-        <p>Attack: ${pokemon.stats[1].base_stat}</p>
-        <p>Defense: ${pokemon.stats[2].base_stat}</p>
-        <p>Speed: ${pokemon.stats[5].base_stat}</p>
-    `;
-
-    const rect = card.getBoundingClientRect();
-    statsModal.style.top = `${rect.top - 80}px`;
-    statsModal.style.left = `${rect.left}px`;
-    statsModal.classList.add('show');
+// Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés
+function toggleStartButton() {
+    const startButton = document.getElementById('start-game');
+    startButton.disabled = selectedPokemon.length !== 6;
 }
 
-// Masquer la fenêtre modale des statistiques
-function hidePokemonStats() {
-    const statsModal = document.getElementById('stats-modal');
-    statsModal.classList.remove('show');
-}
-
-// Fonction utilitaire pour capitaliser les noms
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+// Démarrer le combat lorsque l'équipe est prête
+document.getElementById('start-game').addEventListener('click', () => {
+    if (selectedPokemon.length === 6) {
+        document.getElementById('selection-phase').classList.add('hidden');  // Cache la phase de sélection
+        document.getElementById('combat-phase').classList.remove('hidden');  // Affiche la phase de combat
+        initializeCombat();  // Démarre le combat
+    } else {
+        alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
+    }
+});
