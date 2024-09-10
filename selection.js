@@ -11,15 +11,15 @@ async function fetchPokemonData() {
         const data = await response.json();
         const pokemonList = data.results;
 
-        // Extraire l'ID des Pokémon à partir de leur URL et les trier dans l'ordre du Pokédex
+        // Créer une liste des Pokémon avec leur ID et nom, extraire l'ID de l'URL
         const sortedPokemonList = pokemonList.map(pokemon => {
-            const id = pokemon.url.split("/")[6]; // Extraire l'ID de l'URL
-            return { name: pokemon.name, id: parseInt(id) }; // Retourner un objet avec le nom et l'ID
-        }).sort((a, b) => a.id - b.id); // Trier par l'ID dans l'ordre croissant
+            const id = pokemon.url.split("/").filter(Boolean).pop(); // Extraire l'ID depuis l'URL
+            return { name: pokemon.name, id: parseInt(id) };
+        }).sort((a, b) => a.id - b.id); // Trier par ID dans l'ordre croissant
 
-        // Pour chaque Pokémon trié, récupérer les détails
+        // Charger les Pokémon triés
         sortedPokemonList.forEach(pokemon => {
-            fetchPokemonDetails(pokemon.id);
+            fetchPokemonDetails(pokemon.id); // Charger chaque Pokémon par son ID
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
