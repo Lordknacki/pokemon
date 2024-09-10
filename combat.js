@@ -4,40 +4,41 @@ let currentTurn = "player"; // Le joueur commence toujours
 
 // Initialisation du combat
 function initializeCombat() {
-    playerPokemon = selectedPokemon[0]; // Le premier Pokémon sélectionné par le joueur
+    playerPokemon = selectedPokemon[0]; // Le premier Pokémon de l'équipe sélectionnée par le joueur
     opponentPokemon = generateOpponentPokemon(); // Générer un Pokémon adverse aléatoire
 
-    // Mise à jour des informations de combat (nom, niveau, etc.)
+    // Mise à jour des informations des Pokémon (nom, niveau, etc.)
     document.getElementById("player-pokemon-name").innerText = `${playerPokemon.name.charAt(0).toUpperCase() + playerPokemon.name.slice(1)} Lv. ${playerPokemon.level}`;
     document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name} Lv. ${opponentPokemon.level}`;
 
+    // Mettre à jour les barres de HP
     updateHpBars();
 
-    // Gestion des événements pour les boutons
+    // Gérer les événements pour les actions de combat
     document.getElementById("attack-button").addEventListener("click", showAttackOptions);
     document.getElementById("pokemon-button").addEventListener("click", changePokemon);
     document.getElementById("run-button").addEventListener("click", runAway);
 }
 
-// Générer un Pokémon adverse aléatoire avec des attaques spécifiques
-function generateOpponentPokemon() {
-    const opponentPokemonList = [
-        { name: "Dracaufeu", level: 50, hp: 150, maxHp: 150, type: "Fire", moves: [
-            { name: "Flamethrower", power: 90, type: "Fire" },
-            { name: "Dragon Claw", power: 80, type: "Dragon" },
-            { name: "Fly", power: 70, type: "Flying" },
-            { name: "Slash", power: 70, type: "Normal" }
-        ] },
-        { name: "Tortank", level: 50, hp: 160, maxHp: 160, type: "Water", moves: [
-            { name: "Hydro Pump", power: 110, type: "Water" },
-            { name: "Ice Beam", power: 90, type: "Ice" },
-            { name: "Bite", power: 60, type: "Dark" },
-            { name: "Surf", power: 90, type: "Water" }
-        ] }
-        // Ajouter d'autres Pokémon adversaires ici
-    ];
+// Générer un Pokémon adverse aléatoire à partir de PokéAPI
+async function generateOpponentPokemon() {
+    const randomId = Math.floor(Math.random() * 386) + 1; // Générer un ID aléatoire entre 1 et 386 (Première Génération)
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
+    const pokemon = await response.json();
 
-    return opponentPokemonList[Math.floor(Math.random() * opponentPokemonList.length)];
+    // Retourner un Pokémon adverse avec des statistiques et des attaques
+    return {
+        name: pokemon.name,
+        level: Math.floor(Math.random() * 50) + 1, // Générer un niveau aléatoire entre 1 et 50
+        hp: pokemon.stats[0].base_stat, // Utiliser la statistique de HP de l'API
+        maxHp: pokemon.stats[0].base_stat,
+        type: pokemon.types[0].type.name, // Prendre le premier type
+        moves: pokemon.moves.slice(0, 4).map(move => ({
+            name: move.move.name,
+            power: Math.floor(Math.random() * 100) + 50, // Générer une puissance aléatoire
+            type: pokemon.types[0].type.name // Associer au type du Pokémon
+        }))
+    };
 }
 
 // Afficher les options d'attaque spécifiques du joueur
@@ -168,5 +169,5 @@ function endBattle(winner) {
     }
 
     // Cacher la phase de combat
-    document.getElementById("combat-phase").classList.add("hidden");
+    document.getElementById("combat-phase").classList.add('hidden');
 }
