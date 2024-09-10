@@ -1,173 +1,111 @@
-let playerPokemon;
-let opponentPokemon;
-let currentTurn = "player"; // Le joueur commence toujours
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Sélection et Combat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-// Initialisation du combat
-function initializeCombat() {
-    playerPokemon = selectedPokemon[0]; // Le premier Pokémon de l'équipe du joueur
-    opponentPokemon = generateOpponentPokemon(); // Générer un Pokémon adverse aléatoire
+    <!-- Phase de sélection des Pokémon -->
+    <section id="selection-phase">
+        <header>
+            <h1>Choisis ton Équipe Pokémon</h1>
+        </header>
+        <div id="team-container">
+            <h2>Ton équipe Pokémon (Max 6) :</h2>
+            <div id="team" class="team"></div>
+        </div>
+        <div id="pokemon-list" class="pokemon-list"></div>
+        <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
 
-    // Mise à jour des informations des Pokémon (nom, niveau, etc.)
-    document.getElementById("player-pokemon-name").innerText = `${playerPokemon.name.charAt(0).toUpperCase() + playerPokemon.name.slice(1)} Lv. ${playerPokemon.level}`;
-    document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name} Lv. ${opponentPokemon.level}`;
+        <!-- Fenêtre modale pour les statistiques des Pokémon lors du survol -->
+        <div id="stats-modal" class="hidden">
+            <div class="pokemon-name"></div>
+            <div class="pokemon-types"></div>
+            <div class="pokemon-stats"></div>
+        </div>
+    </section>
 
-    // Mise à jour des barres de HP
-    updateHpBars();
+    <!-- Phase de combat -->
+    <section id="combat-phase" class="hidden">
+        <header>
+            <h1>Combat Pokémon</h1>
+        </header>
+        <div id="battlefield">
+            <!-- Remplacement de l'image route-1.png par un lien fonctionnel -->
+            <img id="terrain-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Terrain de combat">
+            
+            <!-- Dresseur adverse avec sprite fonctionnel -->
+            <div id="opponent-trainer">
+                <img id="trainer-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/red.png" alt="Dresseur">
+                <h2 id="trainer-name">Dresseur</h2>
+            </div>
 
-    // Gérer les événements pour les actions de combat
-    document.getElementById("attack-button").addEventListener("click", showAttackOptions);
-    document.getElementById("pokemon-button").addEventListener("click", changePokemon);
-    document.getElementById("run-button").addEventListener("click", runAway);
-}
+            <!-- Pokémon du joueur -->
+            <div id="player-pokemon" class="pokemon-side">
+                <img id="player-pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pokémon du Joueur" class="pokemon-sprite">
+                <div class="pokemon-info">
+                    <span id="player-pokemon-name" class="pokemon-name-level">Pikachu Lv. 50</span>
+                    <div class="hp-bar-container">
+                        <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
 
-// Générer un Pokémon adverse aléatoire
-async function generateOpponentPokemon() {
-    const randomId = Math.floor(Math.random() * 386) + 1; // Générer un ID aléatoire entre 1 et 386 (Première Génération)
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
-    const pokemon = await response.json();
+            <!-- Pokémon adversaire -->
+            <div id="opponent-pokemon" class="pokemon-side">
+                <img id="opponent-pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Pokémon Adverse" class="pokemon-sprite">
+                <div class="pokemon-info">
+                    <span id="opponent-pokemon-name" class="pokemon-name-level">Dracaufeu Lv. 55</span>
+                    <div class="hp-bar-container">
+                        <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // Retourner un Pokémon adverse avec des statistiques et des attaques
-    return {
-        name: pokemon.name,
-        level: Math.floor(Math.random() * 50) + 1, // Générer un niveau aléatoire entre 1 et 50
-        hp: pokemon.stats[0].base_stat, // Utiliser la statistique de HP de l'API
-        maxHp: pokemon.stats[0].base_stat,
-        type: pokemon.types[0].type.name, // Prendre le premier type
-        moves: pokemon.moves.slice(0, 4).map(move => ({
-            name: move.move.name,
-            power: Math.floor(Math.random() * 100) + 50, // Générer une puissance aléatoire
-            type: pokemon.types[0].type.name // Associer au type du Pokémon
-        }))
-    };
-}
+        <!-- Menu de combat -->
+        <div id="combat-menu">
+            <div id="combat-options">
+                <button id="attack-button">Combattre</button>
+                <button id="pokemon-button">Pokémon</button>
+                <button id="bag-button">Sac</button>
+                <button id="run-button">Fuir</button>
+            </div>
+            <!-- Menu des attaques -->
+            <div id="attack-menu" class="hidden">
+                <h3>Choisissez une attaque :</h3>
+                <div id="attack-options"></div>
+            </div>
 
-// Afficher les options d'attaque spécifiques du joueur
-function showAttackOptions() {
-    const attackOptions = document.getElementById("attack-options");
-    attackOptions.innerHTML = ''; // Réinitialisation des options
+            <!-- Menu de changement de Pokémon -->
+            <div id="pokemon-menu" class="hidden">
+                <h3>Choisissez un Pokémon à envoyer au combat :</h3>
+                <div id="pokemon-change-options"></div>
+            </div>
+        </div>
+    </section>
 
-    playerPokemon.moves.forEach((move) => {
-        const button = document.createElement("button");
-        button.innerText = move.name;
-        button.addEventListener("click", () => playerAttack(move));
-        attackOptions.appendChild(button);
-    });
+    <!-- Écran de Game Over -->
+    <section id="game-over-screen" class="hidden">
+        <h1>Game Over</h1>
+        <img src="https://i.imgur.com/V7bO6Gc.png" alt="Game Over">
+        <p>Tu as perdu le combat.</p>
+        <button id="retry-button">Revenir à la sélection</button>
+    </section>
 
-    document.getElementById("combat-options").classList.add("hidden");
-    attackOptions.classList.remove("hidden");
-}
+    <!-- Animation de Victoire -->
+    <section id="victory-animation" class="hidden">
+        <h1>Félicitations, tu as remporté la Ligue Pokémon !</h1>
+        <img id="victory-animation-image" src="https://c.tenor.com/ze30msnkRfMAAAAC/pokemon-victory.gif" alt="Victoire Ligue Pokémon">
+        <button id="victory-restart-button">Rejouer</button>
+    </section>
 
-// Gérer l'attaque du joueur
-function playerAttack(move) {
-    const damage = calculateDamage(move, playerPokemon, opponentPokemon);
-    opponentPokemon.hp -= damage;
-    if (opponentPokemon.hp < 0) opponentPokemon.hp = 0;
+    <!-- Appel des scripts externes -->
+    <script src="selection.js"></script>
+    <script src="combat.js"></script>
 
-    updateHpBars();
-
-    if (opponentPokemon.hp === 0) {
-        endBattle("player");
-        return;
-    }
-
-    // Passer au tour de l'adversaire
-    currentTurn = "opponent";
-    setTimeout(opponentTurn, 1000); // Délai avant l'attaque de l'adversaire
-}
-
-// Gérer l'attaque de l'adversaire
-function opponentTurn() {
-    const randomMove = opponentPokemon.moves[Math.floor(Math.random() * opponentPokemon.moves.length)];
-    const damage = calculateDamage(randomMove, opponentPokemon, playerPokemon);
-    playerPokemon.hp -= damage;
-    if (playerPokemon.hp < 0) playerPokemon.hp = 0;
-
-    updateHpBars();
-
-    if (playerPokemon.hp === 0) {
-        endBattle("opponent");
-        return;
-    }
-
-    // Retour au tour du joueur
-    currentTurn = "player";
-    document.getElementById("combat-options").classList.remove("hidden");
-    document.getElementById("attack-options").classList.add("hidden");
-}
-
-// Calcul des dégâts ajusté en fonction des types de Pokémon
-const typeEffectiveness = {
-    Fire: { Grass: 2, Water: 0.5, Fire: 0.5, Dragon: 0.5 },
-    Water: { Fire: 2, Grass: 0.5, Water: 0.5, Dragon: 0.5 },
-    Grass: { Water: 2, Fire: 0.5, Grass: 0.5, Dragon: 0.5 },
-    // Ajouter plus de types ici
-};
-
-function calculateDamage(move, attacker, defender) {
-    const baseDamage = move.power;
-    const levelFactor = (2 * attacker.level) / 5 + 2;
-    const attackDefenseRatio = (baseDamage * levelFactor) / 50 + 2;
-
-    // Ajustement des dégâts selon les types
-    let typeEffect = 1;
-    if (typeEffectiveness[move.type] && typeEffectiveness[move.type][defender.type]) {
-        typeEffect = typeEffectiveness[move.type][defender.type];
-    }
-
-    return Math.floor(attackDefenseRatio * Math.random() * 0.85 * typeEffect);
-}
-
-// Mettre à jour les barres de HP après chaque attaque
-function updateHpBars() {
-    const playerHpPercent = (playerPokemon.hp / playerPokemon.maxHp) * 100;
-    const opponentHpPercent = (opponentPokemon.hp / opponentPokemon.maxHp) * 100;
-
-    document.getElementById("player-hp").style.width = `${playerHpPercent}%`;
-    document.getElementById("opponent-hp").style.width = `${opponentHpPercent}%`;
-
-    document.getElementById("player-hp").className = playerHpPercent > 50 ? "hp-bar hp-green" : playerHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
-    document.getElementById("opponent-hp").className = opponentHpPercent > 50 ? "hp-bar hp-green" : opponentHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
-}
-
-// Gérer le changement de Pokémon (pour le joueur uniquement)
-function changePokemon() {
-    const pokemonMenu = document.getElementById("pokemon-change-options");
-    pokemonMenu.innerHTML = '';
-
-    // Afficher les Pokémon restants à sélectionner pour changer
-    selectedPokemon.forEach((pokemon, index) => {
-        if (pokemon.hp > 0 && pokemon !== playerPokemon) { // Seulement les Pokémon non KO et non utilisés
-            const button = document.createElement('button');
-            button.innerText = `${pokemon.name}`;
-            button.addEventListener('click', () => {
-                playerPokemon = pokemon;
-                updateTeamDisplay(); // Mettre à jour l'affichage des Pokémon
-                currentTurn = "opponent"; // L'adversaire attaque après le changement
-                opponentTurn();
-            });
-            pokemonMenu.appendChild(button);
-        }
-    });
-
-    document.getElementById("combat-options").classList.add("hidden");
-    document.getElementById("pokemon-menu").classList.remove("hidden");
-}
-
-// Gérer la fuite du combat
-function runAway() {
-    alert("Tu ne peux pas fuir !");
-}
-
-// Fin du combat et affichage du résultat
-function endBattle(winner) {
-    if (winner === "player") {
-        alert("Félicitations, tu as gagné !");
-        document.getElementById("victory-animation").classList.remove("hidden");
-    } else {
-        alert("Tu as perdu !");
-        document.getElementById("game-over-screen").classList.remove("hidden");
-    }
-
-    // Cacher la phase de combat
-    document.getElementById("combat-phase").classList.add('hidden');
-}
+</body>
+</html>
