@@ -82,12 +82,12 @@ function showPokemonStats(pokemon, card) {
     statsModal.style.display = "block";
     const rect = card.getBoundingClientRect();
     
-    // S'assurer que la fenêtre apparaisse au-dessus de la carte sans débordement
-    const topPosition = rect.top - statsModal.offsetHeight - 10;
+    // Ajustement ergonomique pour que la fenêtre apparaisse au-dessus de la carte Pokémon
+    const topPosition = rect.top - statsModal.offsetHeight - 15;
     const leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
 
-    statsModal.style.top = `${Math.max(0, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
-    statsModal.style.left = `${Math.max(0, leftPosition)}px`;  // Empêcher de sortir de l'écran à gauche
+    statsModal.style.top = `${Math.max(10, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
+    statsModal.style.left = `${Math.max(10, leftPosition)}px`;  // Empêcher de sortir de l'écran à gauche
 }
 
 // Masquer les statistiques du Pokémon lors du retrait de la souris
