@@ -14,7 +14,7 @@ async function fetchPokemonData() {
         // Extraire les IDs et noms des Pokémon et garantir l'ordre par ID
         const pokemonListWithIds = pokemonList.map(pokemon => {
             const id = pokemon.url.split("/").filter(Boolean).pop(); // Extraire l'ID depuis l'URL
-            return { name: pokemon.name, id: parseInt(id) };
+            return { name: translatePokemonName(pokemon.name), id: parseInt(id) };
         });
 
         // Assurer que l'ordre est maintenu par ID (croissant)
@@ -163,9 +163,9 @@ document.getElementById('start-game').addEventListener('click', () => {
 // Fonction pour obtenir la capacité spéciale la plus populaire pour chaque Pokémon
 function getPopularAbility(pokemonName) {
     const abilities = {
-        'bulbasaur': 'Chlorophylle',
-        'charmander': 'Brasier',
-        'squirtle': 'Torrent',
+        'bulbizarre': 'Chlorophylle',
+        'salamèche': 'Brasier',
+        'carapuce': 'Torrent',
         'pikachu': 'Statik',
         // Ajoute ici les capacités spéciales pour chaque Pokémon
         // Par exemple :
@@ -174,4 +174,20 @@ function getPopularAbility(pokemonName) {
     };
     
     return abilities[pokemonName.toLowerCase()] || 'Inconnue'; // Si non trouvé, retourne 'Inconnue'
+}
+
+// Fonction pour traduire les noms des Pokémon en français
+function translatePokemonName(name) {
+    const translations = {
+        'bulbasaur': 'Bulbizarre',
+        'charmander': 'Salamèche',
+        'squirtle': 'Carapuce',
+        'pikachu': 'Pikachu',
+        // Ajoute ici les traductions de tous les Pokémon
+        // Par exemple :
+        // 'mewtwo': 'Mewtwo',
+        // etc.
+    };
+
+    return translations[name.toLowerCase()] || name;
 }
