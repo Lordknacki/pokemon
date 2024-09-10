@@ -1,214 +1,147 @@
-let playerTurn = true;
-let opponentTeam = [];
-let currentOpponentIndex = 0;
-let playerTeam = [...selectedPokemon]; // Cloner l'équipe du joueur
-let currentBattle = 1; // Suivi des combats (8 en total)
-const totalBattles = 8; // Nombre total de combats
-
-// Fonction pour démarrer le combat
-document.getElementById('start-game').addEventListener('click', () => {
-    document.getElementById('selection-phase').classList.add('hidden');
-    document.getElementById('combat-phase').classList.remove('hidden');
-    initializeBattle();
+document.addEventListener("DOMContentLoaded", () => {
+    initializeCombat();
 });
 
-// Initialisation du combat
-function initializeBattle() {
-    setPlayerPokemon();
-    setOpponentTeam();
-    setupCombatUI();
+let playerPokemon = {
+    name: "Pikachu",
+    level: 50,
+    hp: 100,
+    maxHp: 100,
+    type: "Electric",
+    moves: [
+        { name: "Thunderbolt", power: 90, type: "Electric" },
+        { name: "Quick Attack", power: 40, type: "Normal" },
+        { name: "Iron Tail", power: 100, type: "Steel" },
+        { name: "Electro Ball", power: 60, type: "Electric" }
+    ]
+};
+
+let opponentPokemon = {
+    name: "Dracaufeu",
+    level: 50,
+    hp: 120,
+    maxHp: 120,
+    type: "Fire/Flying",
+    moves: [
+        { name: "Flamethrower", power: 90, type: "Fire" },
+        { name: "Dragon Claw", power: 80, type: "Dragon" },
+        { name: "Fly", power: 70, type: "Flying" },
+        { name: "Slash", power: 70, type: "Normal" }
+    ]
+};
+
+let currentTurn = "player";
+
+// Fonction pour initialiser le combat
+function initializeCombat() {
+    document.getElementById("player-pokemon-name").innerText = `${playerPokemon.name} Lv. ${playerPokemon.level}`;
+    document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name} Lv. ${opponentPokemon.level}`;
+
+    updateHpBars();
+
+    document.getElementById("attack-button").addEventListener("click", showAttackOptions);
+    document.getElementById("pokemon-button").addEventListener("click", changePokemon);
+    document.getElementById("run-button").addEventListener("click", runAway);
 }
 
-// Configure l'équipe adverse
-function setOpponentTeam() {
-    opponentTeam = [];
-    for (let i = 0; i < 6; i++) {
-        const opponentPokemonId = Math.floor(Math.random() * 386) + 1;
-        fetch(`https://pokeapi.co/api/v2/pokemon/${opponentPokemonId}`)
-            .then(response => response.json())
-            .then(pokemon => {
-                pokemon.stats = { attack: 55, defense: 50, speed: 50 }; // Exemple de stats
-                pokemon.attacks = [
-                    { name: 'Lance-Flammes', power: 90, type: 'fire' },
-                    { name: 'Morsure', power: 60, type: 'dark' },
-                    { name: 'Cru-Aile', power: 60, type: 'flying' },
-                    { name: 'Draco-Rage', power: 40, type: 'dragon' }
-                ];
-                opponentTeam.push(pokemon);
-                if (opponentTeam.length === 6) {
-                    setOpponentPokemon();
-                }
-            });
-    }
-}
-
-// Définit le Pokémon adverse actuel
-function setOpponentPokemon() {
-    const opponentPokemon = opponentTeam[currentOpponentIndex];
-    document.getElementById('opponent-pokemon-name').innerText = `${capitalize(opponentPokemon.name)} Lv. 55`;
-    document.getElementById('opponent-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${opponentPokemon.id}.png`;
-    document.getElementById('opponent-hp').style.width = '100%'; // HP complet
-}
-
-// Définit le Pokémon du joueur
-function setPlayerPokemon() {
-    const playerPokemon = selectedPokemon[0]; // Le premier Pokémon sélectionné
-    document.getElementById('player-pokemon-name').innerText = `${capitalize(playerPokemon.name)} Lv. 50`;
-    document.getElementById('player-pokemon-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${playerPokemon.id}.png`;
-    document.getElementById('player-hp').style.width = '100%'; // HP complet au départ
-
-    // Stocker les statistiques et attaques
-    playerPokemon.stats = { attack: 50, defense: 50, speed: 60 }; // Exemple de stats
-    playerPokemon.attacks = [
-        { name: 'Éclair', power: 40, type: 'electric' },
-        { name: 'Queue de Fer', power: 100, type: 'steel' },
-        { name: 'Vive-Attaque', power: 40, type: 'normal' },
-        { name: 'Tonnerre', power: 90, type: 'electric' }
-    ];
-}
-
-// Gestion des attaques du joueur
+// Afficher les options d'attaques
 function showAttackOptions() {
-    const attackOptions = document.getElementById('attack-options');
-    attackOptions.innerHTML = ''; // Réinitialiser les options d'attaque
+    const attackOptions = document.getElementById("attack-options");
+    attackOptions.innerHTML = ''; // Réinitialiser les options
 
-    playerPokemon.attacks.forEach(attack => {
-        const button = document.createElement('button');
-        button.innerText = attack.name;
-        button.addEventListener('click', () => handleAttack(attack));
+    playerPokemon.moves.forEach((move, index) => {
+        const button = document.createElement("button");
+        button.innerText = move.name;
+        button.addEventListener("click", () => playerAttack(move));
         attackOptions.appendChild(button);
     });
 
-    document.getElementById('combat-options').classList.add('hidden');
-    document.getElementById('attack-menu').classList.remove('hidden');
+    document.getElementById("combat-options").classList.add("hidden");
+    attackOptions.classList.remove("hidden");
 }
 
-// Gestion des attaques
-function handleAttack(attack) {
-    if (!playerTurn) return; // Attendre son tour
+// Attaque du joueur
+function playerAttack(move) {
+    const damage = calculateDamage(move, playerPokemon, opponentPokemon);
+    opponentPokemon.hp -= damage;
+    if (opponentPokemon.hp < 0) opponentPokemon.hp = 0;
 
-    const damage = calculateDamage(attack, playerPokemon, opponentTeam[currentOpponentIndex]);
-    reduceOpponentHP(damage);
+    updateHpBars();
 
-    playerTurn = false;
+    // Vérifier si l'adversaire est KO
+    if (opponentPokemon.hp === 0) {
+        endBattle("player");
+        return;
+    }
 
-    // Après l'attaque du joueur, laisser l'adversaire attaquer
-    setTimeout(() => opponentAttack(opponentTeam[currentOpponentIndex]), 2000); 
+    // Passer au tour de l'adversaire
+    currentTurn = "opponent";
+    opponentTurn();
 }
 
 // Attaque de l'adversaire
-function opponentAttack(opponentPokemon) {
-    const attack = opponentPokemon.attacks[Math.floor(Math.random() * opponentPokemon.attacks.length)];
-    alert(`L'adversaire utilise ${attack.name} !`);
+function opponentTurn() {
+    const randomMove = opponentPokemon.moves[Math.floor(Math.random() * opponentPokemon.moves.length)];
+    const damage = calculateDamage(randomMove, opponentPokemon, playerPokemon);
+    playerPokemon.hp -= damage;
+    if (playerPokemon.hp < 0) playerPokemon.hp = 0;
 
-    const damage = calculateDamage(attack, opponentPokemon, playerPokemon);
-    reducePlayerHP(damage);
+    updateHpBars();
 
-    playerTurn = true;
-    document.getElementById('combat-options').classList.remove('hidden');
-    document.getElementById('attack-menu').classList.add('hidden');
+    // Vérifier si le joueur est KO
+    if (playerPokemon.hp === 0) {
+        endBattle("opponent");
+        return;
+    }
+
+    // Retour au tour du joueur
+    currentTurn = "player";
+    document.getElementById("combat-options").classList.remove("hidden");
+    document.getElementById("attack-options").classList.add("hidden");
 }
 
 // Calcul des dégâts
-function calculateDamage(attack, attacker, defender) {
-    const baseDamage = (((2 * 50 / 5 + 2) * attack.power * attacker.stats.attack / defender.stats.defense) / 50) + 2;
-    let stab = attack.type === attacker.types[0] ? 1.5 : 1;
-    let typeEffectiveness = getTypeEffectiveness(attack.type, defender.types);
-    return Math.floor(baseDamage * stab * typeEffectiveness);
+function calculateDamage(move, attacker, defender) {
+    const baseDamage = move.power;
+    const levelFactor = (2 * attacker.level) / 5 + 2;
+    const attackDefenseRatio = (baseDamage * levelFactor) / 50 + 2;
+
+    // Facteurs de types peuvent être ajoutés ici
+    return Math.floor(attackDefenseRatio * Math.random() * 0.85);
 }
 
-// Réduire les HP de l'adversaire
-function reduceOpponentHP(damage) {
-    const opponentHPBar = document.getElementById('opponent-hp');
-    let currentHPWidth = parseInt(opponentHPBar.style.width);
-    let newHPWidth = Math.max(currentHPWidth - damage, 0);
-    opponentHPBar.style.width = `${newHPWidth}%`;
+// Mettre à jour les barres de HP
+function updateHpBars() {
+    const playerHpPercent = (playerPokemon.hp / playerPokemon.maxHp) * 100;
+    const opponentHpPercent = (opponentPokemon.hp / opponentPokemon.maxHp) * 100;
 
-    if (newHPWidth === 0) {
-        alert("L'adversaire est KO !");
-        currentOpponentIndex++;
+    document.getElementById("player-hp").style.width = `${playerHpPercent}%`;
+    document.getElementById("opponent-hp").style.width = `${opponentHpPercent}%`;
 
-        if (currentOpponentIndex < opponentTeam.length) {
-            setOpponentPokemon(); // Changer de Pokémon
-        } else {
-            alert("Vous avez vaincu l'équipe adverse !");
-            currentBattle++;
+    // Changer les couleurs des barres de HP
+    document.getElementById("player-hp").className = playerHpPercent > 50 ? "hp-bar hp-green" : playerHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
+    document.getElementById("opponent-hp").className = opponentHpPercent > 50 ? "hp-bar hp-green" : opponentHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
+}
 
-            if (currentBattle > totalBattles) {
-                showVictoryAnimation(); // Victoire de la Ligue Pokémon
-            } else {
-                healPlayerTeam();
-                startNextBattle(); // Passer au combat suivant
-            }
-        }
+// Changer de Pokémon
+function changePokemon() {
+    alert("Fonction non disponible pour l'instant.");
+}
+
+// Fuite du combat
+function runAway() {
+    alert("Tu ne peux pas fuir !");
+}
+
+// Fin du combat
+function endBattle(winner) {
+    if (winner === "player") {
+        alert("Tu as gagné le combat !");
+        document.getElementById("victory-animation").classList.remove("hidden");
+    } else {
+        alert("Tu as perdu !");
+        document.getElementById("game-over-screen").classList.remove("hidden");
     }
-}
 
-// Réduire les HP du joueur
-function reducePlayerHP(damage) {
-    const playerHPBar = document.getElementById('player-hp');
-    let currentHPWidth = parseInt(playerHPBar.style.width);
-    let newHPWidth = Math.max(currentHPWidth - damage, 0);
-    playerHPBar.style.width = `${newHPWidth}%`;
-
-    if (newHPWidth === 0) {
-        alert("Ton Pokémon est KO !");
-        checkGameOver();
-    }
-}
-
-// Vérifie si tous les Pokémon du joueur sont KO
-function checkGameOver() {
-    const playerHPBar = document.getElementById('player-hp').style.width;
-    if (playerHPBar === '0%') {
-        showGameOverScreen();
-    }
-}
-
-// Afficher l'écran de Game Over
-function showGameOverScreen() {
-    document.getElementById('combat-phase').classList.add('hidden');
-    document.getElementById('game-over-screen').classList.remove('hidden');
-}
-
-// Soigner l'équipe du joueur
-function healPlayerTeam() {
-    playerTeam.forEach(pokemon => {
-        document.getElementById('player-hp').style.width = '100%';
-    });
-}
-
-// Passer au combat suivant
-function startNextBattle() {
-    currentOpponentIndex = 0;
-    setOpponentTeam(); // Générer une nouvelle équipe adverse
-}
-
-// Afficher l'animation de victoire
-function showVictoryAnimation() {
-    document.getElementById('combat-phase').classList.add('hidden');
-    document.getElementById('victory-animation').classList.remove('hidden');
-    const animationURL = 'https://c.tenor.com/ze30msnkRfMAAAAC/pokemon-victory.gif'; // Lien vers une animation de victoire
-    document.getElementById('victory-animation-image').src = animationURL;
-}
-
-// Fonction utilitaire pour calculer l'efficacité de type
-function getTypeEffectiveness(attackType, defenderTypes) {
-    const typeChart = {
-        fire: { water: 0.5, grass: 2, fire: 0.5 },
-        water: { fire: 2, electric: 0.5, grass: 0.5 },
-        // Ajoute les autres types ici
-    };
-    let effectiveness = 1;
-    defenderTypes.forEach(type => {
-        if (typeChart[attackType] && typeChart[attackType][type]) {
-            effectiveness *= typeChart[attackType][type];
-        }
-    });
-    return effectiveness;
-}
-
-// Fonction utilitaire pour capitaliser les noms de Pokémon
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    document.getElementById("combat-phase").classList.add("hidden");
 }
