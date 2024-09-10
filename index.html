@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Sélection et Combat</title>
-
-    <!-- Lien vers le fichier CSS -->
+    <!-- Lien vers le fichier CSS pour styliser la page -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Phase de sélection -->
+    <!-- Phase de sélection des Pokémon -->
     <section id="selection-phase">
         <header>
             <h1>Choisis ton Équipe Pokémon</h1>
@@ -22,7 +21,7 @@
         <div id="pokemon-list" class="pokemon-list"></div>
         <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
 
-        <!-- Fenêtre modale pour les statistiques -->
+        <!-- Fenêtre modale pour les statistiques des Pokémon lors du survol -->
         <div id="stats-modal" class="hidden">
             <div class="pokemon-name"></div>
             <div class="pokemon-types"></div>
@@ -36,7 +35,10 @@
             <h1>Combat Pokémon</h1>
         </header>
         <div id="battlefield">
+            <!-- Terrain de combat, image prise en ligne -->
             <img id="terrain-image" src="https://img.pokemondb.net/artwork/large/route-1.png" alt="Terrain de combat">
+            
+            <!-- Dresseur adverse avec sprite en ligne -->
             <div id="opponent-trainer">
                 <img id="trainer-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/red.png" alt="Dresseur">
                 <h2 id="trainer-name">Dresseur</h2>
@@ -57,7 +59,7 @@
             <div id="opponent-pokemon" class="pokemon-side">
                 <img id="opponent-pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Pokémon Adverse" class="pokemon-sprite">
                 <div class="pokemon-info">
-                    <span id="opponent-pokemon-name" class="pokemon-name-level">Dracaufeu Lv. 50</span>
+                    <span id="opponent-pokemon-name" class="pokemon-name-level">Dracaufeu Lv. 55</span>
                     <div class="hp-bar-container">
                         <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
                     </div>
@@ -102,7 +104,7 @@
         <button id="victory-restart-button">Rejouer</button>
     </section>
 
-    <!-- Appel des fichiers JS externes -->
+    <!-- Appel des scripts externes -->
     <script src="selection.js"></script>
     <script src="combat.js"></script>
 
