@@ -73,16 +73,21 @@ function showPokemonStats(pokemon, card) {
         </div>
         <div class="pokemon-stats">
             <p>HP: ${pokemon.stats[0].base_stat}</p>
-            <p>Attack: ${pokemon.stats[1].base_stat}</p>
-            <p>Defense: ${pokemon.stats[2].base_stat}</p>
-            <p>Speed: ${pokemon.stats[5].base_stat}</p>
+            <p>Attaque: ${pokemon.stats[1].base_stat}</p>
+            <p>Défense: ${pokemon.stats[2].base_stat}</p>
+            <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
         </div>
     `;
 
     statsModal.style.display = "block";
     const rect = card.getBoundingClientRect();
-    statsModal.style.top = `${rect.top - statsModal.offsetHeight - 10}px`;
-    statsModal.style.left = `${rect.left}px`;
+    
+    // S'assurer que la fenêtre apparaisse au-dessus de la carte sans débordement
+    const topPosition = rect.top - statsModal.offsetHeight - 10;
+    const leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
+
+    statsModal.style.top = `${Math.max(0, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
+    statsModal.style.left = `${Math.max(0, leftPosition)}px`;  // Empêcher de sortir de l'écran à gauche
 }
 
 // Masquer les statistiques du Pokémon lors du retrait de la souris
