@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Sélection et Combat</title>
 
-    <!-- Lien vers le fichier CSS externe -->
+    <!-- Lien vers le fichier CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,6 +21,13 @@
         </div>
         <div id="pokemon-list" class="pokemon-list"></div>
         <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+
+        <!-- Fenêtre modale pour les statistiques -->
+        <div id="stats-modal" class="hidden">
+            <div class="pokemon-name"></div>
+            <div class="pokemon-types"></div>
+            <div class="pokemon-stats"></div>
+        </div>
     </section>
 
     <!-- Phase de combat -->
@@ -29,10 +36,8 @@
             <h1>Combat Pokémon</h1>
         </header>
         <div id="battlefield">
-            <!-- Terrains des dresseurs -->
             <img id="terrain-image" src="https://img.pokemondb.net/artwork/large/route-1.png" alt="Terrain de combat">
             <div id="opponent-trainer">
-                <!-- Dresseur adverse -->
                 <img id="trainer-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/red.png" alt="Dresseur">
                 <h2 id="trainer-name">Dresseur</h2>
             </div>
@@ -71,9 +76,13 @@
             <!-- Menu des attaques -->
             <div id="attack-menu" class="hidden">
                 <h3>Choisissez une attaque :</h3>
-                <div id="attack-options">
-                    <!-- Les boutons des attaques seront générés dynamiquement -->
-                </div>
+                <div id="attack-options"></div>
+            </div>
+
+            <!-- Menu de changement de Pokémon -->
+            <div id="pokemon-menu" class="hidden">
+                <h3>Choisissez un Pokémon à envoyer au combat :</h3>
+                <div id="pokemon-change-options"></div>
             </div>
         </div>
     </section>
@@ -86,7 +95,7 @@
         <button id="retry-button">Revenir à la sélection</button>
     </section>
 
-    <!-- Animation de Victoire de la Ligue Pokémon -->
+    <!-- Animation de Victoire -->
     <section id="victory-animation" class="hidden">
         <h1>Félicitations, tu as remporté la Ligue Pokémon !</h1>
         <img id="victory-animation-image" src="https://c.tenor.com/ze30msnkRfMAAAAC/pokemon-victory.gif" alt="Victoire Ligue Pokémon">
