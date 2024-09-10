@@ -1,1 +1,243 @@
 
+/* Styles globaux */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-top: 20px;
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ffeb3b;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ffca28;
+}
+
+/* Phase de sélection */
+.pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
+    gap: 20px;
+    padding: 20px;
+}
+
+.pokemon-card {
+    position: relative;
+    border: 2px solid #333;
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    padding: 10px;
+    text-align: center;
+}
+
+.pokemon-card img {
+    width: 120px;
+    height: 120px;
+}
+
+.pokemon-card.selected {
+    border: 3px solid #FFD700;
+    background-color: rgba(255, 223, 0, 0.2);
+}
+
+#team-container {
+    margin-top: 20px;
+}
+
+.team img {
+    width: 80px;
+    height: 80px;
+    margin: 0 5px;
+}
+
+/* Bouton "Commencer le Combat" */
+.start-game {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    background-color: #ffcb05;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.start-game:enabled {
+    opacity: 1;
+    background-color: #f00;
+}
+
+/* Phase de combat */
+#combat-phase {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: lightblue;
+}
+
+#battlefield {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    background-color: lightblue;
+    overflow: hidden;
+}
+
+#player-pokemon-sprite, #opponent-pokemon-sprite {
+    width: 150px;
+    height: auto;
+}
+
+#trainer-image {
+    width: 150px;
+}
+
+/* Ecran de Game Over */
+#game-over-screen {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+}
+
+#game-over-screen img {
+    width: 300px;
+    height: auto;
+}
+
+#game-over-screen button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: #ff6f61;
+    border: none;
+    cursor: pointer;
+}
+
+#game-over-screen button:hover {
+    background-color: #ff4b3f;
+}
+
+/* Animation de victoire de la Ligue Pokémon */
+#victory-animation {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+}
+
+#victory-animation img {
+    width: 50%;
+    height: auto;
+}
+
+#victory-animation button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: #4CAF50;
+    border: none;
+    cursor: pointer;
+}
+
+#victory-animation button:hover {
+    background-color: #45a049;
+}
+
+/* Barre de HP pour les Pokémon */
+.hp-bar-container {
+    background-color: #ddd;
+    border-radius: 10px;
+    width: 150px;
+    height: 15px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.hp-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.hp-green {
+    background-color: #4CAF50;
+}
+
+.hp-orange {
+    background-color: #FFA500;
+}
+
+.hp-red {
+    background-color: #FF4500;
+}
+
+/* Menu de combat */
+#combat-menu {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    background-color: white;
+    border-top: 2px solid #333;
+}
+
+#combat-options, #attack-options {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+#combat-options button, #attack-options button {
+    width: 22%;
+    padding: 15px;
+    font-size: 1.2rem;
+    background-color: #FFCB05;
+    border: 2px solid #333;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#combat-options button:hover, #attack-options button:hover {
+    background-color: #F5A623;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    #combat-options button, #attack-options button {
+        font-size: 1rem;
+    }
+}
