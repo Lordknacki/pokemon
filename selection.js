@@ -86,14 +86,14 @@ function showPokemonStats(pokemon, card) {
     const topPosition = window.scrollY + rect.top - statsModal.offsetHeight - 15;
     let leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
 
-    // Si le Pokémon est trop proche du bord droit, déplacer la fenêtre vers la gauche
+    // Si le Pokémon est trop proche du bord droit, déplacer la fenêtre davantage vers la gauche
     if (leftPosition + statsModal.offsetWidth > window.innerWidth) {
-        leftPosition = window.innerWidth - statsModal.offsetWidth - 10; // Ajustement bord droit
+        leftPosition = window.innerWidth - statsModal.offsetWidth - 30; // Plus de décalage vers la gauche
     }
 
     // Si le Pokémon est trop proche du bord gauche, déplacer légèrement vers la droite
     if (leftPosition < 0) {
-        leftPosition = 10; // Ajustement bord gauche
+        leftPosition = 30; // Plus de décalage vers la droite
     }
 
     statsModal.style.top = `${Math.max(10, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
