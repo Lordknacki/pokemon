@@ -9,7 +9,7 @@ function initializeCombat() {
 
     // Mise à jour des informations des Pokémon (nom, niveau, etc.)
     document.getElementById("player-pokemon-name").innerText = `${playerPokemon.name.charAt(0).toUpperCase() + playerPokemon.name.slice(1)} Lv. ${playerPokemon.level}`;
-    document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name} Lv. ${opponentPokemon.level}`;
+    document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name.charAt(0).toUpperCase() + opponentPokemon.name.slice(1)} Lv. ${opponentPokemon.level}`;
 
     // Mise à jour des barres de HP
     updateHpBars();
@@ -20,7 +20,7 @@ function initializeCombat() {
     document.getElementById("run-button").addEventListener("click", runAway);
 }
 
-// Générer un Pokémon adverse aléatoire
+// Générer un Pokémon adverse aléatoire avec des statistiques
 async function generateOpponentPokemon() {
     const randomId = Math.floor(Math.random() * 386) + 1; // Générer un ID aléatoire entre 1 et 386 (Première Génération)
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
