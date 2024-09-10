@@ -80,7 +80,7 @@ function showPokemonStats(pokemon, card) {
             <p>Attaque Spéciale: ${pokemon.stats[3].base_stat}</p>
             <p>Défense Spéciale: ${pokemon.stats[4].base_stat}</p>
             <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
-            <p>Capacité Spéciale: ${popularAbility}</p>
+            <p>${popularAbility}</p> <!-- Affichage de la capacité spéciale sans le texte -->
         </div>
     `;
 
@@ -167,10 +167,12 @@ function getPopularAbility(pokemonName) {
         'salamèche': 'Brasier',
         'carapuce': 'Torrent',
         'pikachu': 'Statik',
+        'mewtwo': 'Pression',
+        'ronflex': 'Isograisse',
+        'dracaufeu': 'Brasier',
+        'florizarre': 'Engrais',
+        'tortank': 'Torrent',
         // Ajoute ici les capacités spéciales pour chaque Pokémon
-        // Par exemple :
-        // 'mewtwo': 'Pression',
-        // etc.
     };
     
     return abilities[pokemonName.toLowerCase()] || 'Inconnue'; // Si non trouvé, retourne 'Inconnue'
@@ -183,10 +185,12 @@ function translatePokemonName(name) {
         'charmander': 'Salamèche',
         'squirtle': 'Carapuce',
         'pikachu': 'Pikachu',
+        'mewtwo': 'Mewtwo',
+        'snorlax': 'Ronflex',
+        'charizard': 'Dracaufeu',
+        'venusaur': 'Florizarre',
+        'blastoise': 'Tortank',
         // Ajoute ici les traductions de tous les Pokémon
-        // Par exemple :
-        // 'mewtwo': 'Mewtwo',
-        // etc.
     };
 
     return translations[name.toLowerCase()] || name;
