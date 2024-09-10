@@ -81,6 +81,66 @@ button:hover {
     background-color: #f00;
 }
 
+/* Fenêtre modale pour les statistiques */
+#stats-modal {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
+    z-index: 1000;
+    width: 200px;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+#stats-modal.show {
+    display: block;
+    opacity: 1;
+}
+
+#stats-modal .pokemon-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#stats-modal .pokemon-types {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+#stats-modal .pokemon-stats p {
+    margin: 5px 0;
+}
+
+.pokemon-type {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+/* Types de Pokémon avec couleurs */
+.type-fire { background-color: #F08030; }
+.type-water { background-color: #6890F0; }
+.type-grass { background-color: #78C850; }
+.type-electric { background-color: #F8D030; }
+.type-ice { background-color: #98D8D8; }
+.type-fighting { background-color: #C03028; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #E0C068; }
+.type-flying { background-color: #A890F0; }
+.type-psychic { background-color: #F85888; }
+.type-bug { background-color: #A8B820; }
+.type-rock { background-color: #B8A038; }
+.type-ghost { background-color: #705898; }
+.type-dragon { background-color: #7038F8; }
+.type-dark { background-color: #705848; }
+.type-steel { background-color: #B8B8D0; }
+.type-fairy { background-color: #EE99AC; }
+
 /* Phase de combat */
 #combat-phase {
     display: none;
@@ -107,67 +167,7 @@ button:hover {
     width: 150px;
 }
 
-/* Ecran de Game Over */
-#game-over-screen {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    text-align: center;
-}
-
-#game-over-screen img {
-    width: 300px;
-    height: auto;
-}
-
-#game-over-screen button {
-    margin-top: 20px;
-    padding: 10px 30px;
-    font-size: 1.5rem;
-    background-color: #ff6f61;
-    border: none;
-    cursor: pointer;
-}
-
-#game-over-screen button:hover {
-    background-color: #ff4b3f;
-}
-
-/* Animation de victoire de la Ligue Pokémon */
-#victory-animation {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    text-align: center;
-}
-
-#victory-animation img {
-    width: 50%;
-    height: auto;
-}
-
-#victory-animation button {
-    margin-top: 20px;
-    padding: 10px 30px;
-    font-size: 1.5rem;
-    background-color: #4CAF50;
-    border: none;
-    cursor: pointer;
-}
-
-#victory-animation button:hover {
-    background-color: #45a049;
-}
-
-/* Barre de HP pour les Pokémon */
+/* Barre de vie pour les Pokémon */
 .hp-bar-container {
     background-color: #ddd;
     border-radius: 10px;
@@ -205,14 +205,14 @@ button:hover {
     border-top: 2px solid #333;
 }
 
-#combat-options, #attack-options {
+#combat-options, #attack-options, #pokemon-change-options {
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 100%;
 }
 
-#combat-options button, #attack-options button {
+#combat-options button, #attack-options button, #pokemon-change-options button {
     width: 22%;
     padding: 15px;
     font-size: 1.2rem;
@@ -222,21 +222,51 @@ button:hover {
     cursor: pointer;
 }
 
-#combat-options button:hover, #attack-options button:hover {
+#combat-options button:hover, #attack-options button:hover, #pokemon-change-options button:hover {
     background-color: #F5A623;
 }
 
-.hidden {
+/* Ecran de Game Over */
+#game-over-screen, #victory-animation {
     display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
 }
 
-/* Responsive Design */
+#game-over-screen img, #victory-animation img {
+    width: 50%;
+    height: auto;
+}
+
+#game-over-screen button, #victory-animation button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: #4CAF50;
+    border: none;
+    cursor: pointer;
+}
+
+#game-over-screen button:hover, #victory-animation button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive design */
 @media screen and (max-width: 768px) {
-    h1 {
-        font-size: 2rem;
+    .pokemon-list {
+        grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
     }
 
-    #combat-options button, #attack-options button {
+    .pokemon-card img {
+        width: 100px;
+        height: 100px;
+    }
+
+    #combat-options button, #attack-options button, #pokemon-change-options button {
         font-size: 1rem;
     }
 }
