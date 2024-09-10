@@ -4,6 +4,8 @@ let currentTurn = "player"; // Le joueur commence toujours
 
 // Initialisation du combat
 function initializeCombat() {
+    loadBattleAssets(); // Charger le terrain et le dresseur
+
     playerPokemon = selectedPokemon[0]; // Le premier Pokémon de l'équipe du joueur
     opponentPokemon = generateOpponentPokemon(); // Générer un Pokémon adverse aléatoire
 
@@ -39,6 +41,18 @@ async function generateOpponentPokemon() {
             type: pokemon.types[0].type.name // Associer au type du Pokémon
         }))
     };
+}
+
+// Charger le terrain et le dresseur depuis une base de données en ligne
+function loadBattleAssets() {
+    // Charger le sprite d'un dresseur
+    const trainerId = 1; // Exemple : dresseur numéro 1
+    const trainerSpriteURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/${trainerId}.png`;
+    document.getElementById("trainer-image").src = trainerSpriteURL;
+
+    // Charger un terrain officiel
+    const battleTerrainURL = "https://img.pokemondb.net/artwork/large/stadium.png"; // Exemple d'un terrain
+    document.getElementById("terrain-image").src = battleTerrainURL;
 }
 
 // Afficher les options d'attaque spécifiques du joueur
