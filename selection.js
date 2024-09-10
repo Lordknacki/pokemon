@@ -17,10 +17,10 @@ async function fetchPokemonData() {
             return { name: pokemon.name, id: parseInt(id) };
         }).sort((a, b) => a.id - b.id); // Trier par ID dans l'ordre croissant
 
-        // Charger les Pokémon triés
-        sortedPokemonList.forEach(pokemon => {
-            fetchPokemonDetails(pokemon.id); // Charger chaque Pokémon par son ID
-        });
+        // Récupérer les détails de tous les Pokémon avec Promise.all pour garantir l'ordre
+        const promises = sortedPokemonList.map(pokemon => fetchPokemonDetails(pokemon.id));
+        await Promise.all(promises);  // Attendre que toutes les requêtes soient terminées
+
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
