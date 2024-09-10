@@ -84,10 +84,20 @@ function showPokemonStats(pokemon, card) {
     
     // Ajustement ergonomique pour que la fenêtre apparaisse de façon fixe dans la vue
     const topPosition = window.scrollY + rect.top - statsModal.offsetHeight - 15;
-    const leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
+    let leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
+
+    // Si le Pokémon est trop proche du bord droit, déplacer la fenêtre vers la gauche
+    if (leftPosition + statsModal.offsetWidth > window.innerWidth) {
+        leftPosition = window.innerWidth - statsModal.offsetWidth - 10; // Ajustement bord droit
+    }
+
+    // Si le Pokémon est trop proche du bord gauche, déplacer légèrement vers la droite
+    if (leftPosition < 0) {
+        leftPosition = 10; // Ajustement bord gauche
+    }
 
     statsModal.style.top = `${Math.max(10, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
-    statsModal.style.left = `${Math.max(10, leftPosition)}px`;  // Empêcher de sortir de l'écran à gauche
+    statsModal.style.left = `${leftPosition}px`;  // Empêcher de sortir de l'écran à gauche ou à droite
 }
 
 // Masquer les statistiques du Pokémon lors du retrait de la souris
