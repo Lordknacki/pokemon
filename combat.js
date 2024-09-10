@@ -4,14 +4,14 @@ let currentTurn = "player"; // Le joueur commence toujours
 
 // Initialisation du combat
 function initializeCombat() {
-    playerPokemon = selectedPokemon[0]; // Le premier Pokémon de l'équipe sélectionnée par le joueur
+    playerPokemon = selectedPokemon[0]; // Le premier Pokémon de l'équipe du joueur
     opponentPokemon = generateOpponentPokemon(); // Générer un Pokémon adverse aléatoire
 
     // Mise à jour des informations des Pokémon (nom, niveau, etc.)
     document.getElementById("player-pokemon-name").innerText = `${playerPokemon.name.charAt(0).toUpperCase() + playerPokemon.name.slice(1)} Lv. ${playerPokemon.level}`;
     document.getElementById("opponent-pokemon-name").innerText = `${opponentPokemon.name} Lv. ${opponentPokemon.level}`;
 
-    // Mettre à jour les barres de HP
+    // Mise à jour des barres de HP
     updateHpBars();
 
     // Gérer les événements pour les actions de combat
@@ -20,7 +20,7 @@ function initializeCombat() {
     document.getElementById("run-button").addEventListener("click", runAway);
 }
 
-// Générer un Pokémon adverse aléatoire à partir de PokéAPI
+// Générer un Pokémon adverse aléatoire
 async function generateOpponentPokemon() {
     const randomId = Math.floor(Math.random() * 386) + 1; // Générer un ID aléatoire entre 1 et 386 (Première Génération)
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
