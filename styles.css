@@ -29,7 +29,7 @@ button:hover {
 /* Phase de sélection */
 .pokemon-list {
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 Pokémon par ligne */
+    grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
     gap: 20px;
     padding: 20px;
 }
@@ -280,19 +280,19 @@ button:hover {
 /* RESPONSIVE */
 @media screen and (max-width: 1200px) {
     .pokemon-list {
-        grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
+        grid-template-columns: repeat(6, 1fr); /* Ajustement à 6 Pokémon par ligne sur petits écrans */
     }
 }
 
 @media screen and (max-width: 768px) {
     .pokemon-list {
-        grid-template-columns: repeat(3, 1fr); /* 3 Pokémon par ligne */
+        grid-template-columns: repeat(4, 1fr); /* 4 Pokémon par ligne pour plus petits écrans */
     }
 }
 
 @media screen and (max-width: 480px) {
     .pokemon-list {
-        grid-template-columns: repeat(2, 1fr); /* 2 Pokémon par ligne */
+        grid-template-columns: repeat(2, 1fr); /* 2 Pokémon par ligne pour téléphones */
     }
 
     .pokemon-card img {
