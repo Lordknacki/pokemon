@@ -82,8 +82,8 @@ function showPokemonStats(pokemon, card) {
     statsModal.style.display = "block";
     const rect = card.getBoundingClientRect();
     
-    // Ajustement ergonomique pour que la fenêtre apparaisse au-dessus de la carte Pokémon
-    const topPosition = rect.top - statsModal.offsetHeight - 15;
+    // Ajustement ergonomique pour que la fenêtre apparaisse de façon fixe dans la vue
+    const topPosition = window.scrollY + rect.top - statsModal.offsetHeight - 15;
     const leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
 
     statsModal.style.top = `${Math.max(10, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
