@@ -29,7 +29,7 @@ button:hover {
 /* Phase de sélection */
 .pokemon-list {
     display: grid;
-    grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
+    grid-template-columns: repeat(6, 1fr); /* 6 Pokémon par ligne */
     gap: 20px;
     padding: 20px;
 }
@@ -90,7 +90,7 @@ button:hover {
     border-radius: 10px;
     display: none;
     z-index: 1000;
-    width: 200px;
+    width: 250px;
     transition: opacity 0.3s ease-in-out;
     pointer-events: none;
 }
@@ -100,20 +100,16 @@ button:hover {
     opacity: 1;
 }
 
-#stats-modal .pokemon-name {
+.pokemon-name {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-#stats-modal .pokemon-types {
+.pokemon-types {
     display: flex;
     justify-content: space-around;
     margin-bottom: 10px;
-}
-
-#stats-modal .pokemon-stats p {
-    margin: 5px 0;
 }
 
 .pokemon-type {
@@ -122,7 +118,12 @@ button:hover {
     color: white;
 }
 
+.pokemon-stats p {
+    margin: 5px 0;
+}
+
 /* Types de Pokémon avec couleurs */
+.type-normal { background-color: #A8A878; }
 .type-fire { background-color: #F08030; }
 .type-water { background-color: #6890F0; }
 .type-grass { background-color: #78C850; }
@@ -141,13 +142,12 @@ button:hover {
 .type-steel { background-color: #B8B8D0; }
 .type-fairy { background-color: #EE99AC; }
 
-/* Phase de combat */
+/* PHASE DE COMBAT */
 #combat-phase {
-    display: none;
     position: relative;
     width: 100%;
     height: 100vh;
-    background-color: lightblue;
+    background-color: #f0f0f0;
 }
 
 #battlefield {
@@ -158,20 +158,67 @@ button:hover {
     overflow: hidden;
 }
 
-#player-pokemon-sprite, #opponent-pokemon-sprite {
-    width: 150px;
-    height: auto;
+#terrain-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#opponent-trainer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-align: center;
 }
 
 #trainer-image {
+    width: 100px;
+}
+
+#trainer-name {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.pokemon-side {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#player-pokemon {
+    bottom: 10px;
+    left: 10px;
+}
+
+#opponent-pokemon {
+    top: 100px;
+    right: 20px;
+}
+
+.pokemon-sprite {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.pokemon-info {
+    margin-top: 10px;
     width: 150px;
 }
 
-/* Barre de vie pour les Pokémon */
+.pokemon-name-level {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
 .hp-bar-container {
     background-color: #ddd;
     border-radius: 10px;
-    width: 150px;
+    width: 100%;
     height: 15px;
     margin-top: 5px;
     overflow: hidden;
@@ -205,14 +252,14 @@ button:hover {
     border-top: 2px solid #333;
 }
 
-#combat-options, #attack-options, #pokemon-change-options {
+#combat-options, #attack-options {
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 100%;
 }
 
-#combat-options button, #attack-options button, #pokemon-change-options button {
+#combat-options button, #attack-options button {
     width: 22%;
     padding: 15px;
     font-size: 1.2rem;
@@ -222,51 +269,34 @@ button:hover {
     cursor: pointer;
 }
 
-#combat-options button:hover, #attack-options button:hover, #pokemon-change-options button:hover {
+#combat-options button:hover, #attack-options button:hover {
     background-color: #F5A623;
 }
 
-/* Ecran de Game Over */
-#game-over-screen, #victory-animation {
+.hidden {
     display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
 }
 
-#game-over-screen img, #victory-animation img {
-    width: 50%;
-    height: auto;
-}
-
-#game-over-screen button, #victory-animation button {
-    margin-top: 20px;
-    padding: 10px 30px;
-    font-size: 1.5rem;
-    background-color: #4CAF50;
-    border: none;
-    cursor: pointer;
-}
-
-#game-over-screen button:hover, #victory-animation button:hover {
-    background-color: #45a049;
-}
-
-/* Responsive design */
-@media screen and (max-width: 768px) {
+/* RESPONSIVE */
+@media screen and (max-width: 1200px) {
     .pokemon-list {
         grid-template-columns: repeat(5, 1fr); /* 5 Pokémon par ligne */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .pokemon-list {
+        grid-template-columns: repeat(3, 1fr); /* 3 Pokémon par ligne */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .pokemon-list {
+        grid-template-columns: repeat(2, 1fr); /* 2 Pokémon par ligne */
     }
 
     .pokemon-card img {
         width: 100px;
         height: 100px;
-    }
-
-    #combat-options button, #attack-options button, #pokemon-change-options button {
-        font-size: 1rem;
     }
 }
