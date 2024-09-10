@@ -66,6 +66,8 @@ function createPokemonCard(pokemon) {
 // Afficher les statistiques d'un Pokémon lors du survol
 function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById("stats-modal");
+    const popularAbility = getPopularAbility(pokemon.name); // Récupérer la capacité populaire du Pokémon
+
     statsModal.innerHTML = `
         <div class="pokemon-name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
         <div class="pokemon-types">
@@ -75,7 +77,10 @@ function showPokemonStats(pokemon, card) {
             <p>HP: ${pokemon.stats[0].base_stat}</p>
             <p>Attaque: ${pokemon.stats[1].base_stat}</p>
             <p>Défense: ${pokemon.stats[2].base_stat}</p>
+            <p>Attaque Spéciale: ${pokemon.stats[3].base_stat}</p>
+            <p>Défense Spéciale: ${pokemon.stats[4].base_stat}</p>
             <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
+            <p>Capacité Spéciale: ${popularAbility}</p>
         </div>
     `;
 
@@ -154,3 +159,19 @@ document.getElementById('start-game').addEventListener('click', () => {
         alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
     }
 });
+
+// Fonction pour obtenir la capacité spéciale la plus populaire pour chaque Pokémon
+function getPopularAbility(pokemonName) {
+    const abilities = {
+        'bulbasaur': 'Chlorophylle',
+        'charmander': 'Brasier',
+        'squirtle': 'Torrent',
+        'pikachu': 'Statik',
+        // Ajoute ici les capacités spéciales pour chaque Pokémon
+        // Par exemple :
+        // 'mewtwo': 'Pression',
+        // etc.
+    };
+    
+    return abilities[pokemonName.toLowerCase()] || 'Inconnue'; // Si non trouvé, retourne 'Inconnue'
+}
