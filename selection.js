@@ -57,7 +57,6 @@ async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
-
         const pokemonCard = createPokemonCard(pokemon);
         document.getElementById("pokemon-list").appendChild(pokemonCard);
     } catch (error) {
@@ -81,7 +80,6 @@ function createPokemonCard(pokemon) {
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
     card.addEventListener('mouseleave', () => hidePokemonStats());
-
     card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
     return card;
 }
@@ -89,7 +87,6 @@ function createPokemonCard(pokemon) {
 // Afficher les statistiques d'un Pokémon lors du survol
 function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById("stats-modal");
-    const popularAbility = getPopularAbility(pokemon.name); // Récupérer la capacité populaire du Pokémon
 
     statsModal.innerHTML = `
         <div class="pokemon-name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
@@ -103,7 +100,6 @@ function showPokemonStats(pokemon, card) {
             <p>Attaque Spéciale: ${pokemon.stats[3].base_stat}</p>
             <p>Défense Spéciale: ${pokemon.stats[4].base_stat}</p>
             <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
-            <p>${popularAbility}</p> <!-- Affichage de la capacité spéciale sans le texte -->
         </div>
     `;
 
@@ -182,39 +178,3 @@ document.getElementById('start-game').addEventListener('click', () => {
         alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
     }
 });
-
-// Fonction pour obtenir la capacité spéciale la plus populaire pour chaque Pokémon
-function getPopularAbility(pokemonName) {
-    const abilities = {
-        'bulbizarre': 'Chlorophylle',
-        'salamèche': 'Brasier',
-        'carapuce': 'Torrent',
-        'pikachu': 'Statik',
-        'mewtwo': 'Pression',
-        'ronflex': 'Isograisse',
-        'dracaufeu': 'Brasier',
-        'florizarre': 'Engrais',
-        'tortank': 'Torrent',
-        // Ajoute ici les capacités spéciales pour chaque Pokémon
-    };
-    
-    return abilities[pokemonName.toLowerCase()] || 'Capacité spéciale N/A'; // Si non trouvé, retourne 'Inconnue'
-}
-
-// Fonction pour traduire les noms des Pokémon en français
-function translatePokemonName(name) {
-    const translations = {
-        'Bulbasaur': 'Bulbizarre',
-        'charmander': 'Salamèche',
-        'squirtle': 'Carapuce',
-        'pikachu': 'Pikachu',
-        'mewtwo': 'Mewtwo',
-        'snorlax': 'Ronflex',
-        'charizard': 'Dracaufeu',
-        'venusaur': 'Florizarre',
-        'blastoise': 'Tortank',
-        // Ajoute ici les traductions de tous les Pokémon
-    };
-
-    return translations[name.toLowerCase()] || name;
-}
