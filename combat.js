@@ -1,3 +1,6 @@
+// Link for animated sprites
+const spriteBaseUrl = "https://play.pokemonshowdown.com/sprites/xyani/";
+
 // List of trainer sprites from Bulbagarden
 const trainerSprites = {
     bill: "https://archives.bulbagarden.net/media/upload/d/d7/Spr_FRLG_Bill.png",
@@ -14,6 +17,26 @@ const trainerSprites = {
 let playerPokemon;
 let opponentPokemon;
 let currentTurn = "player"; // Player starts the battle
+
+// Function to update the player's and opponent's Pokémon sprites with animated versions
+function updatePokemonSprites() {
+    // Player's Pokémon animated sprite
+    document.getElementById("player-pokemon-sprite").src = `${spriteBaseUrl}${playerPokemon.name.toLowerCase()}.gif`;
+
+    // Opponent's Pokémon animated sprite
+    document.getElementById("opponent-pokemon-sprite").src = `${spriteBaseUrl}${opponentPokemon.name.toLowerCase()}.gif`;
+
+    // Update the rest of the team with their respective animated sprites
+    const teamContainer = document.getElementById('team');
+    teamContainer.innerHTML = ''; // Clear current team display
+
+    selectedPokemon.forEach(pokemon => {
+        const img = document.createElement('img');
+        img.src = `${spriteBaseUrl}${pokemon.name.toLowerCase()}.gif`; // Use animated sprite
+        img.alt = pokemon.name;
+        teamContainer.appendChild(img);
+    });
+}
 
 // Function to start the battle
 function startBattle() {
@@ -34,6 +57,9 @@ function startBattle() {
 
     // Update HP bars
     updateHpBars();
+
+    // Call to update animated sprites
+    updatePokemonSprites();
 
     // Handle events for combat actions
     document.getElementById("attack-button").addEventListener("click", showAttackOptions);
@@ -179,6 +205,7 @@ function runAway() {
 }
 
 // End the battle and display result
+ 
 function endBattle(winner) {
     if (winner === "player") {
         alert("Félicitations, tu as gagné !");
