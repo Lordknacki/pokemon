@@ -36,7 +36,18 @@ function setupPokemonSelection() {
     const pokemonElements = document.querySelectorAll('.pokemon-card');
     pokemonElements.forEach(element => {
         element.addEventListener('click', function() {
-            this.classList.toggle('selected');
+            // Vérifier si le Pokémon est déjà sélectionné
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected'); // Désélectionner le Pokémon
+            } else {
+                // Compter combien de Pokémon sont déjà sélectionnés
+                const selectedCount = document.querySelectorAll('.pokemon-card.selected').length;
+                if (selectedCount < 6) {
+                    this.classList.add('selected'); // Sélectionner le Pokémon
+                } else {
+                    alert('Vous ne pouvez sélectionner que 6 Pokémon.');
+                }
+            }
         });
     });
 }
