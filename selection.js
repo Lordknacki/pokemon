@@ -198,13 +198,13 @@ function getPopularAbility(pokemonName) {
         // Ajoute ici les capacités spéciales pour chaque Pokémon
     };
     
-    return abilities[pokemonName.toLowerCase()] || 'Inconnue'; // Si non trouvé, retourne 'Inconnue'
+    return abilities[pokemonName.toLowerCase()] || 'Capacité spéciale N/A'; // Si non trouvé, retourne 'Inconnue'
 }
 
 // Fonction pour traduire les noms des Pokémon en français
 function translatePokemonName(name) {
     const translations = {
-        'bulbasaur': 'Bulbizarre',
+        'Bulbasaur': 'Bulbizarre',
         'charmander': 'Salamèche',
         'squirtle': 'Carapuce',
         'pikachu': 'Pikachu',
