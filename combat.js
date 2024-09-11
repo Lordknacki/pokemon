@@ -18,6 +18,17 @@ class Move {
     }
 }
 
+async function fetchAllPokemon() {
+    const url = 'https://pokeapi.co/api/v2/pokemon?limit=386';
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.results;  // Renvoie un tableau d'objets avec les noms et URL des Pokémon
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données Pokémon:", error);
+    }
+}
+
 // Création de quelques mouvements
 let flamethrower = new Move("Flamethrower", "fire", 90, 100);
 let hydroPump = new Move("Hydro Pump", "water", 110, 80);
