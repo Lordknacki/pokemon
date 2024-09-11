@@ -18,17 +18,20 @@ class Move {
     }
 }
 
-function getSelectedPokemon() {
+function displaySelectedPokemon() {
     const selectedPokemonElements = document.querySelectorAll('.pokemon-card.selected');
     const selectedPokemon = Array.from(selectedPokemonElements).map(pokemonElement => {
+        const pokemonId = parseInt(pokemonElement.getAttribute('data-id'));
+        const pokemon = allPokemonData.find(p => p.id === pokemonId);
         return {
-            name: pokemonElement.getAttribute('data-name'),
-            imageUrl: pokemonElement.querySelector('img').src
+            name: pokemon.name,
+            imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
         };
     });
 
-    return selectedPokemon;
+    // Afficher les Pokémon sélectionnés (voir exemple précédent pour intégration DOM)
 }
+
 
 function displaySelectedPokemon() {
     const selectedPokemon = getSelectedPokemon();
