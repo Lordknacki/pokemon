@@ -132,6 +132,11 @@ function hidePokemonStats() {
     statsModal.style.display = "none";
 }
 
+function translatePokemonName(name) {
+    // Exemple: simplement retourner le nom avec la première lettre en majuscule
+    return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
 function togglePokemonSelection(pokemon, card) {
     const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
