@@ -18,15 +18,34 @@ class Move {
     }
 }
 
-async function fetchAllPokemon() {
-    const url = 'https://pokeapi.co/api/v2/pokemon?limit=386';
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.results;  // Renvoie un tableau d'objets avec les noms et URL des Pokémon
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données Pokémon:", error);
-    }
+function getSelectedPokemon() {
+    const selectedPokemonElements = document.querySelectorAll('.pokemon-card.selected');
+    const selectedPokemon = Array.from(selectedPokemonElements).map(pokemonElement => {
+        return {
+            name: pokemonElement.getAttribute('data-name'),
+            imageUrl: pokemonElement.querySelector('img').src
+        };
+    });
+
+    return selectedPokemon;
+}
+
+function displaySelectedPokemon() {
+    const selectedPokemon = getSelectedPokemon();
+    const displayArea = document.getElementById('selected-pokemon-display'); // Assure-toi que cet élément existe dans ton HTML
+
+    // Nettoyer l'affichage précédent
+    displayArea.innerHTML = '';
+
+    selectedPokemon.forEach(pokemon => {
+        const pokemonDiv = document.createElement('div');
+        pokemonDiv.classList.add('pokemon-info');
+        pokemonDiv.innerHTML = `
+            <img src="${pokemon.imageUrl}" alt="${pokemon.name}">
+            <h3>${pokemon.name}</h3>
+        `;
+        displayArea.appendChild(pokemonDiv);
+    });
 }
 
 // Création de quelques mouvements
