@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Phase de sélection des Pokémon -->
     <section id="selection-phase">
         <header>
             <h1>Choisis ton Équipe Pokémon</h1>
@@ -19,8 +17,6 @@
         </div>
         <div id="pokemon-list" class="pokemon-list"></div>
         <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
-
-        <!-- Fenêtre modale pour les statistiques des Pokémon lors du survol -->
         <div id="stats-modal" class="hidden">
             <div class="pokemon-name"></div>
             <div class="pokemon-types"></div>
@@ -28,22 +24,12 @@
         </div>
     </section>
 
-    <!-- Phase de combat -->
     <section id="combat-phase" class="hidden">
         <header>
             <h1>Combat Pokémon</h1>
+            <p id="battle-status">En attente de démarrage...</p>
         </header>
         <div id="battlefield">
-            <!-- Terrain de combat -->
-            <img id="terrain-image" src="https://i0.wp.com/paletteswap.site/wp-content/uploads/2024/04/SaffronCityStadium.png?w=1920&ssl=1" alt="Terrain de combat">
-            
-            <!-- Dresseur adverse -->
-            <div id="opponent-trainer">
-                <img id="trainer-image" src="https://archives.bulbagarden.net/media/upload/d/d4/Spr_FRLG_Lance.png" alt="Dresseur">
-                <h2 id="trainer-name">Dresseur</h2>
-            </div>
-
-            <!-- Pokémon du joueur -->
             <div id="player-pokemon" class="pokemon-side">
                 <img id="player-pokemon-sprite" src="" alt="Pokémon du Joueur" class="pokemon-sprite">
                 <div class="pokemon-info">
@@ -53,8 +39,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Pokémon adversaire -->
             <div id="opponent-pokemon" class="pokemon-side">
                 <img id="opponent-pokemon-sprite" src="" alt="Pokémon Adverse" class="pokemon-sprite">
                 <div class="pokemon-info">
@@ -65,8 +49,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Menu de combat -->
         <div id="combat-menu">
             <div id="combat-options">
                 <button id="attack-button">Combattre</button>
@@ -74,13 +56,10 @@
                 <button id="bag-button">Sac</button>
                 <button id="run-button">Fuir</button>
             </div>
-            <!-- Menu des attaques -->
             <div id="attack-menu" class="hidden">
                 <h3>Choisissez une attaque :</h3>
                 <div id="attack-options"></div>
             </div>
-
-            <!-- Menu de changement de Pokémon -->
             <div id="pokemon-menu" class="hidden">
                 <h3>Choisissez un Pokémon à envoyer au combat :</h3>
                 <div id="pokemon-change-options"></div>
@@ -88,24 +67,7 @@
         </div>
     </section>
 
-    <!-- Écran de Game Over -->
-    <section id="game-over-screen" class="hidden">
-        <h1>Game Over</h1>
-        <img src="https://i.imgur.com/V7bO6Gc.png" alt="Game Over">
-        <p>Tu as perdu le combat.</p>
-        <button id="retry-button">Revenir à la sélection</button>
-    </section>
-
-    <!-- Animation de Victoire -->
-    <section id="victory-animation" class="hidden">
-        <h1>Félicitations, tu as remporté la Ligue Pokémon !</h1>
-        <img id="victory-animation-image" src="https://c.tenor.com/ze30msnkRfMAAAAC/pokemon-victory.gif" alt="Victoire Ligue Pokémon">
-        <button id="victory-restart-button">Rejouer</button>
-    </section>
-
-    <!-- Appel des scripts externes -->
     <script src="selection.js"></script>
     <script src="combat.js"></script>
-
 </body>
 </html>
