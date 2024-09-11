@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 let selectedPokemon = [];
 
 // Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex
+let allPokemonData = [];
+
 async function fetchPokemonData() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386');
@@ -14,11 +16,14 @@ async function fetchPokemonData() {
         // Extraire les IDs et noms des Pokémon et garantir l'ordre par ID
         const pokemonListWithIds = pokemonList.map(pokemon => {
             const id = pokemon.url.split("/").filter(Boolean).pop(); // Extraire l'ID depuis l'URL
-            return { name: translatePokemonName(pokemon.name), id: parseInt(id) };
+            return { name: translatePokemonName(pokemon.name), id: parseInt(id), url: pokemon.url };
         });
 
         // Assurer que l'ordre est maintenu par ID (croissant)
         pokemonListWithIds.sort((a, b) => a.id - b.id);
+
+        // Stockage des données pour accès ultérieur
+        allPokemonData = pokemonListWithIds;
 
         // Appel des détails des Pokémon une fois l'ordre garanti
         for (let pokemon of pokemonListWithIds) {
@@ -28,6 +33,7 @@ async function fetchPokemonData() {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
 }
+
 
 // Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
