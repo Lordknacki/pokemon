@@ -165,3 +165,8 @@ button:hover {
         height: 100px;
     }
 }
+
+.hidden {
+    display: none;
+}
+
