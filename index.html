@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Phase de sélection des Pokémon -->
     <section id="selection-phase">
         <header>
             <h1>Choisis ton Équipe Pokémon</h1>
@@ -17,6 +18,8 @@
         </div>
         <div id="pokemon-list" class="pokemon-list"></div>
         <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+
+        <!-- Fenêtre modale pour les statistiques des Pokémon lors du survol -->
         <div id="stats-modal" class="hidden">
             <div class="pokemon-name"></div>
             <div class="pokemon-types"></div>
@@ -24,6 +27,7 @@
         </div>
     </section>
 
+    <!-- Phase de combat -->
     <section id="combat-phase" class="hidden">
         <header>
             <h1>Combat Pokémon</h1>
