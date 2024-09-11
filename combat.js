@@ -1,208 +1,147 @@
-// Lien pour les sprites animés
+// Constantes pour les sprites animés et la base de l'URL API
 const spriteBaseUrl = "https://play.pokemonshowdown.com/sprites/xyani/";
+const apiBaseUrl = "https://pokeapi.co/api/v2/pokemon/";
 
-// Variables pour les Pokémon du joueur et de l'adversaire
-let playerPokemon;
-let opponentPokemon;
-let currentTurn = "player"; // Le joueur commence toujours
-
-// Fonction pour mettre à jour les sprites des Pokémon avec les Pokémon sélectionnés et adverses
-function updatePokemonSprites() {
-    // Sprite animé du Pokémon du joueur
-    document.getElementById("player-pokemon-sprite").src = `${spriteBaseUrl}${playerPokemon.name.toLowerCase()}.gif`;
-
-    // Sprite animé du Pokémon adverse
-    document.getElementById("opponent-pokemon-sprite").src = `${spriteBaseUrl}${opponentPokemon.name.toLowerCase()}.gif`;
-
-    // Mettre à jour l'équipe avec les sprites animés
-    const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; // Vider l'affichage actuel de l'équipe
-
-    selectedPokemon.forEach(pokemon => {
-        const img = document.createElement('img');
-        img.src = `${spriteBaseUrl}${pokemon.name.toLowerCase()}.gif`; // Sprite animé
-        img.alt = pokemon.name;
-        teamContainer.appendChild(img);
-    });
-}
+// Variables pour gérer les Pokémon du joueur et de l'adversaire
+let playerPokemon, opponentPokemon;
+let currentTurn = "player"; // Le joueur commence
 
 // Fonction pour démarrer le combat
 async function startBattle() {
-    // Initialiser les Pokémon du joueur et de l'adversaire
     playerPokemon = selectedPokemon[0]; // Premier Pokémon sélectionné par le joueur
     opponentPokemon = await generateOpponentPokemon(); // Générer un Pokémon adverse aléatoire
-
-    // Mettre à jour les informations des Pokémon (nom, niveau, etc.)
-    document.getElementById("player-pokemon-name").innerText = `${capitalize(playerPokemon.name)} Lv. ${playerPokemon.level}`;
-    document.getElementById("opponent-pokemon-name").innerText = `${capitalize(opponentPokemon.name)} Lv. ${opponentPokemon.level}`;
-
-    // Mettre à jour les barres de HP
-    updateHpBars();
-
-    // Mettre à jour les sprites animés
-    updatePokemonSprites();
-
-    // Gérer les événements pour les actions de combat
-    document.getElementById("attack-button").addEventListener("click", showAttackOptions);
-    document.getElementById("pokemon-button").addEventListener("click", changePokemon);
-    document.getElementById("run-button").addEventListener("click", runAway);
+    updateBattleUI();
+    document.getElementById('combat-phase').classList.remove('hidden');
 }
 
 // Générer un Pokémon adverse aléatoire
 async function generateOpponentPokemon() {
-    const randomId = Math.floor(Math.random() * 386) + 1; // Pokémon aléatoire entre 1 et 386
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
-    const pokemonData = await response.json();
+    const randomId = Math.floor(Math.random() * 386) + 1;
+    const response = await fetch(`${apiBaseUrl}${randomId}`);
+    const data = await response.json();
+    return mapPokemonData(data);
+}
 
-    // Retourner le Pokémon adverse avec ses statistiques et ses attaques
+// Fonction pour mapper les données de l'API à notre format
+function mapPokemonData(data) {
     return {
-        name: pokemonData.name,
-        level: Math.floor(Math.random() * 50) + 1, // Niveau aléatoire entre 1 et 50
-        hp: pokemonData.stats[0].base_stat,
-        maxHp: pokemonData.stats[0].base_stat,
-        type: pokemonData.types[0].type.name,
-        moves: pokemonData.moves.slice(0, 4).map(move => ({
+        name: data.name,
+        level: Math.floor(Math.random() * 50) + 1,
+        hp: data.stats[0].base_stat,
+        maxHp: data.stats[0].base_stat,
+        type: data.types[0].type.name,
+        moves: data.moves.slice(0, 4).map(move => ({
             name: move.move.name,
-            power: Math.floor(Math.random() * 50) + 50, // Puissance aléatoire entre 50 et 100
-            type: pokemonData.types[0].type.name
+            power: Math.floor(Math.random() * 50) + 50, // Puissance entre 50 et 100
+            type: data.types[0].type.name,
+            accuracy: Math.random() > 0.1 ? 100 : 80 // 10% de chance d'avoir une précision réduite
         }))
     };
 }
 
-// Afficher les options d'attaque du joueur
-function showAttackOptions() {
-    const attackOptions = document.getElementById("attack-options");
-    attackOptions.innerHTML = ''; // Vider les options précédentes
-
-    playerPokemon.moves.forEach((move) => {
-        const button = document.createElement("button");
-        button.innerText = move.name;
-        button.addEventListener("click", () => playerAttack(move));
-        attackOptions.appendChild(button);
-    });
-
-    document.getElementById("combat-options").classList.add("hidden");
-    attackOptions.classList.remove("hidden");
-}
-
-// Gérer l'attaque du joueur
-function playerAttack(move) {
-    const damage = calculateDamage(move, playerPokemon, opponentPokemon);
-    opponentPokemon.hp -= damage;
-    if (opponentPokemon.hp < 0) opponentPokemon.hp = 0;
-
+// Mettre à jour l'interface utilisateur du combat
+function updateBattleUI() {
+    updatePokemonSprites();
     updateHpBars();
-
-    if (opponentPokemon.hp === 0) {
-        endBattle("player");
-        return;
-    }
-
-    // Passer au tour de l'adversaire
-    currentTurn = "opponent";
-    setTimeout(opponentTurn, 1000); // Délai avant l'attaque de l'adversaire
+    showCurrentTurn();
 }
 
-// Gérer l'attaque de l'adversaire
+// Mettre à jour les sprites des Pokémon
+function updatePokemonSprites() {
+    document.getElementById("player-pokemon-sprite").src = `${spriteBaseUrl}${playerPokemon.name.toLowerCase()}.gif`;
+    document.getElementById("opponent-pokemon-sprite").src = `${spriteBaseUrl}${opponentPokemon.name.toLowerCase()}.gif`;
+}
+
+// Afficher le tour actuel
+function showCurrentTurn() {
+    const statusText = currentTurn === "player" ? "À ton tour de jouer!" : "Tour de l'adversaire...";
+    document.getElementById("battle-status").textContent = statusText;
+    if (currentTurn === "opponent") {
+        setTimeout(opponentTurn, 1000);
+    }
+}
+
+// Tour de l'adversaire avec IA améliorée
 function opponentTurn() {
-    const randomMove = opponentPokemon.moves[Math.floor(Math.random() * opponentPokemon.moves.length)];
-    const damage = calculateDamage(randomMove, opponentPokemon, playerPokemon);
-    playerPokemon.hp -= damage;
-    if (playerPokemon.hp < 0) playerPokemon.hp = 0;
+    const move = chooseMoveIA(opponentPokemon, playerPokemon);
+    executeMove(opponentPokemon, playerPokemon, move);
+}
 
+// Choix de mouvement par l'IA
+function chooseMoveIA(pokemon, opponent) {
+    const effectiveMoves = pokemon.moves.filter(move => getTypeEffectiveness(move.type, opponent.type) > 1);
+    return effectiveMoves.length > 0 && Math.random() < 0.75 ? effectiveMoves[Math.floor(Math.random() * effectiveMoves.length)] : pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)];
+}
+
+// Exécution d'un mouvement
+function executeMove(attacker, defender, move) {
+    if (Math.random() * 100 > move.accuracy) {
+        alert(`${attacker.name} a raté son attaque!`);
+        return endTurn();
+    }
+    const damage = calculateDamage(move, attacker, defender);
+    defender.hp -= damage;
+    alert(`${attacker.name} utilise ${move.name} et inflige ${damage} dégâts!`);
+    applyHitAnimation(defender === playerPokemon ? "player" : "opponent");
+    if (defender.hp <= 0) {
+        defender.hp = 0;
+        endBattle(attacker === playerPokemon ? "player" : "opponent");
+    } else {
+        endTurn();
+    }
     updateHpBars();
-
-    if (playerPokemon.hp === 0) {
-        endBattle("opponent");
-        return;
-    }
-
-    // Retour au tour du joueur
-    currentTurn = "player";
-    document.getElementById("combat-options").classList.remove("hidden");
-    document.getElementById("attack-options").classList.add("hidden");
 }
 
-// Calcul des dégâts en fonction des types de Pokémon
-const typeEffectiveness = {
-    fire: { grass: 2, water: 0.5, fire: 0.5 },
-    water: { fire: 2, grass: 0.5, water: 0.5 },
-    grass: { water: 2, fire: 0.5, grass: 0.5 },
-    // Ajouter plus de types si nécessaire
-};
-
+// Calcul des dégâts avec coups critiques
 function calculateDamage(move, attacker, defender) {
-    const baseDamage = move.power;
-    const levelFactor = (2 * attacker.level) / 5 + 2;
-    const attackDefenseRatio = baseDamage * (attacker.level / defender.level);
-    let typeEffect = 1;
-
-    const moveType = move.type.toLowerCase();
-    const defenderType = defender.type.toLowerCase();
-
-    if (typeEffectiveness[moveType] && typeEffectiveness[moveType][defenderType]) {
-        typeEffect = typeEffectiveness[moveType][defenderType];
-    }
-
-    return Math.floor(((attackDefenseRatio / 50) + 2) * typeEffect);
+    const critical = Math.random() < 0.1 ? 2 : 1; // 10% chance de coup critique
+    const typeEffect = getTypeEffectiveness(move.type, defender.type);
+    return Math.floor(((move.power * (attacker.level / defender.level) * typeEffect * critical) / 50) + 2);
 }
 
-// Mettre à jour les barres de HP après chaque attaque
+// Obtention de l'efficacité du type
+function getTypeEffectiveness(moveType, defenderType) {
+    const effectiveness = {
+        fire: { grass: 2, water: 0.5 },
+        water: { fire: 2, grass: 0.5 },
+        grass: { water: 2, fire: 0.5 }
+        // Ajouter plus de types ici
+    };
+    return effectiveness[moveType][defenderType] || 1; // Retourne 1 si pas de correspondance spécifique
+}
+
+// Animer un Pokémon qui reçoit un coup
+function applyHitAnimation(target) {
+    const elementId = target === "player" ? "player-pokemon" : "opponent-pokemon";
+    const pokemonElement = document.getElementById(elementId);
+    pokemonElement.classList.add('pokemon-hit');
+    setTimeout(() => pokemonElement.classList.remove('pokemon-hit'), 500);
+}
+
+// Mettre à jour les barres de HP
 function updateHpBars() {
     const playerHpPercent = (playerPokemon.hp / playerPokemon.maxHp) * 100;
     const opponentHpPercent = (opponentPokemon.hp / opponentPokemon.maxHp) * 100;
-
     document.getElementById("player-hp").style.width = `${playerHpPercent}%`;
     document.getElementById("opponent-hp").style.width = `${opponentHpPercent}%`;
-
-    document.getElementById("player-hp").className = playerHpPercent > 50 ? "hp-bar hp-green" : playerHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
-    document.getElementById("opponent-hp").className = opponentHpPercent > 50 ? "hp-bar hp-green" : opponentHpPercent > 20 ? "hp-bar hp-orange" : "hp-bar hp-red";
 }
 
-// Gérer le changement de Pokémon (pour le joueur uniquement)
-function changePokemon() {
-    const pokemonMenu = document.getElementById("pokemon-change-options");
-    pokemonMenu.innerHTML = ''; // Vider les options précédentes
-
-    selectedPokemon.forEach(pokemon => {
-        if (pokemon.hp > 0 && pokemon !== playerPokemon) {
-            const button = document.createElement('button');
-            button.innerText = pokemon.name;
-            button.addEventListener('click', () => {
-                playerPokemon = pokemon;
-                updatePokemonSprites();
-                updateHpBars();
-                currentTurn = "opponent";
-                opponentTurn();
-            });
-            pokemonMenu.appendChild(button);
-        }
-    });
-
-    document.getElementById("combat-options").classList.add("hidden");
-    document.getElementById("pokemon-menu").classList.remove("hidden");
+// Terminer le tour
+function endTurn() {
+    currentTurn = currentTurn === "player" ? "opponent" : "player";
+    showCurrentTurn();
 }
 
-// Gérer la fuite du combat
-function runAway() {
-    alert("Tu ne peux pas fuir !");
-}
-
-// Terminer le combat et afficher le résultat
+// Terminer le combat
 function endBattle(winner) {
-    if (winner === "player") {
-        alert("Félicitations, tu as gagné !");
-        document.getElementById("victory-animation").classList.remove("hidden");
-    } else {
-        alert("Tu as perdu !");
-        document.getElementById("game-over-screen").classList.remove("hidden");
-    }
-
-    // Cacher la phase de combat
-    document.getElementById("combat-phase").classList.add("hidden");
+    const message = winner === "player" ? "Félicitations, tu as gagné!" : "Tu as perdu le combat!";
+    alert(message);
+    document.getElementById('combat-phase').classList.add('hidden');
+    document.getElementById(winner === "player" ? "victory-animation" : "game-over-screen").classList.remove('hidden');
 }
 
-// Fonction utilitaire pour capitaliser la première lettre
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+// Démarrer un nouveau combat
+function restartBattle() {
+    selectedPokemon.forEach(p => p.hp = p.maxHp); // Réinitialiser les HP
+    startBattle();
 }
