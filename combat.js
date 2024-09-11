@@ -20,18 +20,29 @@ class Move {
 
 function displaySelectedPokemon() {
     const selectedPokemonElements = document.querySelectorAll('.pokemon-card.selected');
-    const selectedPokemon = Array.from(selectedPokemonElements).map(pokemonElement => {
-        const pokemonId = parseInt(pokemonElement.getAttribute('data-id'));
-        const pokemon = allPokemonData.find(p => p.id === pokemonId);
-        return {
-            name: pokemon.name,
-            imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
-        };
+    const displayArea = document.getElementById('selected-pokemon-display'); // Assure-toi que cet élément existe dans ton HTML
+
+    // Nettoyer l'affichage précédent
+    displayArea.innerHTML = '';
+
+    selectedPokemon.forEach(pokemon => {
+        const pokemonDiv = document.createElement('div');
+        pokemonDiv.classList.add('pokemon-info');
+
+        // Créer le lien et l'image avec les données correctes du Pokémon
+        const pokemonNameLower = pokemon.name.toLowerCase().replace(' ', ''); // Assure que le nom est bien formaté pour l'URL
+        const pokemonImageURL = `https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemonNameLower}.gif`;
+        const pokemonPageURL = `https://pokemondb.net/pokedex/${pokemonNameLower}`;
+
+        pokemonDiv.innerHTML = `
+            <a href="${pokemonPageURL}">
+                <img src="${pokemonImageURL}" alt="${pokemon.name}">
+            </a>
+            <h3>${pokemon.name}</h3>
+        `;
+        displayArea.appendChild(pokemonDiv);
     });
-
-    // Afficher les Pokémon sélectionnés (voir exemple précédent pour intégration DOM)
 }
-
 
 function displaySelectedPokemon() {
     const selectedPokemon = getSelectedPokemon();
