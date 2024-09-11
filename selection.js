@@ -13,27 +13,33 @@ async function fetchPokemonData() {
         const data = await response.json();
         const pokemonList = data.results;
 
-        // Extraire les IDs et noms des Pokémon et garantir l'ordre par ID
         const pokemonListWithIds = pokemonList.map(pokemon => {
-            const id = pokemon.url.split("/").filter(Boolean).pop(); // Extraire l'ID depuis l'URL
+            const id = pokemon.url.split("/").filter(Boolean).pop();
             return { name: translatePokemonName(pokemon.name), id: parseInt(id), url: pokemon.url };
         });
 
-        // Assurer que l'ordre est maintenu par ID (croissant)
         pokemonListWithIds.sort((a, b) => a.id - b.id);
-
-        // Stockage des données pour accès ultérieur
         allPokemonData = pokemonListWithIds;
 
-        // Appel des détails des Pokémon une fois l'ordre garanti
         for (let pokemon of pokemonListWithIds) {
-            await fetchPokemonDetails(pokemon.id);
+            await fetchPokemonDetails(pokemon.id);  // Supposons que cela affiche aussi les Pokémon
         }
+
+        // Après avoir chargé et affiché tous les Pokémon, configure les sélections
+        setupPokemonSelection();
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
 }
 
+function setupPokemonSelection() {
+    const pokemonElements = document.querySelectorAll('.pokemon-card');
+    pokemonElements.forEach(element => {
+        element.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+}
 
 // Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
