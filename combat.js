@@ -45,18 +45,28 @@ function displaySelectedPokemon() {
 }
 
 function displaySelectedPokemon() {
-    const selectedPokemon = getSelectedPokemon();
+    const selectedPokemonElements = document.querySelectorAll('.pokemon-card.selected');
     const displayArea = document.getElementById('selected-pokemon-display'); // Assure-toi que cet élément existe dans ton HTML
 
     // Nettoyer l'affichage précédent
     displayArea.innerHTML = '';
 
-    selectedPokemon.forEach(pokemon => {
+    // Utiliser les ID pour récupérer et afficher des informations spécifiques pour chaque Pokémon
+    selectedPokemonElements.forEach(element => {
+        const pokemonId = element.getAttribute('data-id');  // Récupérer l'ID stocké dans un attribut data
+        const pokemonName = element.getAttribute('data-name');  // Récupérer le nom pour l'affichage
+        const pokemonNameLower = pokemonName.toLowerCase().replace(/\s+/g, ''); // Nettoyer le nom pour l'URL
+
+        const pokemonImageURL = `https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemonNameLower}.gif`;
+        const pokemonPageURL = `https://pokemondb.net/pokedex/${pokemonNameLower}`;
+
         const pokemonDiv = document.createElement('div');
         pokemonDiv.classList.add('pokemon-info');
         pokemonDiv.innerHTML = `
-            <img src="${pokemon.imageUrl}" alt="${pokemon.name}">
-            <h3>${pokemon.name}</h3>
+            <a href="${pokemonPageURL}" target="_blank">
+                <img src="${pokemonImageURL}" alt="${pokemonName}">
+            </a>
+            <h3>${pokemonName}</h3>
         `;
         displayArea.appendChild(pokemonDiv);
     });
