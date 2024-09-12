@@ -57,20 +57,20 @@ function createPokemonCard(pokemon) {
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-    document.getElementById('pokemon-search').addEventListener('input', function(e) {
-        const searchQuery = e.target.value.toLowerCase();
-        const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
-        let found = false;  // Indicateur si un Pokémon correspondant est trouvé
+document.getElementById('pokemon-search').addEventListener('input', function(e) {
+    const searchQuery = e.target.value.toLowerCase();
+    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+    let found = false;  // Indicateur si un Pokémon correspondant est trouvé
 
-        pokemonCards.forEach(card => {
-            const pokemonName = card.querySelector('h3').textContent.toLowerCase();
-            if (pokemonName.includes(searchQuery)) {
-                card.style.display = ''; // Afficher la carte si elle correspond à la requête
-                found = true;  // Marquer comme trouvé
-            } else {
-                card.style.display = 'none'; // Masquer la carte sinon
-            }
-        ;
+    pokemonCards.forEach(card => {
+        const pokemonName = card.querySelector('h3').textContent.toLowerCase();
+        if (pokemonName.includes(searchQuery)) {
+            card.style.display = ''; // Afficher la carte si elle correspond à la requête
+            found = true;  // Marquer comme trouvé
+        } else {
+            card.style.display = 'none'; // Masquer la carte sinon
+        }
+    });
 
     // Gérer l'affichage du message "Pas de résultat"
     const noResultMsg = document.getElementById('no-result-msg');
@@ -79,7 +79,7 @@ function createPokemonCard(pokemon) {
     } else {
         noResultMsg.style.display = 'none';
     }
-}
+});
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
