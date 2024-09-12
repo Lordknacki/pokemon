@@ -7,6 +7,13 @@ body {
     padding: 0;
 }
 
+.top-right-menu {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    z-index: 1001; /* S'assure qu'il est visible au-dessus d'autres éléments */
+}
+
 h1 {
     font-size: 3rem;
     margin-top: 60px;
