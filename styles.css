@@ -99,7 +99,6 @@ button:hover {
 
 /* Bouton "Commencer le Combat" */
 .start-game {
-    position: fixed;
     top: 10;
     padding: 0px 30px;
     font-size: 1.5rem;
@@ -109,7 +108,6 @@ button:hover {
     cursor: pointer;
     color: white;
     opacity: 0.5;
-    display: flex;
 }
 
 .start-game:enabled {
