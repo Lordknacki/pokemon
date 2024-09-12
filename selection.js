@@ -25,13 +25,6 @@ async function fetchPokemonData() {
             await fetchPokemonDetails(pokemon.id);
         }
 
-        // Après avoir chargé et affiché tous les Pokémon, configure les sélections
-        setupPokemonSelection();
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données Pokémon:", error);
-    }
-}
-
 // Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
     try {
