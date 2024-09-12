@@ -58,15 +58,26 @@ function createPokemonCard(pokemon) {
     `;
 
     document.getElementById('pokemon-search').addEventListener('input', function(e) {
-    const searchQuery = e.target.value.toLowerCase();
-    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+        const searchQuery = e.target.value.toLowerCase();
+        const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+        let found = false;  // Indicateur si un Pokémon correspondant est trouvé
 
-    pokemonCards.forEach(card => {
-        const pokemonName = card.querySelector('h3').textContent.toLowerCase(); // Assumant que le nom est dans une balise <h3>
-        if (pokemonName.includes(searchQuery)) {
-            card.style.display = ''; // Afficher la carte si le nom correspond à la recherche
+        pokemonCards.forEach(card => {
+            const pokemonName = card.querySelector('h3').textContent.toLowerCase();
+            if (pokemonName.includes(searchQuery)) {
+                card.style.display = ''; // Afficher la carte si elle correspond à la requête
+                found = true;  // Marquer comme trouvé
+            } else {
+                card.style.display = 'none'; // Masquer la carte sinon
+            }
+        });
+
+        // Gérer l'affichage du message "Pas de résultat"
+        const noResultMsg = document.getElementById('no-result-msg');
+        if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
+            noResultMsg.style.display = 'block';
         } else {
-            card.style.display = 'none'; // Masquer la carte si le nom ne correspond pas
+            noResultMsg.style.display = 'none';
         }
     });
 });
