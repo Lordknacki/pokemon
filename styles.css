@@ -102,7 +102,7 @@ button:hover {
     position: fixed;
     top: 10px;
     right: 10px;
-    padding: 10px 0px;
+    padding: 0px 30px;
     font-size: 1.5rem;
     background-color: #ffcb05;
     border: none;
