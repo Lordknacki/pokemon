@@ -55,10 +55,23 @@ button:hover {
     background-color: rgba(255, 223, 0, 0.2);
 }
 
+/* Styles pour la barre de recherche et le conteneur de contenu */
 #search-container {
-    text-align: center;
-    margin: 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: white;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
 }
+
+#pokemon-list {
+    padding-top: 60px; /* Assurez-vous que cela est suffisant pour compenser la hauteur de la barre de recherche */
+}
+
 
 #pokemon-search {
     width: 50%;
