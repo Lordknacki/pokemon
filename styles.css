@@ -81,6 +81,13 @@ button:hover {
     border: 1px solid #ccc;
 }
 
+#no-result-msg {
+    display: none; /* Masqué par défaut */
+    text-align: center;
+    margin-top: 80px;
+    color: #666; /* Couleur du texte pour le message */
+}
+
 #team-container {
     margin-top: 20px;
 }
