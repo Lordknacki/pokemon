@@ -78,7 +78,6 @@ function createPokemonCard(pokemon) {
         noResultMsg.style.display = 'none';
     }
 });
-});
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
