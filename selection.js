@@ -32,28 +32,6 @@ async function fetchPokemonData() {
     }
 }
 
-function setupPokemonSelection() {
-    const pokemonElements = document.querySelectorAll('.pokemon-card');
-    pokemonElements.forEach(element => {
-        element.removeEventListener('click', handlePokemonClick); // Supprimer l'ancien gestionnaire, si existant
-        element.addEventListener('click', handlePokemonClick); // Ajouter le gestionnaire
-    });
-}
-
-function handlePokemonClick() {
-    if (this.classList.contains('selected')) {
-        this.classList.remove('selected');
-        selectedPokemon = selectedPokemon.filter(p => p.id !== parseInt(this.dataset.id));
-    } else {
-        if (selectedPokemon.length < 6) {
-            this.classList.add('selected');
-            selectedPokemon.push({id: parseInt(this.dataset.id), name: this.dataset.name});
-        } else {
-            alert('Vous ne pouvez sélectionner que 6 Pokémon.');
-        }
-    }
-}
-
 // Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
     try {
