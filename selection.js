@@ -176,4 +176,5 @@ document.getElementById('start-game').addEventListener('click', () => {
         initializeCombat();  // Démarre le combat
     } else {
         alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
-    });
+    }
+});
