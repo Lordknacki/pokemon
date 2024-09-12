@@ -22,7 +22,7 @@ async function fetchPokemonData() {
         allPokemonData = pokemonListWithIds;
 
         for (let pokemon of pokemonListWithIds) {
-            await fetchPokemonDetails(pokemon.id);  // Supposons que cela affiche aussi les Pokémon
+            await fetchPokemonDetails(pokemon.id);
         }
 
         // Après avoir chargé et affiché tous les Pokémon, configure les sélections
@@ -56,6 +56,20 @@ function createPokemonCard(pokemon) {
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
+
+    document.getElementById('pokemon-search').addEventListener('input', function(e) {
+    const searchQuery = e.target.value.toLowerCase();
+    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+
+    pokemonCards.forEach(card => {
+        const pokemonName = card.querySelector('h3').textContent.toLowerCase(); // Assumant que le nom est dans une balise <h3>
+        if (pokemonName.includes(searchQuery)) {
+            card.style.display = ''; // Afficher la carte si le nom correspond à la recherche
+        } else {
+            card.style.display = 'none'; // Masquer la carte si le nom ne correspond pas
+        }
+    });
+});
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
