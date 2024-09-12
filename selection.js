@@ -70,16 +70,16 @@ function createPokemonCard(pokemon) {
             } else {
                 card.style.display = 'none'; // Masquer la carte sinon
             }
-        });
+        ;
 
-        // Gérer l'affichage du message "Pas de résultat"
-        const noResultMsg = document.getElementById('no-result-msg');
-        if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
-            noResultMsg.style.display = 'block';
-        } else {
-            noResultMsg.style.display = 'none';
-        }
-    });
+    // Gérer l'affichage du message "Pas de résultat"
+    const noResultMsg = document.getElementById('no-result-msg');
+    if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
+        noResultMsg.style.display = 'block';
+    } else {
+        noResultMsg.style.display = 'none';
+    }
+}
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
