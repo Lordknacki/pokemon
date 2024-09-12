@@ -171,23 +171,19 @@ function updateTeamDisplay() {
     });
 }
 
-// Fonction pour activer/désactiver les boutons "Commencer le Combat"
-function toggleStartButtons() {
-    const startButtons = document.querySelectorAll('.start-game');
-    startButtons.forEach(button => {
-        button.disabled = selectedPokemon.length !== 6;
-    });
+// Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés
+function toggleStartButton() {
+    const startButton = document.getElementById('start-game');
+    startButton.disabled = selectedPokemon.length !== 6;
 }
 
-// Attacher des écouteurs d'événements à tous les boutons "Commencer le Combat"
-document.querySelectorAll('.start-game').forEach(button => {
-    button.addEventListener('click', () => {
-        if (selectedPokemon.length === 6) {
-            document.getElementById('selection-phase').classList.add('hidden');  // Cache la phase de sélection
-            document.getElementById('combat-phase').classList.remove('hidden');  // Affiche la phase de combat
-            initializeCombat();  // Démarre le combat
-        } else {
-            alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
-        }
-    });
+// Démarrer le combat lorsque l'équipe est prête
+document.getElementById('start-game').addEventListener('click', () => {
+    if (selectedPokemon.length === 6) {
+        document.getElementById('selection-phase').classList.add('hidden');  // Cache la phase de sélection
+        document.getElementById('combat-phase').classList.remove('hidden');  // Affiche la phase de combat
+        initializeCombat();  // Démarre le combat
+    } else {
+        alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
+    }
 });
