@@ -69,6 +69,15 @@ function createPokemonCard(pokemon) {
             card.style.display = 'none'; // Masquer la carte si le nom ne correspond pas
         }
     });
+
+    // Gérer l'affichage du message "Pas de résultat"
+    const noResultMsg = document.getElementById('no-result-msg');
+    if (!found && searchQuery !== '') { // Aucun Pokémon trouvé et la requête n'est pas vide
+        noResultMsg.style.display = 'block';
+    } else {
+        noResultMsg.style.display = 'none';
+    }
+});
 });
 
     // Ajout des événements pour afficher les statistiques lors du survol
