@@ -7,13 +7,6 @@ body {
     padding: 0;
 }
 
-.start-game-2 {
-    position: fixed;
-    right: 10px;
-    top: 10px;
-    z-index: 1001; /* S'assure qu'il est visible au-dessus d'autres éléments */
-}
-
 h1 {
     font-size: 3rem;
     margin-top: 60px;
@@ -107,6 +100,7 @@ button:hover {
 
 /* Bouton "Commencer le Combat" */
 .start-game {
+    margin-top: 1px;
     padding: 15px 30px;
     font-size: 1.5rem;
     background-color: #ffcb05;
@@ -118,7 +112,7 @@ button:hover {
 
 .start-game:enabled {
     opacity: 1;
-    background-color: #f00;
+    background-color: #f08;
 }
 
 /* Fenêtre modale pour les statistiques */
