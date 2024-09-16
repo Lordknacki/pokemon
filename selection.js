@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let selectedPokemon = [];
-
-// Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex
 let allPokemonData = [];
 
 async function fetchPokemonData() {
@@ -25,14 +23,12 @@ async function fetchPokemonData() {
             await fetchPokemonDetails(pokemon.id);
         }
 
-        // Après avoir chargé et affiché tous les Pokémon, configure les sélections
         setupPokemonSelection();
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
 }
 
-// Récupérer les détails d'un Pokémon par son ID
 async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -44,54 +40,58 @@ async function fetchPokemonDetails(id) {
     }
 }
 
-// Créer une carte pour chaque Pokémon avec les images officielles
 function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
+    card.dataset.pokemonId = pokemon.id;
 
-    // Utiliser l'URL pour les artworks officiels pour la sélection
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
-
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${pokemon.name}">
         <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
     `;
 
-document.getElementById('pokemon-search').addEventListener('input', function(e) {
-    const searchQuery = e.target.value.toLowerCase();
-    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
-    let found = false;  // Indicateur si un Pokémon correspondant est trouvé
-
-    pokemonCards.forEach(card => {
-        const pokemonName = card.querySelector('h3').textContent.toLowerCase();
-        if (pokemonName.includes(searchQuery)) {
-            card.style.display = ''; // Afficher la carte si elle correspond à la requête
-            found = true;  // Marquer comme trouvé
-        } else {
-            card.style.display = 'none'; // Masquer la carte sinon
-        }
-    });
-
-    // Gérer l'affichage du message "Pas de résultat"
-    const noResultMsg = document.getElementById('no-result-msg');
-    if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
-        noResultMsg.style.display = 'block';
-    } else {
-        noResultMsg.style.display = 'none';
-    }
-});
-
-    // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
     card.addEventListener('mouseleave', () => hidePokemonStats());
     card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
     return card;
 }
 
-// Afficher les statistiques d'un Pokémon lors du survol
+function setupPokemonSelection() {
+    const pokemonCards = document.querySelectorAll('.pokemon-card');
+    pokemonCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const pokemonId = parseInt(this.dataset.pokemonId);
+            togglePokemonSelection(pokemonId, this);
+        });
+    });
+}
+
+function togglePokemonSelection(pokemonId, card) {
+    const isSelected = selectedPokemon.some(p => p.id === pokemonId);
+    if (isSelected) {
+        selectedPokemon = selectedPokemon.filter(p => p.id !== pokemonId);
+        card.classList.remove('selected');
+    } else if (selectedPokemon.length < 6) {
+        selectedPokemon.push({ id: pokemonId, card: card });
+        card.classList.add('selected');
+    }
+    updateTeamDisplay();
+}
+
+function updateTeamDisplay() {
+    const teamContainer = document.getElementById('team');
+    teamContainer.innerHTML = '';
+    selectedPokemon.forEach(pokemon => {
+        const img = document.createElement('img');
+        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+        img.alt = `Sprite de ${pokemon.card.querySelector('h3').textContent}`;
+        teamContainer.appendChild(img);
+    });
+}
+
 function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById("stats-modal");
-
     statsModal.innerHTML = `
         <div class="pokemon-name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
         <div class="pokemon-types">
@@ -106,84 +106,28 @@ function showPokemonStats(pokemon, card) {
             <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
         </div>
     `;
-
     statsModal.style.display = "block";
-    const rect = card.getBoundingClientRect();
-    
-    // Ajustement ergonomique pour que la fenêtre apparaisse de façon fixe dans la vue
-    const topPosition = window.scrollY + rect.top - statsModal.offsetHeight - 15;
-    let leftPosition = rect.left + (rect.width / 2) - (statsModal.offsetWidth / 2);
-
-    // Si le Pokémon est trop proche du bord droit, déplacer la fenêtre davantage vers la gauche
-    if (leftPosition + statsModal.offsetWidth > window.innerWidth) {
-        leftPosition = window.innerWidth - statsModal.offsetWidth - 30; // Plus de décalage vers la gauche
-    }
-
-    // Si le Pokémon est trop proche du bord gauche, déplacer légèrement vers la droite
-    if (leftPosition < 0) {
-        leftPosition = 30; // Plus de décalage vers la droite
-    }
-
-    statsModal.style.top = `${Math.max(10, topPosition)}px`;  // Empêcher de sortir de l'écran en haut
-    statsModal.style.left = `${leftPosition}px`;  // Empêcher de sortir de l'écran à gauche ou à droite
 }
 
-// Masquer les statistiques du Pokémon lors du retrait de la souris
 function hidePokemonStats() {
     const statsModal = document.getElementById("stats-modal");
     statsModal.style.display = "none";
 }
 
 function translatePokemonName(name) {
-    // Exemple: simplement retourner le nom avec la première lettre en majuscule
     return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-// Fonction pour gérer la sélection ou la désélection d'un Pokémon
-function togglePokemonSelection(pokemon, card) {
-    const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
-
-    if (isSelected) {
-        selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-        card.classList.remove('selected'); // Retirer le style de sélection
-    } else if (selectedPokemon.length < 6) {
-        selectedPokemon.push(pokemon);
-        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
-    }
-
-    // Mettre à jour l'affichage de l'équipe
-    updateTeamDisplay();
-
-    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
-    toggleStartButton();
-}
-
-// Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
-function updateTeamDisplay() {
-    const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; 
-
-    selectedPokemon.forEach(pokemon => {
-        const img = document.createElement('img');
-        img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
-        img.alt = pokemon.name;
-        teamContainer.appendChild(img);
-    });
-}
-
-// Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés
-function toggleStartButton() {
-    const startButton = document.getElementById('start-game');
-    startButton.disabled = selectedPokemon.length !== 6;
-}
-
-// Démarrer le combat lorsque l'équipe est prête
 document.getElementById('start-game').addEventListener('click', () => {
     if (selectedPokemon.length === 6) {
-        document.getElementById('selection-phase').classList.add('hidden');  // Cache la phase de sélection
-        document.getElementById('combat-phase').classList.remove('hidden');  // Affiche la phase de combat
-        initializeCombat();  // Démarre le combat
+        document.getElementById('selection-phase').classList.add('hidden');
+        document.getElementById('combat-phase').classList.remove('hidden');
+        initializeCombat();
     } else {
         alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
     }
 });
+
+function initializeCombat() {
+    console.log("Le combat commence avec ces Pokémon:", selectedPokemon.map(p => p.id));
+}
