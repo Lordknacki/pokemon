@@ -72,6 +72,16 @@ function displaySelectedPokemon() {
     });
 }
 
+function updatePokemonSprite(pokemonId) {
+  const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/${pokemonId}.gif`;
+  document.getElementById('player-pokemon-sprite').src = spriteUrl;
+}
+
+document.getElementById('player-pokemon-sprite').onerror = function() {
+  console.log("Erreur de chargement du sprite du Pokémon.");
+  this.src = 'chemin/vers/une/image/par/défaut.png'; // Fournis une image de remplacement
+}
+
 // Création de quelques mouvements
 let flamethrower = new Move("Flamethrower", "fire", 90, 100);
 let hydroPump = new Move("Hydro Pump", "water", 110, 80);
