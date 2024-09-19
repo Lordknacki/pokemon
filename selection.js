@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let selectedPokemon = [];
-
-// Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex
 let allPokemonData = [];
 
 async function fetchPokemonData() {
@@ -15,7 +13,7 @@ async function fetchPokemonData() {
 
         const pokemonListWithIds = pokemonList.map(pokemon => {
             const id = pokemon.url.split("/").filter(Boolean).pop();
-            return { name: translatePokemonName(pokemon.name), id: parseInt(id), url: pokemon.url };
+            return { name: translatePokemonName(pokemon.name), id: parseInt(id) };
         });
 
         pokemonListWithIds.sort((a, b) => a.id - b.id);
@@ -25,11 +23,15 @@ async function fetchPokemonData() {
             await fetchPokemonDetails(pokemon.id);
         }
 
-        // Après avoir chargé et affiché tous les Pokémon, configure les sélections
         setupPokemonSelection();
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
+}
+
+// Assure-toi que translatePokemonName est définie avant cette fonction
+function translatePokemonName(name) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 }
 
 // Récupérer les détails d'un Pokémon par son ID
