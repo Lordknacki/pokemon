@@ -68,37 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function setupSearch() {
-    const searchInput = document.getElementById('pokemon-search');
-    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
-    const noResultMsg = document.getElementById('no-result-msg');
-
-    searchInput.addEventListener('input', function(e) {
-        const searchQuery = e.target.value.trim().toLowerCase();
-        let found = false;  // Réinitialisé pour chaque nouvelle saisie
-
-        pokemonCards.forEach(card => {
-            const pokemonName = card.querySelector('h3').textContent.trim().toLowerCase();
-            if (pokemonName.includes(searchQuery)) {
-                card.style.display = '';  // Affiche la carte si elle correspond à la requête
-                found = true;
-            } else {
-                card.style.display = 'none';  // Masque la carte sinon
-            }
-        });
-
-        // Gère l'affichage du message "Pas de résultat"
-        noResultMsg.style.display = found || searchQuery === '' ? 'none' : 'block';
-    });
-}
-
-    // Ajout des événements pour afficher les statistiques lors du survol
-    card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
-    card.addEventListener('mouseleave', () => hidePokemonStats());
-    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
-    return card;
-}
-
 // Afficher les statistiques d'un Pokémon lors du survol
 function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById("stats-modal");
@@ -148,6 +117,57 @@ function hidePokemonStats() {
 function translatePokemonName(name) {
     // Exemple: simplement retourner le nom avec la première lettre en majuscule
     return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPokemonData();
+});
+
+async function fetchPokemonData() {
+    try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386');
+        const data = await response.json();
+        const pokemonList = data.results;
+
+        for (let pokemon of pokemonList) {
+            const id = pokemon.url.split("/").filter(Boolean).pop();
+            await fetchPokemonDetails(id);
+        }
+
+        setupPokemonSelection();
+        setupSearch(); // S'assurer que la recherche est configurée après le chargement complet
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données Pokémon:", error);
+    }
+}
+
+// Déplacez cette partie du code à l'intérieur de `DOMContentLoaded` pour s'assurer que les éléments sont chargés
+function setupSearch() {
+    const searchInput = document.getElementById('pokemon-search');
+    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+    const noResultMsg = document.getElementById('no-result-msg');
+
+    searchInput.addEventListener('input', function(e) {
+        const searchQuery = e.target.value.trim().toLowerCase();
+        let found = false;
+        pokemonCards.forEach(card => {
+            const pokemonName = card.querySelector('h3').textContent.trim().toLowerCase();
+            if (pokemonName.includes(searchQuery)) {
+                card.style.display = '';
+                found = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        noResultMsg.style.display = found || searchQuery === '' ? 'none' : 'block';
+    });
+}
+
+    // Ajout des événements pour afficher les statistiques lors du survol
+    card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
+    card.addEventListener('mouseleave', () => hidePokemonStats());
+    card.addEventListener('click', () => togglePokemonSelection(pokemon, card));
+    return card;
 }
 
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
