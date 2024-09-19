@@ -60,24 +60,37 @@ function createPokemonCard(pokemon) {
 const searchQuery = e.target.value.trim().toLowerCase();  // Nettoyer les espaces avant et après
 pokemonCards.forEach(card => {
     const pokemonName = card.querySelector('h3').textContent.trim().toLowerCase(); // De même ici
-    ...
 });
 
-    document.getElementById('pokemon-search').addEventListener('input', function(e) {
-    const searchQuery = e.target.value.trim().toLowerCase();
-    let found = false;
-    pokemonCards.forEach(card => {
-        const pokemonName = card.querySelector('h3').textContent.trim().toLowerCase();
-        if (pokemonName.includes(searchQuery)) {
-            card.style.display = '';  // Assurez-vous que tous les `display` sont correctement gérés
-            found = true;
-        } else {
-            card.style.display = 'none';
-        }
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPokemonData().then(() => {
+        setupSearch();  // Initialise la recherche une fois que les données sont chargées
     });
-
-    noResultMsg.style.display = found || searchQuery === '' ? 'none' : 'block';  // Gérer aussi le cas où la requête est vide
 });
+
+function setupSearch() {
+    const searchInput = document.getElementById('pokemon-search');
+    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+    const noResultMsg = document.getElementById('no-result-msg');
+
+    searchInput.addEventListener('input', function(e) {
+        const searchQuery = e.target.value.trim().toLowerCase();
+        let found = false;  // Réinitialisé pour chaque nouvelle saisie
+
+        pokemonCards.forEach(card => {
+            const pokemonName = card.querySelector('h3').textContent.trim().toLowerCase();
+            if (pokemonName.includes(searchQuery)) {
+                card.style.display = '';  // Affiche la carte si elle correspond à la requête
+                found = true;
+            } else {
+                card.style.display = 'none';  // Masque la carte sinon
+            }
+        });
+
+        // Gère l'affichage du message "Pas de résultat"
+        noResultMsg.style.display = found || searchQuery === '' ? 'none' : 'block';
+    });
+}
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
