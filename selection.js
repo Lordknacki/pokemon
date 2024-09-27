@@ -260,7 +260,3 @@ document.getElementById('start-game').addEventListener('click', () => {
     }
 });
 //--------------- Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés ---------------\\
-
-
-
-
