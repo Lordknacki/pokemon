@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
     fetchPokemonData();
+    toggleStartButton();
 });
 
 let selectedPokemon = [];
 
-// Récupérer les 386 premiers Pokémon dans l'ordre du Pokédex
+//--------------- Récupère les 386 premiers pokemon du pokedex ---------------\\
 let allPokemonData = [];
 
 async function fetchPokemonData() {
@@ -13,73 +14,62 @@ async function fetchPokemonData() {
         const data = await response.json();
         const pokemonList = data.results;
 
-        const pokemonListWithIds = pokemonList.map(pokemon => {
+        const pokemonDetailsPromises = pokemonList.map(pokemon => {
             const id = pokemon.url.split("/").filter(Boolean).pop();
-            return { name: translatePokemonName(pokemon.name), id: parseInt(id), url: pokemon.url };
+            return fetchPokemonDetails(parseInt(id));
         });
 
-        pokemonListWithIds.sort((a, b) => a.id - b.id);
-        allPokemonData = pokemonListWithIds;
-
-        for (let pokemon of pokemonListWithIds) {
-            await fetchPokemonDetails(pokemon.id);
-        }
-
-        // Après avoir chargé et affiché tous les Pokémon, configure les sélections
-        setupPokemonSelection();
+        allPokemonData = await Promise.all(pokemonDetailsPromises); // Attend que toutes les promesses soient résolues
+        allPokemonData.forEach(pokemonCard => {
+            document.getElementById("pokemon-list").appendChild(pokemonCard); // Ajoute toutes les cartes en une fois
+        });
+        setupPokemonSelection(); // Configure les sélections après le chargement
     } catch (error) {
         console.error("Erreur lors de la récupération des données Pokémon:", error);
     }
 }
+//--------------- Récupère les 386 premiers pokemon du pokedex ---------------\\
 
-// Récupérer les détails d'un Pokémon par son ID
+
+
+//--------------- Récupérer les détails d'un Pokémon par son ID ---------------\\
 async function fetchPokemonDetails(id) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
-        const pokemonCard = createPokemonCard(pokemon);
-        document.getElementById("pokemon-list").appendChild(pokemonCard);
+
+        // Récupération du nom français
+        const speciesUrl = pokemon.species.url; // URL vers les informations de l'espèce
+        const speciesResponse = await fetch(speciesUrl);
+        const speciesData = await speciesResponse.json();
+        
+        const frenchName = speciesData.names.find(name => name.language.name === 'fr').name;
+
+        return createPokemonCard(pokemon, frenchName);
     } catch (error) {
         console.error("Erreur lors de la récupération des détails Pokémon:", error);
+        return null; // Retourner un élément nul si la requête échoue
     }
 }
+//--------------- Récupérer les détails d'un Pokémon par son ID ---------------\\
 
-// Créer une carte pour chaque Pokémon avec les images officielles
-function createPokemonCard(pokemon) {
+
+
+//--------------- Transforme le pokemon en carte prête à être sélectionnée ---------------\\
+function createPokemonCard(pokemon, frenchName) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
-
-    // Utiliser l'URL pour les artworks officiels pour la sélection
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
-
     card.innerHTML = `
-        <img src="${pokemonImage}" alt="${pokemon.name}">
-        <h3>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h3>
+        <img src="${pokemonImage}" alt="${frenchName}">
+        <h3>${frenchName.charAt(0).toUpperCase() + frenchName.slice(1)}</h3>
     `;
 
-document.getElementById('pokemon-search').addEventListener('input', function(e) {
-    const searchQuery = e.target.value.toLowerCase();
-    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
-    let found = false;  // Indicateur si un Pokémon correspondant est trouvé
+//--------------- Transforme le pokemon en carte prête à être sélectionnée ---------------\\
 
-    pokemonCards.forEach(card => {
-        const pokemonName = card.querySelector('h3').textContent.toLowerCase();
-        if (pokemonName.includes(searchQuery)) {
-            card.style.display = ''; // Afficher la carte si elle correspond à la requête
-            found = true;  // Marquer comme trouvé
-        } else {
-            card.style.display = 'none'; // Masquer la carte sinon
-        }
-    });
 
-    // Gérer l'affichage du message "Pas de résultat"
-    const noResultMsg = document.getElementById('no-result-msg');
-    if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
-        noResultMsg.style.display = 'block';
-    } else {
-        noResultMsg.style.display = 'none';
-    }
-});
+
+//--------------- Affichage des divers caractéristiques des pokemon ---------------\\
 
     // Ajout des événements pour afficher les statistiques lors du survol
     card.addEventListener('mouseenter', () => showPokemonStats(pokemon, card));
@@ -139,6 +129,42 @@ function translatePokemonName(name) {
     return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
+//--------------- Affichage des divers caractéristiques des pokemon ---------------\\
+
+
+
+//--------------- Barre de recherche des pokemon ---------------\\
+document.getElementById('pokemon-search').addEventListener('input', function(e) {
+    const searchQuery = e.target.value.toLowerCase();
+    const pokemonCards = document.querySelectorAll('#pokemon-list .pokemon-card');
+    let found = false;  // Indicateur si un Pokémon correspondant est trouvé
+
+    pokemonCards.forEach(card => {
+        const pokemonName = card.querySelector('h3').textContent.toLowerCase();
+        if (pokemonName.includes(searchQuery)) {
+            card.style.display = ''; // Afficher la carte si elle correspond à la requête
+            found = true;  // Marquer comme trouvé
+        } else {
+            card.style.display = 'none'; // Masquer la carte sinon
+        }
+    });
+
+    // Gérer l'affichage du message "Pas de résultat"
+    const noResultMsg = document.getElementById('no-result-msg');
+    if (!found && searchQuery !== '') {  // Afficher le message s'il n'y a pas de résultats et la requête n'est pas vide
+        noResultMsg.style.display = 'block';
+    } else {
+        noResultMsg.style.display = 'none';
+    }
+});
+
+//--------------- Barre de recherche des pokemon ---------------\\
+
+
+
+
+//--------------- Permet de sélectionner / déselectionner un pokemon ---------------\\
+
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
 function togglePokemonSelection(pokemon, card) {
     const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
@@ -171,11 +197,57 @@ function updateTeamDisplay() {
     });
 }
 
-// Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés
+//--------------- Permet de sélectionner / déselectionner un pokemon ---------------\\
+
+
+
+// Fonction pour activer/désactiver le bouton "Démarrer le combat" et afficher une infobulle si nécessaire
 function toggleStartButton() {
     const startButton = document.getElementById('start-game');
-    startButton.disabled = selectedPokemon.length !== 6;
+    
+    if (selectedPokemon.length !== 6) {
+        startButton.disabled = true;
+        startButton.style.cursor = 'not-allowed';  // Curseur désactivé
+        startButton.setAttribute('data-tooltip', 'Tu dois sélectionner 6 Pokémon pour commencer le combat !');
+    } else {
+        startButton.disabled = false;
+        startButton.style.cursor = 'pointer';  // Curseur cliquable
+        startButton.removeAttribute('data-tooltip');  // Supprime l'infobulle
+    }
 }
+
+// Gérer l'affichage de l'infobulle au survol du bouton désactivé
+document.getElementById('start-game').addEventListener('mouseenter', (event) => {
+    const startButton = event.target;
+    if (startButton.disabled && !document.getElementById('tooltip')) {
+        const tooltip = document.createElement('div');
+        tooltip.id = 'tooltip';
+        tooltip.innerText = startButton.getAttribute('data-tooltip');
+        
+        // Calcule la position pour centrer l'infobulle juste au-dessus du bouton
+        document.body.appendChild(tooltip);
+        const buttonRect = startButton.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        tooltip.style.top = `${window.scrollY + buttonRect.top - tooltipRect.height - 10}px`;  // Ajuste pour une position au-dessus avec espace pour la flèche
+        tooltip.style.left = `${window.scrollX + buttonRect.left + (buttonRect.width / 2) - (tooltipRect.width / 2)}px`;  // Centré horizontalement
+
+        // Applique la classe .show pour rendre l'infobulle visible
+        setTimeout(() => {
+            tooltip.classList.add('show');
+        }, 10);  // Léger délai pour s'assurer que l'élément est ajouté au DOM avant d'ajouter la classe
+    }
+});
+
+// Supprimer l'infobulle lorsque la souris quitte le bouton
+document.getElementById('start-game').addEventListener('mouseleave', () => {
+    const tooltip = document.getElementById('tooltip');
+    if (tooltip) {
+        tooltip.classList.remove('show');  // Retire la classe pour appliquer l'animation de disparition
+        setTimeout(() => {
+            tooltip.remove();  // Retire complètement l'infobulle après la transition
+        }, 300);  // Délai pour correspondre à la durée de la transition (0.3s)
+    }
+});
 
 // Démarrer le combat lorsque l'équipe est prête
 document.getElementById('start-game').addEventListener('click', () => {
@@ -187,3 +259,8 @@ document.getElementById('start-game').addEventListener('click', () => {
         alert("Tu dois sélectionner 6 Pokémon pour commencer le combat !");
     }
 });
+//--------------- Activer/désactiver le bouton "Commencer le Combat" selon le nombre de Pokémon sélectionnés ---------------\\
+
+
+
+
