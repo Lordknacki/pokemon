@@ -1,15 +1,27 @@
 /* Styles globaux */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    background-color: beige;
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
+/* Styles pour la barre de recherche*/
+#search-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+}
+
 h1 {
-    font-size: 3rem;
-    margin-top: 60px;
+    font-size: 5rem;
+    margin-top: 80px;
     color: #333;
 }
 
@@ -36,13 +48,13 @@ button:hover {
 
 .pokemon-card {
     position: relative;
-    border: 2px solid #333;
-    background-color: #fff;
-    border-radius: 10px;
-    transition: 0.3s;
-    cursor: pointer;
-    padding: 10px;
-    text-align: center;
+    border: 2px solid #333;       /* Bordure grise épaisse */
+    background-color: #fff;       /* Fond blanc */
+    border-radius: 10px;          /* Coins arrondis */
+    transition: 0.3s;             /* Animation douce lors de la modification de certaines propriétés */
+    padding: 10px;                /* Espacement interne pour le contenu de la carte */
+    text-align: center;           /* Alignement du texte au centre de la carte */
+    cursor: url('pokeball.png') 16 16, auto; /* Curseur personnalisé pour les cartes Pokémon */
 }
 
 .pokemon-card img {
@@ -53,18 +65,6 @@ button:hover {
 .pokemon-card.selected {
     border: 3px solid #FFD700;
     background-color: rgba(255, 223, 0, 0.2);
-}
-
-/* Styles pour la barre de recherche et le conteneur de contenu */
-#search-container {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: white;
-    padding: 10px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: center;
 }
 
 #pokemon-list {
@@ -99,24 +99,58 @@ button:hover {
 
 /* Bouton "Commencer le Combat" */
 .start-game {
-    padding-top: 30px
-    top: 10;
+    padding-top: 30px;
     width: 50%;
     padding: 15px 30px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     background-color: #ffcb05;
-    border: none;
     border-radius: 10px;
     cursor: pointer;
     color: white;
     opacity: 0.5;
     justify-content: center;
+    position: relative; /* Position relative pour le positionnement absolu de l'infobulle */
 }
 
 .start-game:enabled {
     opacity: 1;
-    background-color: #ADFF2F;
+    background-color: #228B22;
+    cursor: pointer;
 }
+
+#tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.85);  /* Fond sombre avec opacité */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;  /* Coins arrondis pour une apparence douce */
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;  /* Pour que la souris ne puisse pas interagir avec l'infobulle */
+    opacity: 0;
+    transform: translateY(-10px);  /* Position initiale pour l'animation */
+    transition: opacity 0.3s ease, transform 0.3s ease;  /* Animation pour apparaitre/disparaitre */
+}
+
+/* Flèche triangulaire en dessous de l'infobulle */
+#tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;  /* Positionne la flèche juste en-dessous */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;  /* Triangle pointant vers le bas */
+}
+
+/* Pour rendre l'infobulle visible */
+#tooltip.show {
+    opacity: 1;
+    transform: translateY(0);  /* Remet à sa position normale */
+}
+
 
 /* Fenêtre modale pour les statistiques */
 #stats-modal {
@@ -138,14 +172,8 @@ button:hover {
 }
 
 .pokemon-name {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.pokemon-types {
-    display: flex;
-    justify-content: space-around;
     margin-bottom: 10px;
 }
 
@@ -155,7 +183,7 @@ button:hover {
     color: white;
 }
 
-.pokemon-stats p {
+.pokemon-stats {
     margin: 5px 0;
 }
 
@@ -180,6 +208,13 @@ button:hover {
 .type-fairy { background-color: #EE99AC; }
 
 /* RESPONSIVE */
+
+@media screen and (max-width: 1500px) {
+    .pokemon-list {
+        grid-template-columns: repeat(8, 1fr); /* Ajustement à 6 Pokémon par ligne sur petits écrans */
+    }
+}
+
 @media screen and (max-width: 1200px) {
     .pokemon-list {
         grid-template-columns: repeat(6, 1fr); /* Ajustement à 6 Pokémon par ligne sur petits écrans */
@@ -206,4 +241,5 @@ button:hover {
 .hidden {
     display: none;
 }
+
 
