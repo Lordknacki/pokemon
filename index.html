@@ -10,26 +10,23 @@
     <!-- Phase de sélection des Pokémon -->
     <section id="selection-phase">
         <header>
-            <h1>Choisis ton Équipe Pokémon</h1>
-            <div id="team" class="team"></div>
+            <h1>Choisis ton équipe Pokémon</h1>
+        </header>
+        <div id="team" class="team"></div>
+        <button id="start-game" class="start-game">Commencer le Combat</button>
+        <div id="pokemon-list" class="pokemon-list">
+            <!-- Les cartes Pokémon seront injectées ici lors du chargement de la page -->
         </div>
-        <div id="pokemon-list" class="pokemon-list"></div>
-            <button id="start-game" class="start-game" disabled>Commencer le Combat</button>
+        <div id="search-container">
+            <input type="text" id="pokemon-search" placeholder="Rechercher un Pokémon...">
         </div>
-            <div id="search-container">
-                <input type="text" id="pokemon-search" placeholder="Rechercher un Pokémon...">
-            </div>
-        <div id="pokemon-list">
-    <!-- Les cartes Pokémon seront injectées ici lors du chargement de la page -->
-        </div>
-            <div id="no-result-msg" style="display: none; text-align: center; margin-top: 20px;">
+        <div id="no-result-msg" style="display: none; text-align: center; margin-top: 20px;">
             Pas de résultat
         </div>
-
         <!-- Fenêtre modale pour les statistiques des Pokémon lors du survol -->
         <div id="stats-modal" class="hidden">
             <div class="pokemon-name"></div>
-            <div class="pokemon-types"></div>
+            <div class="pokemon-type"></div>
             <div class="pokemon-stats"></div>
         </div>
     </section>
@@ -38,12 +35,11 @@
     <section id="combat-phase" class="hidden">
         <header>
             <h1>Combat Pokémon</h1>
-            <!-- Élément ajouté pour afficher le statut du combat -->
             <div id="battle-status">En attente de démarrage...</div>
         </header>
         <div id="battlefield">
             <div id="player-pokemon">
-            <img id="player-pokemon-sprite" src="" alt="Sprite du Pokémon joueur">
+                <img id="player-pokemon-sprite" src="" alt="Sprite du Pokémon joueur">
                 <div class="pokemon-info">
                     <span id="player-pokemon-name" class="pokemon-name-level"></span>
                     <div class="hp-bar-container">
