@@ -44,8 +44,9 @@ async function fetchPokemonDetails(id) {
         const speciesData = await speciesResponse.json();
         
         const frenchName = speciesData.names.find(name => name.language.name === 'fr').name;
+        pokemon.frenchName = frenchName; // Stocker le nom français dans l'objet pokemon
 
-        return createPokemonCard(pokemon, frenchName);
+        return createPokemonCard(pokemon);
     } catch (error) {
         console.error("Erreur lors de la récupération des détails Pokémon:", error);
         return null; // Retourner un élément nul si la requête échoue
@@ -56,14 +57,14 @@ async function fetchPokemonDetails(id) {
 
 
 //--------------- Transforme le pokemon en carte prête à être sélectionnée ---------------\\
-function createPokemonCard(pokemon, frenchName) {
+function createPokemonCard(pokemon) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
-    card.setAttribute('data-id', pokemon.id); // Ajoute un identifiant de données pour la synchronisation
+    card.setAttribute('data-id', pokemon.id);
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
     card.innerHTML = `
-        <img src="${pokemonImage}" alt="${frenchName}">
-        <h3>${frenchName.charAt(0).toUpperCase() + frenchName.slice(1)}</h3>
+        <img src="${pokemonImage}" alt="${pokemon.frenchName}">
+        <h3>${pokemon.frenchName.charAt(0).toUpperCase() + pokemon.frenchName.slice(1)}</h3>
     `;
 
 //--------------- Transforme le pokemon en carte prête à être sélectionnée ---------------\\
@@ -84,7 +85,7 @@ function showPokemonStats(pokemon, card) {
     const statsModal = document.getElementById("stats-modal");
 
     statsModal.innerHTML = `
-        <div class="pokemon-name">${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
+        <div class="pokemon-name">${pokemon.frenchName.charAt(0).toUpperCase() + pokemon.frenchName.slice(1)}</div>
         <div class="pokemon-types">
             ${pokemon.types.map(type => `<span class="pokemon-type type-${type.type.name}">${type.type.name.charAt(0).toUpperCase() + type.type.name.slice(1)}</span>`).join('')}
         </div>
@@ -99,6 +100,7 @@ function showPokemonStats(pokemon, card) {
     `;
 
     statsModal.style.display = "block";
+
     const rect = card.getBoundingClientRect();
     
     // Ajustement ergonomique pour que la fenêtre apparaisse de façon fixe dans la vue
@@ -210,7 +212,7 @@ function updateTeamDisplay() {
 // Fonction pour activer/désactiver le bouton "Démarrer le combat" et afficher une infobulle si nécessaire
 function toggleStartButton() {
     const startButton = document.getElementById('start-game');
-
+    
     if (selectedPokemon.length === 0) {
         startButton.textContent = 'Sélectionne tes Pokémon 0/6';
     } else if (selectedPokemon.length < 6) {
@@ -218,7 +220,7 @@ function toggleStartButton() {
     } else {
         startButton.textContent = 'Commencer le Combat';
     }
-    
+
     if (selectedPokemon.length !== 6) {
         startButton.disabled = true;
         startButton.style.cursor = 'not-allowed';  // Curseur désactivé
