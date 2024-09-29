@@ -210,6 +210,14 @@ function updateTeamDisplay() {
 // Fonction pour activer/désactiver le bouton "Démarrer le combat" et afficher une infobulle si nécessaire
 function toggleStartButton() {
     const startButton = document.getElementById('start-game');
+
+    if (selectedPokemon.length === 0) {
+        startButton.textContent = 'Sélectionne tes Pokémon 0/6';
+    } else if (selectedPokemon.length < 6) {
+        startButton.textContent = `Sélectionne tes Pokémon ${selectedPokemon.length}/6`;
+    } else {
+        startButton.textContent = 'Commencer le Combat';
+    }
     
     if (selectedPokemon.length !== 6) {
         startButton.disabled = true;
