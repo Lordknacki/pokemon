@@ -227,26 +227,6 @@ button:hover {
     transform: translateY(0);  /* Remet à sa position normale */
 }
 
-
-/* Fenêtre modale pour les statistiques */
-#stats-modal {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    display: none;
-    z-index: 1000;
-    width: 250px;
-    transition: opacity 0.3s ease-in-out;
-    pointer-events: none;
-}
-
-#stats-modal.show {
-    display: block;
-    opacity: 1;
-}
-
 .pokemon-name {
     font-size: 2rem;
     font-weight: bold;
@@ -265,23 +245,23 @@ button:hover {
 
 /* Types de Pokémon avec couleurs */
 .type-normal { background-color: #A8A878; }
-.type-fire { background-color: #F08030; }
-.type-water { background-color: #6890F0; }
-.type-grass { background-color: #78C850; }
-.type-electric { background-color: #F8D030; }
-.type-ice { background-color: #98D8D8; }
-.type-fighting { background-color: #C03028; }
+.type-feu { background-color: #F08030; }
+.type-eau { background-color: #6890F0; }
+.type-plante { background-color: #78C850; }
+.type-électrik { background-color: #F8D030; }
+.type-glace { background-color: #98D8D8; }
+.type-combat { background-color: #C03028; }
 .type-poison { background-color: #A040A0; }
-.type-ground { background-color: #E0C068; }
-.type-flying { background-color: #A890F0; }
-.type-psychic { background-color: #F85888; }
-.type-bug { background-color: #A8B820; }
-.type-rock { background-color: #B8A038; }
-.type-ghost { background-color: #705898; }
+.type-sol{ background-color: #E0C068; }
+.type-vol { background-color: #A890F0; }
+.type-psy { background-color: #F85888; }
+.type-insecte { background-color: #A8B820; }
+.type-roche { background-color: #B8A038; }
+.type-spectre { background-color: #705898; }
 .type-dragon { background-color: #7038F8; }
-.type-dark { background-color: #705848; }
-.type-steel { background-color: #B8B8D0; }
-.type-fairy { background-color: #EE99AC; }
+.type-ténèbres { background-color: #705848; }
+.type-acier { background-color: #B8B8D0; }
+.type-fée { background-color: #EE99AC; }
 
 /* RESPONSIVE */
 
@@ -327,6 +307,25 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+/* Style de base pour le modal */
+#stats-modal {
+    position: absolute;
+    background-color: whitesmoke;
+    color: black;
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
+    z-index: 1000;
+    width: 250px;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+#stats-modal.show {
+    display: block;
+    opacity: 1;
 }
 
 
