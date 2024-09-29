@@ -59,6 +59,7 @@ async function fetchPokemonDetails(id) {
 function createPokemonCard(pokemon, frenchName) {
     const card = document.createElement("div");
     card.classList.add("pokemon-card");
+    card.setAttribute('data-id', pokemon.id); // Ajoute un identifiant de données pour la synchronisation
     const pokemonImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
     card.innerHTML = `
         <img src="${pokemonImage}" alt="${frenchName}">
@@ -166,33 +167,38 @@ document.getElementById('pokemon-search').addEventListener('input', function(e) 
 //--------------- Permet de sélectionner / déselectionner un pokemon ---------------\\
 
 // Fonction pour gérer la sélection ou la désélection d'un Pokémon
-function togglePokemonSelection(pokemon, card) {
+function togglePokemonSelection(pokemon, element) {
     const isSelected = selectedPokemon.find(p => p.id === pokemon.id);
 
+    // Toggle de la sélection ou désélection
     if (isSelected) {
+        // Désélection du Pokémon
         selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-        card.classList.remove('selected'); // Retirer le style de sélection
+        // Retire la classe 'selected' de tous les éléments correspondants
+        document.querySelectorAll(`[data-id="${pokemon.id}"]`).forEach(el => el.classList.remove('selected'));
     } else if (selectedPokemon.length < 6) {
+        // Sélection du Pokémon
         selectedPokemon.push(pokemon);
-        card.classList.add('selected'); // Ajouter un style visuel pour indiquer la sélection
+        // Ajoute la classe 'selected' à tous les éléments correspondants
+        document.querySelectorAll(`[data-id="${pokemon.id}"]`).forEach(el => el.classList.add('selected'));
     }
 
-    // Mettre à jour l'affichage de l'équipe
-    updateTeamDisplay();
-
-    // Activer ou désactiver le bouton "Commencer le Combat" en fonction de l'état de l'équipe
-    toggleStartButton();
+    updateTeamDisplay(); // Met à jour l'affichage de l'équipe
+    toggleStartButton(); // Vérifie l'état du bouton de démarrage
 }
 
 // Mettre à jour l'affichage de l'équipe avec les images officielles pour le combat
 function updateTeamDisplay() {
     const teamContainer = document.getElementById('team');
-    teamContainer.innerHTML = ''; 
+    teamContainer.innerHTML = ''; // Efface le contenu actuel
 
     selectedPokemon.forEach(pokemon => {
         const img = document.createElement('img');
         img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
         img.alt = pokemon.name;
+        img.classList.add('team-pokemon', 'selected');
+        img.setAttribute('data-id', pokemon.id); // Ajoute un identifiant de données pour la synchronisation
+        img.addEventListener('click', () => togglePokemonSelection(pokemon, img));
         teamContainer.appendChild(img);
     });
 }
