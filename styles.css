@@ -7,22 +7,95 @@ body {
     padding: 0;
 }
 
-/* Styles pour la barre de recherche*/
+/* Styles pour la barre de recherche */
 #search-container {
     position: fixed;
-    top: 0;
-    width: 100%;
-    background: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    top: 0;            /* Colle la barre au haut de la fenêtre du navigateur */
+    left: 0;           /* Ajout pour s'assurer que la barre s'étend complètement à gauche */
+    right: 0;          /* Ajout pour s'assurer que la barre s'étend complètement à droite */
+    width: 100%;       /* S'étend sur toute la largeur */
+    background: white; /* Couleur de fond pour masquer les éléments derrière */
+    padding: 15px 0;   /* Padding vertical pour la barre */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ombre pour un effet de profondeur */
     display: flex;
     justify-content: center;
+    z-index: 999;     /* Valeur élevée pour s'assurer que la barre reste au-dessus des autres éléments */
 }
 
-h1 {
-    font-size: 5rem;
+#pokemon-search {
+    width: 50%;        /* Largeur de la barre de recherche */
+    padding: 10px;     /* Padding pour la rendre plus haute */
+    border-radius: 5px; /* Coins arrondis pour l'esthétique */
+    border: 1px solid #ccc; /* Bordure subtile */
+}
+
+#no-result-msg {
+    display: none; /* Masqué par défaut */
+    text-align: center;
     margin-top: 80px;
-    color: #333;
+    color: #666; /* Couleur du texte pour le message */
+}
+
+/* Styles de base pour les titres */
+h1, h2, h3 {
+    margin: 0;
+    padding: 0.5em 0;
+}
+
+/* Tailles dynamiques utilisant 'vw' pour la largeur de la fenêtre */
+h1 {
+    font-size: 4.5vw;
+}
+
+h2 {
+    font-size: 3.5vw;
+}
+
+h3 {
+    font-size: 2.5vw;
+}
+
+/* Media Queries pour ajuster les tailles sur les petits écrans et prévenir une trop grande taille de texte */
+@media (max-width: 1200px) {
+    h1 {
+        font-size: calc(1.5em + 2vw); /* Combine em et vw pour un contrôle plus raffiné */
+    }
+
+    h2 {
+        font-size: calc(1.25em + 1.5vw);
+    }
+
+    h3 {
+        font-size: calc(1em + 1vw);
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: calc(1.5em + 1vw);
+    }
+
+    h2 {
+        font-size: calc(1.25em + 0.5vw);
+    }
+
+    h3 {
+        font-size: calc(1em + 0.5vw);
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em; /* Fixe une taille maximale pour les très petits écrans */
+    }
+
+    h2 {
+        font-size: 1.25em;
+    }
+
+    h3 {
+        font-size: 1em;
+    }
 }
 
 button {
@@ -40,69 +113,45 @@ button:hover {
 
 /* Phase de sélection */
 .pokemon-list {
+    padding-top: 60px; /* Assurez-vous que cela est suffisant pour compenser la hauteur de la barre de recherche */
     display: grid;
     grid-template-columns: repeat(10, 1fr); /* 10 Pokémon par ligne */
     gap: 20px;
     padding: 20px;
 }
 
-.pokemon-card {
+#team {
     position: relative;
-    border: 2px solid #333;       /* Bordure grise épaisse */
-    background-color: #fff;       /* Fond blanc */
-    border-radius: 10px;          /* Coins arrondis */
-    transition: 0.3s;             /* Animation douce lors de la modification de certaines propriétés */
-    padding: 10px;                /* Espacement interne pour le contenu de la carte */
-    text-align: center;           /* Alignement du texte au centre de la carte */
-    cursor: url('pokeball.png') 16 16, auto; /* Curseur personnalisé pour les cartes Pokémon */
-}
-
-.pokemon-card img {
-    width: 120px;
-    height: 120px;
-}
-
-.pokemon-card.selected {
-    border: 3px solid #FFD700;
-    background-color: rgba(255, 223, 0, 0.2);
-}
-
-#pokemon-list {
-    padding-top: 60px; /* Assurez-vous que cela est suffisant pour compenser la hauteur de la barre de recherche */
-}
-
-
-#pokemon-search {
-    width: 50%;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-#no-result-msg {
-    display: none; /* Masqué par défaut */
-    text-align: center;
-    margin-top: 80px;
-    color: #666; /* Couleur du texte pour le message */
-}
-
-#team-container {
-    margin-top: 20px;
+    margin-top: 60px; /* Espacement suffisant pour éviter la superposition avec la barre de recherche fixe */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .team img {
-    width: 80px;
-    height: 80px;
-    margin: 0 5px;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    margin-top: 25px;
+    border-radius: 50%;
+    overflow: hidden; /* Cache les parties de l'image qui débordent */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white; /* Définit le fond du conteneur en blanc */
+    transition: background-color 0.3s ease; /* Animation douce pour le changement de couleur */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optionnel: ajoute une légère ombre pour du relief */
+}
+
+.team img:hover {
+    background-color: red; /* Change le fond en rouge lors du survol */
 }
 
 /* Bouton "Commencer le Combat" */
 .start-game {
-    padding-top: 30px;
-    width: 50%;
-    padding: 15px 30px;
-    font-size: 2rem;
+    width: 50%;          /* Largeur par défaut pour les écrans larges */
+    font-size: 2rem;     /* Taille de la police pour les écrans larges */
     background-color: #ffcb05;
     border-radius: 10px;
     cursor: pointer;
@@ -110,12 +159,39 @@ button:hover {
     opacity: 0.5;
     justify-content: center;
     position: relative; /* Position relative pour le positionnement absolu de l'infobulle */
+    margin-top: 20px; 
+    transition: background-color 0.3s, opacity 0.3s; /* Transition douce pour le survol et l'activation */
+}
+
+.start-game:hover {
+    background-color: #ffca28;
 }
 
 .start-game:enabled {
     opacity: 1;
     background-color: #228B22;
-    cursor: pointer;
+}
+
+/* Media Queries pour ajuster la taille du bouton sur différents appareils */
+@media (max-width: 1200px) {
+    .start-game {
+        font-size: 1.75rem; /* Réduction de la taille de la police */
+        padding: 12px 25px; /* Réduction du padding */
+    }
+}
+
+@media (max-width: 768px) {
+    .start-game {
+        font-size: 1.5rem; /* Adaptation de la taille de police pour une meilleure lisibilité */
+        padding: 10px 20px; /* Ajustement du padding pour l'harmonisation */
+    }
+}
+
+@media (max-width: 480px) {
+    .start-game {
+        font-size: 1.2rem; /* Police réduite pour une meilleure gestion de l'espace */
+        padding: 8px 15px; /* Padding encore plus réduit pour les très petits écrans */
+    }
 }
 
 #tooltip {
@@ -209,35 +285,48 @@ button:hover {
 
 /* RESPONSIVE */
 
-@media screen and (max-width: 1500px) {
-    .pokemon-list {
-        grid-template-columns: repeat(8, 1fr); /* Ajustement à 6 Pokémon par ligne sur petits écrans */
-    }
+.pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
 }
 
-@media screen and (max-width: 1200px) {
-    .pokemon-list {
-        grid-template-columns: repeat(6, 1fr); /* Ajustement à 6 Pokémon par ligne sur petits écrans */
-    }
+.pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: url('pokeball.png') 16 16, auto; /* Curseur personnalisé pour les cartes Pokémon */
 }
 
-@media screen and (max-width: 768px) {
-    .pokemon-list {
-        grid-template-columns: repeat(4, 1fr); /* 4 Pokémon par ligne pour plus petits écrans */
-    }
+.pokemon-card img {
+    width: 100%; /* Ajuste la taille de l'image pour remplir la carte */
+    height: auto;
+    border-bottom: 1px solid #ddd;
 }
 
-@media screen and (max-width: 480px) {
-    .pokemon-list {
-        grid-template-columns: repeat(2, 1fr); /* 2 Pokémon par ligne pour téléphones */
-    }
+.pokemon-card h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
 
-    .pokemon-card img {
-        width: 100px;
-        height: 100px;
-    }
+.pokemon-card:hover {
+    transform: scale(1.05);
+}
+
+.pokemon-card.selected {
+    border: 3px solid #FFD700;
+    background-color: rgba(255, 223, 0, 0.2);
 }
 
 .hidden {
     display: none;
 }
+
+
