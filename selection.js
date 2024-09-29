@@ -38,20 +38,32 @@ async function fetchPokemonDetails(id) {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
-        // Récupération du nom français
-        const speciesUrl = pokemon.species.url; // URL vers les informations de l'espèce
+        // Récupérer le nom français du Pokémon
+        const speciesUrl = pokemon.species.url;
         const speciesResponse = await fetch(speciesUrl);
         const speciesData = await speciesResponse.json();
-        
         const frenchName = speciesData.names.find(name => name.language.name === 'fr').name;
-        pokemon.frenchName = frenchName; // Stocker le nom français dans l'objet pokemon
+
+        // Récupérer les types en français
+        const typesPromises = pokemon.types.map(async (type) => {
+            const typeResponse = await fetch(type.type.url);
+            const typeData = await typeResponse.json();
+            const frenchTypeName = typeData.names.find(name => name.language.name === 'fr').name;
+            return { type: frenchTypeName };
+        });
+
+        const types = await Promise.all(typesPromises);
+
+        pokemon.frenchName = frenchName;
+        pokemon.frenchTypes = types.map(typeObj => typeObj.type);
 
         return createPokemonCard(pokemon);
     } catch (error) {
         console.error("Erreur lors de la récupération des détails Pokémon:", error);
-        return null; // Retourner un élément nul si la requête échoue
+        return null;
     }
 }
+
 //--------------- Récupérer les détails d'un Pokémon par son ID ---------------\\
 
 
@@ -87,7 +99,7 @@ function showPokemonStats(pokemon, card) {
     statsModal.innerHTML = `
         <div class="pokemon-name">${pokemon.frenchName.charAt(0).toUpperCase() + pokemon.frenchName.slice(1)}</div>
         <div class="pokemon-types">
-            ${pokemon.types.map(type => `<span class="pokemon-type type-${type.type.name}">${type.type.name.charAt(0).toUpperCase() + type.type.name.slice(1)}</span>`).join('')}
+            ${pokemon.frenchTypes.map(type => `<span class="pokemon-type type-${type.toLowerCase()}">${type}</span>`).join(' ')}
         </div>
         <div class="pokemon-stats">
             <p>HP: ${pokemon.stats[0].base_stat}</p>
@@ -98,7 +110,6 @@ function showPokemonStats(pokemon, card) {
             <p>Vitesse: ${pokemon.stats[5].base_stat}</p>
         </div>
     `;
-
     statsModal.style.display = "block";
 
     const rect = card.getBoundingClientRect();
