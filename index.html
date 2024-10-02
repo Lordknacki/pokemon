@@ -31,51 +31,43 @@
 </section>
 
     
-    <!-- Phase de combat -->
-    <section id="combat-phase" class="hidden">
-        <header>
-            <h1>Combat Pokémon</h1>
-            <div id="battle-status">En attente de démarrage...</div>
-        </header>
-        <div id="battlefield">
-            <div id="player-pokemon">
-                <img id="player-pokemon-sprite" src="" alt="Sprite du Pokémon joueur">
-                <div class="pokemon-info">
-                    <span id="player-pokemon-name" class="pokemon-name-level"></span>
-                    <div class="hp-bar-container">
-                        <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="opponent-pokemon" class="pokemon-side">
-                <img id="opponent-pokemon-sprite" src="" alt="Pokémon Adverse" class="pokemon-sprite">
-                <div class="pokemon-info">
-                    <span id="opponent-pokemon-name" class="pokemon-name-level"></span>
-                    <div class="hp-bar-container">
-                        <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
-                    </div>
+<!-- Phase de combat -->
+<section id="combat-phase" class="hidden">
+    <header>
+    </header>
+    <div id="battlefield">
+        <div id="player-pokemon">
+            <img id="player-pokemon-sprite" src="" alt="Sprite du Pokémon joueur">
+            <div class="pokemon-info">
+                <span id="player-pokemon-name" class="pokemon-name-level"></span>
+                <div class="hp-bar-container">
+                    <div id="player-hp" class="hp-bar hp-green" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
-        <div id="combat-menu">
-            <div id="combat-options">
-                <button id="attack-button">Combattre</button>
-                <button id="pokemon-button">Pokémon</button>
-                <button id="bag-button">Sac</button>
-                <button id="run-button">Fuir</button>
-            </div>
-            <div id="attack-menu" class="hidden">
-                <h3>Choisissez une attaque :</h3>
-                <div id="attack-options"></div>
-            </div>
-            <div id="pokemon-menu" class="hidden">
-                <h3>Choisissez un Pokémon à envoyer au combat :</h3>
-                <div id="pokemon-change-options"></div>
+        <div id="opponent-pokemon" class="pokemon-side">
+            <img id="opponent-pokemon-sprite" src="" alt="Pokémon Adverse" class="pokemon-sprite">
+            <div class="pokemon-info">
+                <span id="opponent-pokemon-name" class="pokemon-name-level"></span>
+                <div class="hp-bar-container">
+                    <div id="opponent-hp" class="hp-bar hp-green" style="width: 100%;"></div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+    
+    <!-- Menu des attaques -->
+        
+        <!-- Espace pour afficher les attaques -->
+        <div id="attack-menu" class="hidden">
+            <div id="attack-options">
+                <!-- Les attaques seront injectées ici dynamiquement -->
+            </div>
+        </div>
+    </div>
+</section>
+
 
     <script src="selection.js"></script>
-    <script src="combat.js"></script>
 </body>
 </html>
