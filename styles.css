@@ -466,4 +466,42 @@ button:hover {
 #team-button:hover {
     background-color: #005fa3;
 }
- 
+
+.hp-container {
+    width: 100%;
+    background-color: #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hp-bar {
+    height: 20px;
+    background-color: #4CAF50; /* Green by default */
+    width: 100%; /* Default to full HP */
+    border-radius: 8px;
+    transition: width 0.5s ease;
+}
+
+.hp-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.pokeballs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.pokeballs img {
+    width: 20px; /* Ajuste la taille selon tes préférences */
+    height: 20px;
+}

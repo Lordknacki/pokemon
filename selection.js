@@ -7,6 +7,9 @@ let selectedPokemon = [];
 
 //--------------- Récupère les 386 premiers Pokémon du Pokédex ---------------\\
 let allPokemonData = [];
+let playerPokemon; // Déclaration globale
+let selectedOpponent; // Déclaration globale
+
 
 async function fetchPokemonData() {
     try {
@@ -37,8 +40,7 @@ async function fetchPokemonDetails(id) {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
-        const speciesUrl = pokemon.species.url;
-        const speciesResponse = await fetch(speciesUrl);
+        const speciesResponse = await fetch(pokemon.species.url);
         const speciesData = await speciesResponse.json();
         const frenchName = speciesData.names.find(name => name.language.name === 'fr').name;
 
@@ -50,28 +52,57 @@ async function fetchPokemonDetails(id) {
         });
 
         const types = await Promise.all(typesPromises);
-
         const pokemonSprite = pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default;
 
-        // Sélectionner 4 attaques aléatoires
         const moves = pokemon.moves;
         const randomMoves = getRandomMoves(moves, 4);
 
-        console.log("Attaques récupérées pour le Pokémon:", randomMoves); // Vérification des attaques récupérées
+        const baseHP = pokemon.stats[0].base_stat;
+        const maxHP = calculateHP(baseHP);
+
+        console.log("Détails du Pokémon récupérés:", {
+            id: pokemon.id,
+            name: frenchName,
+            sprite: pokemonSprite,
+            stats: pokemon.stats,
+            maxHP: maxHP,
+            currentHP: maxHP,
+            types: types,
+            moves: randomMoves
+        });
 
         return {
             id: pokemon.id,
             name: frenchName,
             sprite: pokemonSprite,
             stats: pokemon.stats,
+            maxHP: maxHP,
+            currentHP: maxHP,
             types: types,
-            moves: randomMoves  // Inclure les attaques dans l'objet retourné
+            moves: randomMoves
         };
     } catch (error) {
         console.error(`Erreur lors de la récupération des détails du Pokémon ID ${id}:`, error);
         return null;
     }
 }
+
+
+async function fetchOpponentDetails(id) {
+    try {
+        // Utilise fetchPokemonDetails pour obtenir les détails du Pokémon
+        const opponentPokemon = await fetchPokemonDetails(id);
+        if (!opponentPokemon || !opponentPokemon.stats) {
+            console.error("Impossible de récupérer les détails du Pokémon adverse.");
+            return null;
+        }
+        return opponentPokemon;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des détails du Pokémon adverse :", error);
+        return null;
+    }
+}
+
 
 // Fonction utilitaire pour obtenir des attaques aléatoires
 function getRandomMoves(moves, count) {
@@ -209,9 +240,31 @@ document.getElementById('start-game').addEventListener('click', async () => {
     }
 });
 
-async function startBattle(playerPokemon, opponentPokemon) {
+let opponentPokemon; // Déclaration globale
+
+async function getRandomPokemon() {
+    const randomId = Math.floor(Math.random() * 386) + 1;
+    const opponent = await fetchPokemonDetails(randomId);
+    if (!opponent || !opponent.stats) {
+        console.error("Les statistiques du Pokémon adverse sont introuvables.");
+        return null;
+    }
+    return opponent;
+}
+
+
+
+async function startBattle(playerPokemon) {
+    // Récupérer un Pokémon adverse aléatoire
+    selectedOpponent = await getRandomPokemon();
+
+    if (!selectedOpponent || !selectedOpponent.stats) {
+        console.error("Erreur lors de la récupération des détails du Pokémon adverse.");
+        return;
+    }
+
     // Afficher les Pokémon sur le terrain
-    displayPokemonOnBattlefield(playerPokemon, opponentPokemon);
+    displayPokemonOnBattlefield(playerPokemon, selectedOpponent);
 
     // Afficher les attaques du premier Pokémon du joueur
     displayMoves(playerPokemon.moves);
@@ -219,13 +272,52 @@ async function startBattle(playerPokemon, opponentPokemon) {
     // Masquer la phase de sélection et afficher la phase de combat
     document.getElementById('selection-phase').classList.add('hidden');
     document.getElementById('combat-phase').classList.remove('hidden');
+
+    // Déterminer l'ordre des tours après avoir récupéré les détails des deux Pokémon
+    const currentTurn = determineTurnOrder(playerPokemon, selectedOpponent);
+    
+    // Démarrer la première phase de combat avec l'ordre déterminé
+    executeTurn(currentTurn, playerPokemon, selectedOpponent);
 }
 
-// --------------- Récupérer un Pokémon aléatoire pour l'adversaire ---------------\\
-async function getRandomPokemon() {
-    const randomId = Math.floor(Math.random() * 386) + 1;
-    return await fetchPokemonDetails(randomId);
+
+
+// Fonction pour déterminer l'ordre des tours
+function determineTurnOrder(playerPokemon, opponentPokemon) {
+    if (!playerPokemon.stats || !opponentPokemon.stats) {
+        console.error("Les statistiques des Pokémon sont manquantes.");
+        return;
+    }
+
+    const playerSpeed = playerPokemon.stats[5].base_stat;
+    const opponentSpeed = opponentPokemon.stats[5].base_stat;
+
+    if (playerSpeed > opponentSpeed) {
+        return 'player'; // Le joueur commence
+    } else if (opponentSpeed > playerSpeed) {
+        return 'opponent'; // L'adversaire commence
+    } else {
+        // Si les vitesses sont identiques, choisir aléatoirement
+        return Math.random() > 0.5 ? 'player' : 'opponent';
+    }
 }
+
+// Fonction pour exécuter le tour selon l'ordre déterminé
+// Fonction pour exécuter le tour selon l'ordre déterminé
+function executeTurn(currentTurn, playerPokemon, opponentPokemon) {
+    if (currentTurn === 'player') {
+        console.log("C'est au tour du joueur de jouer.");
+        // Afficher les attaques du joueur
+        displayMoves(playerPokemon.moves);
+    } else {
+        console.log("C'est au tour de l'adversaire de jouer.");
+        // Lancer une attaque aléatoire de l'adversaire
+        const randomMove = getRandomMove(opponentPokemon);
+        handleMoveClick(opponentPokemon, playerPokemon, randomMove.move.url);
+    }
+}
+
+
 
 // --------------- Afficher les Pokémon sur le terrain de combat ---------------\\
 // Fonction pour afficher les Pokémon et leurs attaques sur le terrain de combat
@@ -239,8 +331,8 @@ function displayPokemonOnBattlefield(playerPokemon, opponentPokemon) {
     document.getElementById('player-pokemon-name').textContent = playerPokemon.name;
     document.getElementById('opponent-pokemon-name').textContent = opponentPokemon.name;
 
-    document.getElementById('player-hp').style.width = '100%';
-    document.getElementById('opponent-hp').style.width = '100%';
+    updateHPBar(playerPokemon, playerPokemon.maxHP, playerPokemon.maxHP, 'player-hp', 'player-hp-text');
+    updateHPBar(opponentPokemon, opponentPokemon.maxHP, opponentPokemon.maxHP, 'opponent-hp', 'opponent-hp-text');
 
     // Afficher les attaques du Pokémon du joueur
     displayMoves(playerPokemon.moves);
@@ -249,6 +341,46 @@ function displayPokemonOnBattlefield(playerPokemon, opponentPokemon) {
     document.getElementById('attack-menu').classList.remove('hidden');
 }
 
+async function displayMoves(moves) {
+    const attackOptions = document.getElementById('attack-options');
+    attackOptions.innerHTML = '';
+
+    for (const move of moves) {
+        if (move && move.move && move.move.url) {
+            try {
+                const moveDetails = await fetchMoveDetails(move.move.url);
+                if (moveDetails) {
+                    const moveButton = document.createElement('button');
+                    moveButton.textContent = moveDetails.name;
+                    moveButton.classList.add('attack-btn');
+
+                    moveButton.setAttribute('data-move-tooltip', `
+                        Type: ${moveDetails.type}
+                        Puissance: ${moveDetails.power ? moveDetails.power : 'Inconnue'}
+                        Précision: ${moveDetails.accuracy ? moveDetails.accuracy : 'Inconnue'}
+                        Description: ${moveDetails.description}
+                    `);
+
+                    moveButton.addEventListener('click', () => {
+                        handlePlayerMove(moveDetails);
+                    });
+
+                    moveButton.addEventListener('mouseenter', (event) => {
+                        showMoveTooltip(event, moveButton.getAttribute('data-move-tooltip'));
+                    });
+
+                    moveButton.addEventListener('mouseleave', hideMoveTooltip);
+                    attackOptions.appendChild(moveButton);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des détails de l'attaque:", error);
+            }
+        }
+    }
+}
+
+
+// Fonction pour afficher l'infobulle des attaques
 function showMoveTooltip(event, content) {
     const tooltip = document.createElement('div');
     tooltip.id = 'move-tooltip';
@@ -270,68 +402,63 @@ function hideMoveTooltip() {
     }
 }
 
-async function displayMoves(moves) {
-    const attackOptions = document.getElementById('attack-options');
-    attackOptions.innerHTML = '';  // Nettoyer le menu avant d'ajouter les attaques
 
-    for (const move of moves) {
-        if (move && move.move) {
-            const moveDetails = await fetchMoveDetails(move.move.url); // Récupérer les détails de l'attaque
+async function fetchAilmentDetails(moveUrl) {
+    const response = await fetch(moveUrl);
+    const moveData = await response.json();
+    const ailment = moveData.meta.ailment.name; // par exemple, "poison", "paralysis"
+    return ailment;
+}
 
-            if (moveDetails) {
-                const moveButton = document.createElement('button');
-                moveButton.textContent = moveDetails.name;
-                moveButton.classList.add('attack-btn');
+async function fetchMoveCategory(moveUrl) {
+    const response = await fetch(moveUrl);
+    const categoryData = await response.json();
+    const category = categoryData.name; // Ex. "damage", "heal"
+    return category;
+}
 
-                // Ajout d'une infobulle avec les détails de l'attaque
-                moveButton.setAttribute('data-move-tooltip', `
-                    Type : ${moveDetails.type}
-                    Puissance : ${moveDetails.power}
-                    Précision : ${moveDetails.accuracy}
-                    Description : ${moveDetails.description}
-                `);
+async function fetchMoveTarget(moveUrl) {
+    const response = await fetch(moveUrl);
+    const moveData = await response.json();
+    const target = moveData.target.name; // Ex. "selected-pokemon", "all-opponents"
+    return target;
+}
 
-                moveButton.addEventListener('click', () => {
-                    console.log(`${moveDetails.name} a été utilisé !`);
-                });
-
-                // Gérer l'affichage de l'infobulle lors du survol
-                moveButton.addEventListener('mouseenter', (event) => {
-                    showMoveTooltip(event, moveButton.getAttribute('data-move-tooltip'));
-                });
-
-                moveButton.addEventListener('mouseleave', hideMoveTooltip);
-
-                attackOptions.appendChild(moveButton);
-            }
-        }
-    }
+async function fetchMoveBattleStyle(moveUrl) {
+    const response = await fetch(moveUrl);
+    const battleStyleData = await response.json();
+    const battleStyle = battleStyleData.name;
+    return battleStyle;
 }
 
 async function fetchMoveDetails(moveUrl) {
     try {
         const response = await fetch(moveUrl);
         const moveData = await response.json();
-
-        // Récupérer les informations en français
-        const moveName = moveData.names.find(name => name.language.name === 'fr').name;
-        const moveDescription = moveData.flavor_text_entries.find(entry => entry.language.name === 'fr').flavor_text;
-        const movePower = moveData.power ? moveData.power : "N/A";
-        const moveAccuracy = moveData.accuracy ? moveData.accuracy : "N/A";
+        
+        // Filtrer pour récupérer les descriptions et noms en français
+        const moveName = moveData.names.find(name => name.language.name === 'fr')?.name || 'Nom inconnu';
+        const moveDescription = moveData.flavor_text_entries.find(entry => entry.language.name === 'fr')?.flavor_text || 'Description indisponible';
+        const movePower = moveData.power || "???";
+        const moveAccuracy = moveData.accuracy || 100;
         const moveType = moveData.type.name.charAt(0).toUpperCase() + moveData.type.name.slice(1);
-
+        const damageClass = moveData.damage_class.name; // "physical", "special", or "status"
+        
         return {
             name: moveName,
             description: moveDescription,
             power: movePower,
             accuracy: moveAccuracy,
-            type: moveType
+            type: moveType,
+            damageClass: damageClass
         };
     } catch (error) {
-        console.error("Erreur lors de la récupération des détails de l'attaque:", error);
+        console.error("Erreur lors de la récupération des détails de l'attaque :", error);
         return null;
     }
 }
+
+
 
 
 //--------------- Barre de recherche des Pokémon ---------------\\
@@ -413,4 +540,163 @@ document.getElementById('start-game').addEventListener('mouseleave', () => {
         }, 300);  // Délai pour correspondre à la durée de la transition (0.3s)
     }
 });
+
+function calculateHP(baseHP) {
+    const level = 100;
+    const iv = 31; // Max IV
+    const ev = 252; // Max EV
+    const hp = Math.floor(((2 * baseHP + iv + Math.floor(ev / 4)) * level / 100) + level + 10);
+    return hp;
+}
+
+// Example usage for Charizard with current HP and max HP
+const baseHP = 78; // Charizard's base HP
+const maxHP = calculateHP(baseHP);
+
+const typeChart = {
+    fire: { water: 0.5, grass: 2, fire: 0.5, rock: 0.5 },
+    water: { fire: 2, grass: 0.5, electric: 0.5 },
+    grass: { fire: 0.5, water: 2, grass: 0.5, poison: 0.5 },
+    // More types...
+};
+
+function getTypeEffectiveness(moveType, defenderTypes) {
+    let effectiveness = 1;
+    defenderTypes.forEach(type => {
+        effectiveness *= typeChart[moveType][type] || 1;
+    });
+    return effectiveness;
+}
+
+document.getElementById('attack-options').addEventListener('click', function(event) {
+    const moveButton = event.target;
+
+    if (moveButton.tagName === 'BUTTON') {
+        const moveUrl = moveButton.getAttribute('data-move-url');
+        handleMoveClick(playerPokemon, opponentPokemon, moveUrl);
+    }
+});
+
+
+function getRandomMove(pokemon) {
+    return pokemon.moves[Math.floor(Math.random() * pokemon.moves.length)];
+}
+
+
+// Function to handle move click and apply damage
+async function handleMoveClick(attacker, defender, moveUrl) {
+    const moveDetails = await fetchMoveDetails(moveUrl);
+    if (!moveDetails) {
+        console.error("Détails de l'attaque non trouvés !");
+        return;
+    }
+
+    if (!moveHits(moveDetails.accuracy)) {
+        console.log(`${attacker.name} a raté son attaque !`);
+        return;
+    }
+
+    const ailment = await fetchAilmentDetails(moveUrl);
+    if (ailment !== 'none') {
+        console.log(`${attacker.name} inflige ${ailment} à ${defender.name} !`);
+        applyAilment(defender, ailment);
+    }
+
+    const damage = calculateDamage(attacker, defender, moveDetails);
+    applyDamage(defender, damage, defender === playerPokemon ? 'opponent-hp' : 'player-hp', defender === playerPokemon ? 'opponent-hp-text' : 'player-hp-text');
+    checkForFainting(defender);
+}
+
+
+// Function to calculate damage based on stats and move power
+function calculateDamage(attacker, defender, moveDetails) {
+    if (!attacker.stats || !defender.stats) {
+        console.error("Les statistiques des Pokémon sont manquantes pour l'attaque.");
+        return 0; // Retourne 0 pour éviter que le jeu plante
+    }
+
+    let baseDamage = moveDetails.power || 50;
+    if (moveDetails.damage_class === 'status') {
+        console.log("L'attaque est de type 'status' et ne cause pas de dégâts directs.");
+        return 0;
+    }
+
+    const attackStat = moveDetails.damage_class === 'physical' ? attacker.stats[1].base_stat : attacker.stats[3].base_stat;
+    const defenseStat = moveDetails.damage_class === 'physical' ? defender.stats[2].base_stat : defender.stats[4].base_stat;
+
+    const damage = (((2 * 100 / 5 + 2) * baseDamage * (attackStat / defenseStat)) / 50) + 2;
+
+    return Math.round(damage);
+}
+
+
+
+
+function moveHits(accuracy) {
+    const roll = Math.random() * 100;
+    return roll <= accuracy;
+}
+
+
+
+function applyDamage(pokemon, damage, hpBarId, hpTextId) {
+    pokemon.currentHP = Math.max(0, pokemon.currentHP - damage);
+    updateHPBar(pokemon, pokemon.currentHP, pokemon.maxHP, hpBarId, hpTextId);
+}
+
+function updateHPBar(pokemon, currentHP, maxHP, hpBarId, hpTextId) {
+    const hpPercentage = (currentHP / maxHP) * 100;
+    const hpBar = document.getElementById(hpBarId);
+    const hpText = document.getElementById(hpTextId);
+
+    hpBar.style.width = `${hpPercentage}%`;
+    hpText.textContent = `${currentHP} / ${maxHP}`;
+
+    if (hpPercentage > 50) {
+        hpBar.classList.remove('hp-yellow', 'hp-red');
+        hpBar.classList.add('hp-green');
+    } else if (hpPercentage > 20) {
+        hpBar.classList.remove('hp-green', 'hp-red');
+        hpBar.classList.add('hp-yellow');
+    } else {
+        hpBar.classList.remove('hp-green', 'hp-yellow');
+        hpBar.classList.add('hp-red');
+    }
+}
+
+
+
+// Function to check if a Pokémon fainted
+function checkForFainting(pokemon) {
+    if (pokemon.currentHP <= 0) {
+        console.log(`${pokemon.name} fainted!`);
+        if (pokemon === playerPokemon) {
+            alert("Your Pokémon fainted! You lose.");
+        } else {
+            alert("The opponent's Pokémon fainted! You win.");
+        }
+    }
+}
+
+async function handlePlayerMove(moveDetails) {
+    console.log("Détails du mouvement:", moveDetails);
+    console.log("Player Pokemon:", playerPokemon);
+    console.log("Selected Opponent:", selectedOpponent);
+
+    if (!playerPokemon || !playerPokemon.stats || !selectedOpponent || !selectedOpponent.stats) {
+        console.error("Les statistiques des Pokémon sont manquantes.");
+        return;
+    }
+
+    const damage = calculateDamage(playerPokemon, selectedOpponent, moveDetails);
+    applyDamage(selectedOpponent, damage, 'opponent-hp', 'opponent-hp-text');
+
+    if (selectedOpponent.currentHP <= 0) {
+        endBattle("Victory! The opponent's Pokémon fainted.");
+        return;
+    }
+
+    await opponentMove();
+}
+
 
