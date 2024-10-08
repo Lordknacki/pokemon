@@ -551,3 +551,10 @@ button:hover {
     pointer-events: none; /* Désactive les interactions avec les éléments */
     opacity: 0.5; /* Rend l'élément visuellement plus clair pour indiquer qu'il est désactivé */
 }
+
+.move-category-icon {
+    width: 20px; /* Ajustez la largeur de l'image */
+    height: 20px; /* Ajustez la hauteur de l'image */
+    vertical-align: middle; /* Aligne l'icône au milieu du texte */
+    margin-right: 5px; /* Espace entre l'icône et le texte */
+}

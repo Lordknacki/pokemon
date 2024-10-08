@@ -7,14 +7,6 @@ async function startBattle(playerTeamArray) {
         playerPokemon = playerTeam[playerPokemonIndex];
         selectedOpponent = opponentTeam[opponentPokemonIndex];
 
-        // Logs pour vérifier les objets avant de continuer
-        console.log("Équipe du joueur :", playerTeam);
-        console.log("Pokémon du joueur :", playerPokemon);
-        console.log("Sprite animé du Pokémon du joueur :", playerPokemon.animatedSprite);
-        console.log("Sprite standard du Pokémon du joueur :", playerPokemon.standardSprite);
-        console.log("Équipe de l'adversaire :", opponentTeam);
-        console.log("Pokémon de l'adversaire :", selectedOpponent);
-
         // Vérifier que les Pokémon ont bien un sprite avant de continuer
         if (!playerPokemon || !playerPokemon.animatedSprite) {
             console.error("Erreur : Le Pokémon du joueur n'a pas de sprite.", playerPokemon);
@@ -89,20 +81,15 @@ function updatePokeballs(pokemonType, index) {
     }
 }
 
-
-
 async function executeTurn(currentTurn) {
-    hideAttackMenu();
-
     if (currentTurn === 'player') {
-        // Attendre 5 secondes avant d'afficher le menu des attaques pour le joueur
-        await delay(5000);
         displayMoves(playerPokemon.moves);
     } else if (currentTurn === 'opponent') {
-        // L'adversaire attaque de manière automatique
+        hideAttackMenu(); // Cache le menu pendant le tour de l'adversaire
         await handleOpponentMove();
     }
 }
+
 
 
 
@@ -183,9 +170,4 @@ function getNextAvailablePokemon(team, index) {
         }
     }
     return -1; // Retourne -1 si aucun Pokémon n'est disponible
-}
-
-// Fonction pour masquer le menu d'attaques
-function hideAttackMenu() {
-    document.getElementById('attack-menu').classList.add('hidden');
 }

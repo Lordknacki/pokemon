@@ -14,7 +14,8 @@ async function fetchMoveDetails(moveUrl) {
             description: moveDescription,
             power: moveData.power || 50,
             accuracy: moveData.accuracy || 100,
-            type: moveData.type.name.charAt(0).toUpperCase() + moveData.type.name.slice(1)
+            type: moveData.type.name.charAt(0).toUpperCase() + moveData.type.name.slice(1),
+            damageClass: moveData.damage_class.name // Récupère la classe de dégâts (physical, special, status)
         };
     } catch (error) {
         console.error("Erreur lors de la récupération des détails de l'attaque :", error);
@@ -23,15 +24,89 @@ async function fetchMoveDetails(moveUrl) {
             description: "Attaque basique.",
             power: 50,
             accuracy: 100,
-            type: "Normal"
+            type: "Normal",
+            damageClass: "physical" // Par défaut à physique si une erreur se produit
         };
     }
 }
 
+
+
+function hideAttackMenu() {
+    const attackMenu = document.getElementById('attack-menu');
+    if (attackMenu) {
+        attackMenu.classList.add('hidden');
+    }
+}
+
+function hideMoveTooltip() {
+    const tooltip = document.querySelector('.move-tooltip');
+    if (tooltip) {
+        tooltip.remove();
+    }
+}
+
+async function displayMoves(pokemon) {
+    const attackOptions = document.getElementById('attack-options');
+    attackOptions.innerHTML = ''; // Réinitialise le contenu pour éviter les doublons
+
+    // Vérifie si les mouvements sont définis et s'il s'agit bien d'un tableau
+    if (!pokemon || !Array.isArray(pokemon.moves) || pokemon.moves.length === 0) {
+        console.error("Erreur : Aucun mouvement disponible pour ce Pokémon.", pokemon);
+        return;
+    }
+
+    // Utilise les mouvements déjà sélectionnés (limités à 4)
+    const selectedMoves = pokemon.moves.slice(0, 4); // Limite à 4 mouvements au maximum
+
+    for (const move of selectedMoves) {
+        try {
+            // Récupérer les détails complets de l'attaque, y compris le type
+            const moveDetails = await fetchMoveDetails(move.url);
+            const moveTypeInFrench = getMoveTypeInFrench(moveDetails.type);
+
+            const moveButton = document.createElement('button');
+            moveButton.textContent = moveDetails.name;
+            moveButton.classList.add('attack-btn');
+
+            // Ajoute un événement pour chaque bouton d'attaque
+            moveButton.addEventListener('click', () => {
+                hideAttackMenu(); // Cache le menu d'attaque lors de l'attaque
+                handlePlayerMove(moveDetails);
+            });
+
+            // Ajouter un événement pour afficher un tooltip personnalisé
+            moveButton.addEventListener('mouseenter', (event) => {
+                showMoveTooltip(
+                    event,
+                    moveDetails.name,
+                    moveTypeInFrench,
+                    moveDetails.description,
+                    moveDetails.power,
+                    moveDetails.accuracy,
+                    moveDetails.damageClass
+                );
+            });
+
+            moveButton.addEventListener('mouseleave', hideMoveTooltip);
+
+            attackOptions.appendChild(moveButton);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des détails de l'attaque :", error);
+        }
+    }
+
+    document.getElementById('attack-menu').classList.remove('hidden');
+}
+
+
+
+
+
 function getUniqueMoves(moves, count = 4) {
     if (!moves || moves.length === 0) {
         console.error("Erreur : La liste des mouvements est vide ou non définie.");
-        return []; // Retourne une liste vide si aucun mouvement n'est disponible
+        return [];
     }
 
     const uniqueMoves = [];
@@ -52,7 +127,6 @@ function getUniqueMoves(moves, count = 4) {
 }
 
 
-
 function preparePlayerMoves(playerPokemon) {
     if (!playerPokemon || !playerPokemon.moves || playerPokemon.moves.length === 0) {
         console.error("Erreur : Le Pokémon du joueur n'a pas de mouvements disponibles.");
@@ -61,14 +135,12 @@ function preparePlayerMoves(playerPokemon) {
     playerPokemon.moves = getUniqueMoves(playerPokemon.moves, 4);
 }
 
-
-
-// Prépare les mouvements de l'adversaire en sélectionnant jusqu'à 4 mouvements uniques
 function prepareOpponentMoves(opponentTeam) {
     opponentTeam.forEach(pokemon => {
         pokemon.moves = getUniqueMoves(pokemon.moves, 4);
     });
 }
+
 
 // Sélectionne un mouvement aléatoire parmi les mouvements d'un Pokémon
 function getRandomMove(pokemon) {
@@ -83,14 +155,18 @@ function getRandomMove(pokemon) {
 
 async function displayMoves(pokemon) {
     const attackOptions = document.getElementById('attack-options');
-    attackOptions.innerHTML = ''; // Vide le contenu pour réinitialiser
+    attackOptions.innerHTML = ''; // Réinitialise le contenu pour éviter les doublons
+
+    // Vérifie si les mouvements sont définis et s'il s'agit bien d'un tableau
+    if (!pokemon || !Array.isArray(pokemon.moves) || pokemon.moves.length === 0) {
+        return; // Sort de la fonction si aucun mouvement n'est disponible
+    }
 
     // Utilise les mouvements déjà sélectionnés (limités à 4)
-    const selectedMoves = pokemon.moves;
+    const selectedMoves = pokemon.moves.slice(0, 4); // Limite à 4 mouvements au maximum
 
     for (const move of selectedMoves) {
         try {
-            // Récupérer les détails complets de l'attaque, y compris le type
             const moveDetails = await fetchMoveDetails(move.url);
             const moveTypeInFrench = getMoveTypeInFrench(moveDetails.type);
 
@@ -99,17 +175,22 @@ async function displayMoves(pokemon) {
             moveButton.classList.add('attack-btn');
 
             // Ajoute un événement pour chaque bouton d'attaque
-            moveButton.addEventListener('click', () => handlePlayerMove(moveDetails));
+            moveButton.addEventListener('click', () => {
+                hideAttackMenu(); // Cache le menu d'attaque lors de l'attaque
+                handlePlayerMove(moveDetails);
+            });
 
             // Ajouter un événement pour afficher un tooltip personnalisé
             moveButton.addEventListener('mouseenter', (event) => {
-                showMoveTooltip(event, `
-                    <strong>${moveDetails.name}</strong><br>
-                    <span class="move-type">${moveTypeInFrench}</span><br>
-                    Puissance: ${moveDetails.power}<br>
-                    Précision: ${moveDetails.accuracy}%<br>
-                    ${moveDetails.description}
-                `, moveDetails.type);
+                showMoveTooltip(
+                    event,
+                    moveDetails.name,
+                    moveTypeInFrench,
+                    moveDetails.description,
+                    moveDetails.power,
+                    moveDetails.accuracy,
+                    moveDetails.damageClass
+                );
             });
 
             moveButton.addEventListener('mouseleave', hideMoveTooltip);
@@ -120,46 +201,70 @@ async function displayMoves(pokemon) {
         }
     }
 
-
-    // Assure que le menu d'attaques est visible uniquement s'il y a des mouvements à afficher
-    if (selectedMoves.length > 0) {
-        document.getElementById('attack-menu').classList.remove('hidden');
-    } else {
-        console.warn("Aucun mouvement à afficher pour ce Pokémon.");
-        hideAttackMenu();
-    }
+    document.getElementById('attack-menu').classList.remove('hidden');
 }
 
-function showMoveTooltip(event, content, moveType) {
-    // Supprime le *tooltip* existant avant d'en créer un nouveau
+
+
+function showMoveTooltip(event, moveName, moveType, moveDescription, movePower, moveAccuracy, moveCategory) {
     const existingTooltip = document.querySelector('.move-tooltip');
     if (existingTooltip) {
         existingTooltip.remove();
     }
 
-    // Crée un élément pour le tooltip
+    let categoryImage;
+    let categoryText;
+    switch (moveCategory) {
+        case 'physical':
+            categoryImage = 'physique.png';
+            categoryText = 'Physique';
+            break;
+        case 'special':
+            categoryImage = 'speciale.png';
+            categoryText = 'Spéciale';
+            break;
+        case 'status':
+            categoryImage = 'statut.png';
+            categoryText = 'Statut';
+            break;
+        default:
+            categoryImage = 'physique.png';
+            categoryText = 'Inconnu';
+            break;
+    }
+
     const tooltip = document.createElement('div');
     tooltip.classList.add('move-tooltip');
-    
-    // Traduire le type de l'attaque
-    const typeInFrench = getMoveTypeInFrench(moveType);
 
-    // Crée le contenu du tooltip avec un span pour le type
     tooltip.innerHTML = `
         <div>
-            <span class="move-type type-${typeInFrench.toLowerCase()}">${typeInFrench}</span> - ${content}
+            <span class="move-type type-${moveType.toLowerCase()}">${moveType}</span>: ${moveName}
         </div>
+        <div class="move-details">
+            <img src="${categoryImage}" alt="${categoryText}" class="move-category-icon" />
+            ${categoryText} | Puissance: ${movePower} | Précision: ${moveAccuracy}%
+        </div>
+        <div class="move-description">${moveDescription}</div>
     `;
-    
+
     document.body.appendChild(tooltip);
 
-    // Positionne le tooltip au-dessus du bouton
     const rect = event.target.getBoundingClientRect();
     tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
     tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
 
     tooltip.classList.add('show');
 }
+
+
+function hideMoveTooltip() {
+    const tooltip = document.querySelector('.move-tooltip');
+    if (tooltip) {
+        tooltip.remove();
+    }
+}
+
+
 
 
 function getMoveTypeInFrench(type) {
@@ -187,34 +292,6 @@ function getMoveTypeInFrench(type) {
 }
 
 
-
-
-function hideMoveTooltip() {
-    const tooltip = document.querySelector('.move-tooltip');
-    if (tooltip) {
-        setTimeout(() => {
-            tooltip.classList.remove('show');
-            setTimeout(() => {
-                if (tooltip.parentElement) {
-                    tooltip.parentElement.removeChild(tooltip);
-                }
-            }, 200); // Délai pour laisser la transition de disparition se terminer
-        }, 100); // Délai avant de commencer à masquer le *tooltip*
-    }
-}
-
-
-
-
-
-
-
-// Fonction utilitaire pour introduire un délai
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
 function createMoveButton(move) {
     if (!move || !move.name || !move.url) {
         console.error("Erreur : Mouvement invalide.", move);
@@ -234,15 +311,20 @@ function createMoveButton(move) {
     return button;
 }
 
+function hideAttackMenu() {
+    const attackMenu = document.getElementById('attack-menu');
+    if (attackMenu) {
+        attackMenu.classList.add('hidden');
+    }
+}
+
 async function handlePlayerMove(move) {
     try {
+        hideAttackMenu(); 
         if (!move || !move.type) {
             console.error('Erreur : le mouvement ou son type est indéfini.', move);
             return;
         }
-
-        // Masquer le menu d'attaques
-        hideAttackMenu();
 
         // Affiche l'animation de l'attaque du joueur
         const attackerSprite = document.getElementById('player-pokemon-sprite');
@@ -250,6 +332,15 @@ async function handlePlayerMove(move) {
         setTimeout(() => {
             attackerSprite.src = playerPokemon.standardSprite;
         }, 1000);
+
+        // Vérifier si l'attaque touche sa cible
+        if (!moveHits(move.accuracy)) {
+            addBattleLog(`${playerPokemon.name} utilise ${move.name}, mais l'attaque échoue !`);
+            // Masquer le menu d'attaques pendant 2 secondes pour simuler le délai
+            await delay(2000);
+            await executeTurn('opponent');
+            return;
+        }
 
         // Calculer les dégâts et appliquer l'attaque
         const damage = calculateDamage(playerPokemon, selectedOpponent, move);
@@ -282,7 +373,7 @@ async function handlePlayerMove(move) {
                 await executeTurn('opponent');
             }
         } else {
-            // Attendre 2 secondes avant le tour de l'adversaire
+            // Masquer le menu d'attaques pendant 2 secondes après l'attaque du joueur
             await delay(2000);
             await executeTurn('opponent');
         }
@@ -290,6 +381,7 @@ async function handlePlayerMove(move) {
         console.error("Erreur lors de l'utilisation de l'attaque :", error);
     }
 }
+
 
 
 
