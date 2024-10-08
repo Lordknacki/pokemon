@@ -96,6 +96,29 @@ function displayPokemonOnBattlefield(playerPokemon, opponentPokemon) {
     displayMoves(playerPokemon.moves);
 }
 
+function updateHPBar(pokemon, currentHP, maxHP, hpBarId, hpTextId) {
+    const hpBar = document.getElementById(hpBarId);
+    const hpText = document.getElementById(hpTextId);
+
+    // Calcul du pourcentage de PV restants
+    const hpPercentage = (currentHP / maxHP) * 100;
+
+    // Mise à jour de la largeur de la barre en fonction du pourcentage
+    hpBar.style.width = `${hpPercentage}%`;
+
+    // Changement de couleur selon le pourcentage de PV (vert, jaune, rouge)
+    if (hpPercentage > 50) {
+        hpBar.style.background = 'linear-gradient(to bottom, #76c7c0, #4caf50)'; // Vert dégradé
+    } else if (hpPercentage > 20) {
+        hpBar.style.background = 'linear-gradient(to bottom, #f7e987, #ffeb3b)'; // Jaune dégradé
+    } else {
+        hpBar.style.background = 'linear-gradient(to bottom, #f77b7b, #f44336)'; // Rouge dégradé
+    }
+
+    // Mise à jour du texte des PV
+    hpText.textContent = `${currentHP}/${maxHP}`;
+}
+
 
 
 

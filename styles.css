@@ -494,32 +494,36 @@ button:hover {
 }
 
 .hp-container {
-    width: 100%;
-    background-color: #ccc;
-    border-radius: 8px;
-    overflow: hidden;
     position: relative;
+    width: 100%;
+    height: 25px; /* Augmente la hauteur pour une meilleure visibilité */
+    background: linear-gradient(to right, #ccc, #eee); /* Dégradé pour le fond de la barre */
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Légère ombre pour donner de la profondeur */
+    overflow: hidden; /* Empêche le débordement */
+    margin: 10px 0; /* Espace autour de la barre pour éviter le chevauchement */
 }
 
 .hp-bar {
-    height: 20px;
-    background-color: #4CAF50; /* Green by default */
-    width: 100%; /* Default to full HP */
-    border-radius: 8px;
-    transition: width 0.5s ease;
+    height: 100%;
+    background: linear-gradient(to bottom, #76c7c0, #4caf50); /* Dégradé pour la barre de PV pleine */
+    border-radius: 12px; /* Coins arrondis pour la barre interne */
+    transition: width 0.4s ease-in-out, background-color 0.4s ease-in-out; /* Transition plus douce */
+    box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.2); /* Ombre interne pour un effet de profondeur */
 }
 
 .hp-text {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    color: white;
+    transform: translate(-50%, -50%); /* Centre le texte */
+    font-size: 14px; /* Taille de police légèrement plus grande */
     font-weight: bold;
-    font-size: 14px;
-    line-height: 20px;
-    text-align: center;
+    color: #fff; /* Couleur du texte blanche pour une meilleure lisibilité */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Ombre légère pour le texte */
+    pointer-events: none; /* Empêche le survol du texte */
 }
+
 
 .pokeballs {
     display: flex;
