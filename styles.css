@@ -329,30 +329,61 @@ button:hover {
 }
 
 #battlefield {
+    display: flex;
+    justify-content: space-between; /* Éloigne les Pokémon tout en les centrant horizontalement */
+    align-items: center; /* Centre les Pokémon verticalement */
+    margin: 0 auto;
+    max-width: 800px; /* Limite la largeur pour les rapprocher davantage */
+    padding: 20px;
     position: relative;
-    width: 100%;
-    height: 500px;
-    overflow: hidden;
+}
+
+#player-pokemon,
+#opponent-pokemon {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre le contenu horizontalement */
 }
 
 #player-pokemon {
-    position: absolute;
-    bottom: 20%;
-    left: 10%;
+    transform: translateX(-30px); /* Décale légèrement vers la droite pour rapprocher */
     z-index: 2;
 }
 
 #opponent-pokemon {
-    position: absolute;
-    top: 20%;
-    right: 10%;
-    z-index: 2;
+    transform: translateX(30px); /* Décale légèrement vers la gauche pour rapprocher */
+    z-index: 1;
 }
 
-#player-pokemon-sprite, #opponent-pokemon-sprite {
-    width: 150px;
+.pokemon-sprite {
+    width: 100%;
     height: auto;
+    display: block;
+    object-fit: contain;
 }
+
+#player-pokemon img,
+#opponent-pokemon img {
+    max-width: 300px; /* Ajuste la taille de l'image selon tes préférences */
+    margin-bottom: 10px; /* Ajoute un espace entre l'image et le nom */
+}
+
+.pokemon-name-level {
+    text-align: center; /* Centre le texte du nom */
+    font-size: 16px; /* Taille de la police ajustable */
+    font-weight: bold; /* Pour mettre le nom en valeur */
+}
+
+#player-pokemon-sprite,
+#opponent-pokemon-sprite {
+    width: 300px;
+    height: 300px;
+    object-fit: contain; /* Cela permet de conserver les proportions de l'image */
+}
+
+
+
+
 
 /* Style pour les boutons d'attaque dans le menu de combat */
 #attack-options {
