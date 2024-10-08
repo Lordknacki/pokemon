@@ -1,24 +1,55 @@
-async function startBattle(playerPokemon) {
+async function startBattle(playerTeamArray) {
     try {
-        selectedOpponent = await getRandomPokemon();
-        if (!selectedOpponent || !selectedOpponent.stats) {
-            console.error("Erreur : Les statistiques du Pokémon adverse sont introuvables.");
+        playerTeam = playerTeamArray; // Associe l'équipe du joueur
+        opponentTeam = await getOpponentTeam(); // Récupère une équipe pour l'adversaire
+        playerPokemonIndex = 0;
+        opponentPokemonIndex = 0;
+        playerPokemon = playerTeam[playerPokemonIndex];
+        selectedOpponent = opponentTeam[opponentPokemonIndex];
+
+        // Logs pour vérifier les objets avant de continuer
+        console.log("Équipe du joueur :", playerTeam);
+        console.log("Pokémon du joueur :", playerPokemon);
+        console.log("Sprite animé du Pokémon du joueur :", playerPokemon.animatedSprite);
+        console.log("Sprite standard du Pokémon du joueur :", playerPokemon.standardSprite);
+        console.log("Équipe de l'adversaire :", opponentTeam);
+        console.log("Pokémon de l'adversaire :", selectedOpponent);
+
+        // Vérifier que les Pokémon ont bien un sprite avant de continuer
+        if (!playerPokemon || !playerPokemon.animatedSprite) {
+            console.error("Erreur : Le Pokémon du joueur n'a pas de sprite.", playerPokemon);
+            return;
+        }
+        if (!selectedOpponent || !selectedOpponent.animatedSprite) {
+            console.error("Erreur : Le Pokémon de l'adversaire n'a pas de sprite.", selectedOpponent);
             return;
         }
 
+        // Préparer les mouvements des Pokémon pour garantir qu'ils ont 4 mouvements uniques
+        preparePlayerMoves(playerPokemon);
+        prepareOpponentMoves(opponentTeam);
+
+        // Afficher les Pokémon sur le champ de bataille
         displayPokemonOnBattlefield(playerPokemon, selectedOpponent);
+        displayMoves(playerPokemon);
+
+        // Transition de la phase de sélection à la phase de combat
         document.getElementById('selection-phase').classList.add('hidden');
         document.getElementById('combat-phase').classList.remove('hidden');
 
+        // Initialiser l'affichage des Pokéballs pour les deux équipes
         initializePokeballs();
 
-        // Déterminer qui commence le combat
+        // Déterminer qui commence le combat et lancer le premier tour
         const currentTurn = determineTurnOrder(playerPokemon, selectedOpponent);
-        executeTurn(currentTurn);
+        await executeTurn(currentTurn);
     } catch (error) {
         console.error("Erreur lors du démarrage du combat :", error);
     }
 }
+
+
+
 
 
 function initializePokeballs() {
@@ -61,14 +92,19 @@ function updatePokeballs(pokemonType, index) {
 
 
 async function executeTurn(currentTurn) {
+    hideAttackMenu();
+
     if (currentTurn === 'player') {
-        // Le joueur attaque
-        displayMoves(playerPokemon.moves); // Affiche les mouvements du joueur pour qu'il puisse choisir
+        // Attendre 5 secondes avant d'afficher le menu des attaques pour le joueur
+        await delay(5000);
+        displayMoves(playerPokemon.moves);
     } else if (currentTurn === 'opponent') {
         // L'adversaire attaque de manière automatique
-        await opponentMove();
+        await handleOpponentMove();
     }
 }
+
+
 
 
 function determineTurnOrder(playerPokemon, opponentPokemon) {
@@ -88,26 +124,29 @@ async function opponentMove() {
     try {
         const randomMove = getRandomMove(selectedOpponent);
         const moveDetails = await fetchMoveDetails(randomMove.url);
-        
-        if (!playerPokemon || !selectedOpponent) {
-            console.error("Erreur : Pokémon manquant pour l'attaque de l'adversaire.");
-            return;
-        }
 
         const damage = calculateDamage(selectedOpponent, playerPokemon, moveDetails);
         applyDamage(playerPokemon, damage, 'player-hp', 'player-hp-text');
-        
+
         if (playerPokemon.currentHP <= 0) {
-            updatePokeballs('player', 0); // Utiliser l'index du Pokémon KO si nécessaire
-            endBattle("Your Pokémon fainted! You lose.");
+            updatePokeballs('player', playerPokemonIndex);
+            playerPokemonIndex = getNextAvailablePokemon(playerTeam, playerPokemonIndex + 1);
+
+            if (playerPokemonIndex === -1) {
+                endBattle("Your Pokémon fainted! You lose.");
+            } else {
+                playerPokemon = playerTeam[playerPokemonIndex];
+                displayPokemonOnBattlefield(playerPokemon, selectedOpponent);
+                await executeTurn('player');
+            }
         } else {
-            // Si le joueur n'est pas KO, c'est à son tour
             executeTurn('player');
         }
     } catch (error) {
         console.error("Erreur lors de l'attaque de l'adversaire :", error);
     }
 }
+
 
 
 function checkForFainting(pokemon) {
@@ -136,3 +175,17 @@ function endBattle(message) {
     console.log("Le combat est terminé : ", message);
 }
 
+function getNextAvailablePokemon(team, index) {
+    // Parcourt l'équipe pour trouver le premier Pokémon encore en vie à partir de l'index donné
+    for (let i = index; i < team.length; i++) {
+        if (team[i].currentHP > 0) {
+            return i;
+        }
+    }
+    return -1; // Retourne -1 si aucun Pokémon n'est disponible
+}
+
+// Fonction pour masquer le menu d'attaques
+function hideAttackMenu() {
+    document.getElementById('attack-menu').classList.add('hidden');
+}

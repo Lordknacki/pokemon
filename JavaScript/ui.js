@@ -83,20 +83,25 @@ function displayPokemonOnBattlefield(playerPokemon, opponentPokemon) {
     const playerSprite = document.getElementById('player-pokemon-sprite');
     const opponentSprite = document.getElementById('opponent-pokemon-sprite');
 
-    // Met à jour les sprites des Pokémon
-    playerSprite.src = playerPokemon.sprite;
-    opponentSprite.src = opponentPokemon.sprite;
+    playerSprite.src = playerPokemon.standardSprite;
+    opponentSprite.src = opponentPokemon.standardSprite;
 
     document.getElementById('player-pokemon-name').textContent = playerPokemon.name;
     document.getElementById('opponent-pokemon-name').textContent = opponentPokemon.name;
 
-    // Initialise les barres de vie
     updateHPBar(playerPokemon, playerPokemon.currentHP, playerPokemon.maxHP, 'player-hp', 'player-hp-text');
     updateHPBar(opponentPokemon, opponentPokemon.currentHP, opponentPokemon.maxHP, 'opponent-hp', 'opponent-hp-text');
 
-    // Affiche le menu des attaques pour le joueur
+    // Afficher les attaques du joueur
     displayMoves(playerPokemon.moves);
-
-    // Rend visible le menu des attaques
-    document.getElementById('attack-menu').classList.remove('hidden');
 }
+
+
+
+
+
+
+
+
+
+

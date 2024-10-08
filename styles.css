@@ -378,25 +378,51 @@ button:hover {
     border-color: #ff5c5c;
 }
 
-#move-tooltip {
+.move-tooltip {
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    white-space: pre-line;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
     z-index: 1000;
-    pointer-events: none;
     opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    text-align: left;
 }
 
-#move-tooltip.show {
+.move-tooltip.show {
     opacity: 1;
-    transform: translateY(0);
 }
+
+.move-type {
+    display: inline-block;
+    padding: 2px 6px;
+    margin-top: 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.type-normal .move-type { background-color: #A8A878; color: #000; }
+.type-feu .move-type { background-color: #F08030; color: #fff; }
+.type-eau .move-type { background-color: #6890F0; color: #fff; }
+.type-plante .move-type { background-color: #78C850; color: #fff; }
+.type-électrik .move-type { background-color: #F8D030; color: #fff; }
+.type-glace .move-type { background-color: #98D8D8; color: #000; }
+.type-combat .move-type { background-color: #C03028; color: #fff; }
+.type-poison .move-type { background-color: #A040A0; color: #fff; }
+.type-sol .move-type { background-color: #E0C068; color: #000; }
+.type-vol .move-type { background-color: #A890F0; color: #000; }
+.type-psy .move-type { background-color: #F85888; color: #fff; }
+.type-insecte .move-type { background-color: #A8B820; color: #000; }
+.type-roche .move-type { background-color: #B8A038; color: #000; }
+.type-spectre .move-type { background-color: #705898; color: #fff; }
+.type-dragon .move-type { background-color: #7038F8; color: #fff; }
+.type-ténèbres .move-type { background-color: #705848; color: #fff; }
+.type-acier .move-type { background-color: #B8B8D0; color: #000; }
+.type-fée .move-type { background-color: #EE99AC; color: #000; }
+
 
 #combat-menu {
     display: grid;
@@ -504,4 +530,24 @@ button:hover {
 .pokeballs img {
     width: 20px; /* Ajuste la taille selon tes préférences */
     height: 20px;
+}
+
+.battle-log {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.battle-log p {
+    margin: 5px 0;
+}
+
+.disabled {
+    pointer-events: none; /* Désactive les interactions avec les éléments */
+    opacity: 0.5; /* Rend l'élément visuellement plus clair pour indiquer qu'il est désactivé */
 }
