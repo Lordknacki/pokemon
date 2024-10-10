@@ -44,3 +44,41 @@ function toggleStartButton() {
     startButton.disabled = selectedPokemon.length !== 6;
 }
 
+const startBattleButton = document.querySelector('.start-game');
+const tooltip = document.getElementById('tooltip');
+
+// Fonction pour mettre à jour l'état du bouton
+function updateStartButtonState() {
+    if (selectedPokemon.length < 6) {
+        startBattleButton.disabled = true;
+        tooltip.classList.remove('hidden');
+    } else {
+        startBattleButton.disabled = false;
+        tooltip.classList.add('hidden');
+    }
+}
+
+// Événement pour afficher le tooltip si moins de 6 Pokémon sont sélectionnés
+if (startBattleButton) {
+    startBattleButton.addEventListener('mouseenter', (event) => {
+        if (selectedPokemon.length < 6) {
+            // Affiche le tooltip
+            tooltip.style.opacity = '1';
+            tooltip.classList.remove('hidden');
+
+            // Positionne le tooltip au-dessus du bouton
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.top = `${rect.top - tooltip.offsetHeight - 5}px`;
+            tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
+        }
+    });
+
+    startBattleButton.addEventListener('mouseleave', () => {
+        // Cache le tooltip
+        tooltip.style.opacity = '0';
+    });
+}
+
+// Assure de vérifier l'état du bouton au chargement et après chaque sélection de Pokémon
+updateStartButtonState();
+

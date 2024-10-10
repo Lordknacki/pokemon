@@ -119,6 +119,17 @@ function updateHPBar(pokemon, currentHP, maxHP, hpBarId, hpTextId) {
     hpText.textContent = `${currentHP}/${maxHP}`;
 }
 
+// Fonction pour mettre à jour l'état du bouton
+function updateStartButtonState() {
+    if (selectedPokemon.length < 6) {
+        startBattleButton.disabled = true;
+        startBattleButton.classList.add('tooltip-trigger');
+    } else {
+        startBattleButton.disabled = false;
+        tooltip.classList.add('hidden');
+        startBattleButton.classList.remove('tooltip-trigger');
+    }
+}
 
 
 
