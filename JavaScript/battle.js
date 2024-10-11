@@ -7,38 +7,47 @@ async function startBattle(playerTeamArray) {
         playerPokemon = playerTeam[playerPokemonIndex];
         selectedOpponent = opponentTeam[opponentPokemonIndex];
 
-        // Vérifier que les Pokémon ont bien un sprite avant de continuer
-        if (!playerPokemon || !playerPokemon.animatedSprite) {
-            console.error("Erreur : Le Pokémon du joueur n'a pas de sprite.", playerPokemon);
-            return;
-        }
-        if (!selectedOpponent || !selectedOpponent.animatedSprite) {
-            console.error("Erreur : Le Pokémon de l'adversaire n'a pas de sprite.", selectedOpponent);
-            return;
-        }
-
-        // Préparer les mouvements des Pokémon pour garantir qu'ils ont 4 mouvements uniques
-        preparePlayerMoves(playerPokemon);
-        prepareOpponentMoves(opponentTeam);
-
-        // Afficher les Pokémon sur le champ de bataille
-        displayPokemonOnBattlefield(playerPokemon, selectedOpponent);
-        displayMoves(playerPokemon);
-
-        // Transition de la phase de sélection à la phase de combat
-        document.getElementById('selection-phase').classList.add('hidden');
-        document.getElementById('combat-phase').classList.remove('hidden');
-
-        // Initialiser l'affichage des Pokéballs pour les deux équipes
-        initializePokeballs();
-
-        // Déterminer qui commence le combat et lancer le premier tour
-        const currentTurn = determineTurnOrder(playerPokemon, selectedOpponent);
-        await executeTurn(currentTurn);
+        // Affiche l'écran de transition puis démarre le combat
+        showTransitionScreen(playerTeam, opponentTeam, () => {
+            // Une fois la transition terminée, le combat commence ici
+            continueBattle();
+        });
     } catch (error) {
         console.error("Erreur lors du démarrage du combat :", error);
     }
 }
+
+function continueBattle() {
+    // Vérifier que les Pokémon ont bien un sprite avant de continuer
+    if (!playerPokemon || !playerPokemon.animatedSprite) {
+        console.error("Erreur : Le Pokémon du joueur n'a pas de sprite.", playerPokemon);
+        return;
+    }
+    if (!selectedOpponent || !selectedOpponent.animatedSprite) {
+        console.error("Erreur : Le Pokémon de l'adversaire n'a pas de sprite.", selectedOpponent);
+        return;
+    }
+
+    // Préparer les mouvements des Pokémon pour garantir qu'ils ont 4 mouvements uniques
+    preparePlayerMoves(playerPokemon);
+    prepareOpponentMoves(opponentTeam);
+
+    // Afficher les Pokémon sur le champ de bataille
+    displayPokemonOnBattlefield(playerPokemon, selectedOpponent);
+    displayMoves(playerPokemon);
+
+    // Transition de la phase de sélection à la phase de combat
+    document.getElementById('selection-phase').classList.add('hidden');
+    document.getElementById('combat-phase').classList.remove('hidden');
+
+    // Initialiser l'affichage des Pokéballs pour les deux équipes
+    initializePokeballs();
+
+    // Déterminer qui commence le combat et lancer le premier tour
+    const currentTurn = determineTurnOrder(playerPokemon, selectedOpponent);
+    executeTurn(currentTurn);
+}
+
 
 
 
@@ -171,3 +180,55 @@ function getNextAvailablePokemon(team, index) {
     }
     return -1; // Retourne -1 si aucun Pokémon n'est disponible
 }
+
+function showTransitionScreen(playerTeam, opponentTeam, callback) {
+    console.log("Affichage de l'écran de transition...");
+    const playerTeamContainer = document.getElementById('player-team');
+    const opponentTeamContainer = document.getElementById('opponent-team');
+
+    playerTeamContainer.innerHTML = '';
+    opponentTeamContainer.innerHTML = '';
+
+    // URL de base pour les sprites Pokémon
+    const baseSpriteUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+
+    // Afficher les Pokémon de l'équipe du joueur avec leur sprite depuis l'API
+    playerTeam.forEach(pokemon => {
+        const img = document.createElement('img');
+        img.src = `${baseSpriteUrl}${pokemon.id}.png`; // Utilise l'ID du Pokémon pour générer l'URL du sprite
+        img.alt = pokemon.name;
+        img.classList.add('pokemon-sprite'); // Ajoute une classe pour ajuster la taille et le style si nécessaire
+        playerTeamContainer.appendChild(img);
+    });
+
+    // Afficher les Pokémon de l'équipe de l'adversaire avec leur sprite depuis l'API
+    opponentTeam.forEach(pokemon => {
+        const img = document.createElement('img');
+        img.src = `${baseSpriteUrl}${pokemon.id}.png`; // Utilise l'ID du Pokémon pour générer l'URL du sprite
+        img.alt = pokemon.name;
+        img.classList.add('pokemon-sprite'); // Ajoute une classe pour ajuster la taille et le style si nécessaire
+        opponentTeamContainer.appendChild(img);
+    });
+
+    // Afficher l'écran de transition
+    const transitionScreen = document.getElementById('transition-screen');
+    transitionScreen.classList.remove('hidden');
+    transitionScreen.style.opacity = '1';
+
+        // Ajouter le texte défilant
+    const scrollingText = document.getElementById('scrolling-text');
+    scrollingText.classList.add('active'); // Active l'animation de défilement
+
+    // Lancer l'animation et masquer l'écran après 10 secondes (ajuste la durée si nécessaire)
+    setTimeout(() => {
+        scrollingText.classList.remove('active'); // Désactive le texte défilant
+        transitionScreen.style.opacity = '0';
+        setTimeout(() => {
+            transitionScreen.classList.add('hidden');
+            if (typeof callback === 'function') {
+                callback();
+            }
+        }, 500); // Laisser le temps à l'animation de se terminer avant de masquer l'élément
+    }, 10000); // Durée de l'affichage de l'écran de transition (10 secondes)
+}
+
